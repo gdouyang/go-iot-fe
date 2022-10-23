@@ -1,0 +1,114 @@
+
+<template>
+  <div>
+    <a-card title="属性定义" :style="{marginBottom: '20px'}">
+      <a-button type="primary" slot="extra" @click="add">添加</a-button>
+      <a-table rowKey="id" :columns="columns" :dataSource="data">
+        <span slot="valueType" slot-scope="text">{{ text.type }}</span>
+        <span slot="readOnly" slot-scope="text">{{ ((text === 'true' || text === true) ? '是' : '否') }}</span>
+        <span slot="action" slot-scope="text, record">
+          <a @click="edit(record)">修改</a>
+          <a-divider type="vertical" />
+          <a @click="remove(record)">删除</a>
+        </span>
+      </a-table>
+    </a-card>
+    <PropertiesAdd
+      v-if="visible"
+      :data="current"
+      :unitsData="unitsData"
+      @save="savePropertiesData"
+      @close="close"
+    />
+  </div>
+</template>
+
+<script>
+import _ from 'lodash'
+import PropertiesAdd from './properties/Properties-add.vue'
+export default {
+  name: 'Properties',
+  components: {
+    PropertiesAdd
+  },
+  props: {
+    data: {
+      type: Array,
+      default: () => []
+    },
+    unitsData: {
+      type: Array,
+      default: () => []
+    }
+  },
+  data () {
+    return {
+      columns: [
+        { title: '属性标识', dataIndex: 'id' },
+        {
+          title: '属性名称',
+          dataIndex: 'name'
+        },
+        {
+          title: '数据类型',
+          dataIndex: 'valueType',
+          scopedSlots: { customRender: 'valueType' }
+        },
+        {
+          title: '是否只读',
+          dataIndex: 'expands.readOnly',
+          scopedSlots: { customRender: 'readOnly' }
+        },
+        {
+          title: '说明',
+          dataIndex: 'description',
+          width: '30%',
+          ellipsis: true
+        },
+        {
+          title: '操作',
+          scopedSlots: { customRender: 'action' }
+        }
+      ],
+      visible: false,
+      current: {}
+    }
+  },
+  mounted () {
+  },
+  methods: {
+    add () {
+      this.current = {}
+      this.visible = true
+    },
+    edit (item) {
+      this.current = _.cloneDeep(item)
+      this.visible = true
+    },
+    remove (item) {
+      const temp = this.data.filter(e => e.id !== item.id)
+      this.$emit('save', temp)
+    },
+    savePropertiesData (item, onlySave) {
+      const data = this.data
+      const i = data.findIndex((j) => j.id === item.id)
+      if (i > -1) {
+        // data[i] = item;
+        this.$set(data, i, item)
+      } else {
+        data.push(item)
+      }
+      this.$emit('save', data, onlySave)
+      this.close()
+    },
+    close () {
+      this.current = {}
+      this.visible = false
+    }
+  }
+}
+</script>
+
+<style lang="less" scoped>
+
+</style>

@@ -1,0 +1,193 @@
+<template>
+  <Dialog ref="addModal" @confirm="addConfirm" @close="addClose" :width="500">
+    <a-form-model
+      ref="addFormRef"
+      :model="addObj"
+      :labelCol="labelCol"
+      :wrapperCol="wrapperCol"
+    >
+      <a-form-model-item
+        label="设备ID"
+        prop="id"
+        :rules="[
+          { required: true, message: '设备ID不能为空', trigger: 'blur' }
+        ]"
+      >
+        <a-input
+          v-model="addObj.id"
+          :maxLength="32"
+          :disabled="isEdit"
+        ></a-input>
+      </a-form-model-item>
+      <a-form-model-item
+        label="名称"
+        prop="name"
+        :rules="[
+          { required: true, message: '名称不能为空', trigger: 'blur' }
+        ]"
+      >
+        <a-input v-model="addObj.name" placeholder="名称" :maxLength="32"></a-input>
+      </a-form-model-item>
+      <a-form-model-item
+        label="产品"
+        prop="productId"
+        :rules="[{ required: true, message: '产品不能为空', trigger: 'blur' }]"
+      >
+        <a-select v-model="addObj.productId" @change="productIdChange" :disabled="isEdit" placeholder="产品">
+          <a-select-option v-for="p in productList" :key="p.id" :value="p.id">{{ p.name }}</a-select-option>
+        </a-select>
+      </a-form-model-item>
+      <a-form-model-item
+        label="分组"
+        prop="projectId"
+      >
+        <a-select v-model="addObj.projectId" placeholder="分组">
+          <a-select-option v-for="p in projectList" :key="p.id" :value="p.id">{{ p.name }}</a-select-option>
+        </a-select>
+      </a-form-model-item>
+      <!-- <a-form-model-item
+        label="项目"
+        prop="projectId"
+        :rules="[{ required: true, message: '项目不能为空', trigger: 'blur' }]"
+      >
+        <a-select v-model="addObj.projectId" placeholder="项目" @change="projectIdChange">
+          <a-select-option v-for="p in projectList" :key="p.id" :value="p.id">{{ p.name }}</a-select-option>
+        </a-select>
+      </a-form-model-item>
+      <a-form-model-item
+        label="分组"
+        prop="deviceGroupId"
+      >
+        <a-select v-model="addObj.deviceGroupId" placeholder="分组">
+          <a-select-option v-for="p in groupList" :key="p.id" :value="p.id">{{ p.name }}</a-select-option>
+        </a-select>
+      </a-form-model-item> -->
+      <a-form-model-item label="说明" prop="describe">
+        <a-input
+          type="textarea"
+          v-model="addObj.describe"
+          placeholder="说明"
+          :maxLength="200"
+          show-word-limit></a-input>
+      </a-form-model-item>
+    </a-form-model>
+  </Dialog>
+</template>
+
+<script>
+import _ from 'lodash'
+import { listAllProject, listByProject } from '@/views/iot/project/service.js'
+const defaultAddObj = {
+  id: null,
+  name: '',
+  productId: undefined,
+  productName: undefined,
+  projectId: undefined,
+  deviceGroupId: undefined,
+  desc: ''
+}
+export default {
+  data () {
+    return {
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 5 }
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 16 }
+      },
+      addObj: _.cloneDeep(defaultAddObj),
+      isEdit: false,
+      productList: [],
+      projectList: [],
+      groupList: []
+    }
+  },
+  created () {},
+  methods: {
+    add () {
+      this.isEdit = false
+      this.listAllProject()
+      this.listAllProduct().then(() => {
+        this.$refs.addModal.open({ title: '新增设备' })
+      })
+    },
+    edit (row) {
+      this.isEdit = true
+      this.$http
+        .request({
+          url: `device-instance/${row.id}`,
+          method: 'get'
+        })
+        .then((data) => {
+          if (data.success) {
+            const result = data.result
+            this.listAllProject()
+            this.projectIdChange(result.projectId)
+            this.listAllProduct().then(() => {
+              this.addObj = result
+              this.$refs.addModal.open({ title: '修改设备' })
+            })
+          }
+        })
+    },
+    projectIdChange (value) {
+      if (value) {
+        this.listByProject(value)
+      }
+    },
+    addClose () {
+      this.addObj = _.cloneDeep(defaultAddObj)
+      this.$refs.addFormRef.resetFields()
+    },
+    addConfirm () {
+      this.$refs.addFormRef.validate((valid) => {
+        if (valid) {
+          let promise = null
+          if (this.isEdit) {
+            promise = this.$http.put('device-instance/update', this.addObj)
+          } else {
+            promise = this.$http.post('device-instance/add', this.addObj)
+          }
+          promise.then((resp) => {
+            if (resp.success) {
+              this.$message.success('操作成功')
+              this.$refs.addModal.close()
+              this.$emit('success')
+            } else {
+              this.$message.success(resp.message)
+            }
+          })
+        }
+      })
+    },
+    productIdChange (value) {
+      const product = _.find(this.productList, p => p.id === value)
+      if (product) {
+        this.addObj.productName = product.name
+      }
+    },
+    listAllProduct () {
+      return this.$http.get('/device-product/list')
+      .then((resp) => {
+        if (resp.success) {
+          this.productList = resp.result
+        }
+      })
+    },
+    listAllProject () {
+      return listAllProject().then(list => {
+        this.projectList = list
+      })
+    },
+    listByProject (projectId) {
+      return listByProject(projectId).then(list => {
+        this.groupList = list
+      })
+    }
+  }
+}
+</script>
+<style lang="less">
+</style>
