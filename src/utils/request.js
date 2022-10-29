@@ -10,8 +10,10 @@ const request = axios.create({
   // API 请求的默认前缀
   baseURL: process.env.VUE_APP_API_BASE_URL,
   timeout: 20000, // 请求超时时间
-  paramsSerializer: function (params) {
-    return qs.stringify(params)
+  paramsSerializer: {
+    serialize: function (params) {
+      return qs.stringify(params)
+    }
   }
 })
 
