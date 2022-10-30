@@ -36,25 +36,17 @@
           <a-form-item
             :labelCol="labelCol"
             :wrapperCol="wrapperCol"
-            label="性别"
-          >
-            <dict-select
-              category="SEX"
-              v-decorator="['sex', { rules: [{ required: true, message: '请输入' }] }]"
-              valueType="number"
-            />
-          </a-form-item>
-
-          <a-form-item
-            :labelCol="labelCol"
-            :wrapperCol="wrapperCol"
             label="状态"
           >
-            <dict-select
-              category="ENABLE_STATUS"
-              v-decorator="['enableFlag', { rules: [{ required: true, message: '请输入' }] }]"
-              valueType="number"
-            />
+            <a-select
+              v-decorator="['enableFlag', { rules: [{ required: true, message: '请输入' }] }]">
+              <a-select-option :value="true">
+                启动
+              </a-select-option>
+              <a-select-option :value="false">
+                禁用
+              </a-select-option>
+            </a-select>
           </a-form-item>
 
           <a-form-item
@@ -186,7 +178,7 @@ export default {
           this.visible = true
           this.getAllRole()
           this.$nextTick(() => {
-            this.form.setFieldsValue(pick(this.mdl, 'username', 'nickname', 'sex', 'enableFlag', 'desc', 'roleId', 'tenantId'))
+            this.form.setFieldsValue(pick(this.mdl, 'username', 'nickname', 'enableFlag', 'desc', 'roleId'))
           })
         }
       }).finally(() => {
