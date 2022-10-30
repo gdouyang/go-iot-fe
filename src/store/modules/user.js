@@ -37,7 +37,7 @@ const user = {
     Login ({ commit }, userInfo) {
       return new Promise((resolve, reject) => {
         login(userInfo).then(response => {
-          const result = response.data
+          const result = response.result
           if (result) {
           }
           storage.set(ACCESS_TOKEN, 'ss', 7 * 24 * 60 * 60 * 1000)
@@ -53,7 +53,7 @@ const user = {
     GetInfo ({ commit }) {
       return new Promise((resolve, reject) => {
         getInfo().then(response => {
-          const result = response.data
+          const result = response.result
 
           if (result.role && result.role.permissions.length > 0) {
             const role = result.role
@@ -71,7 +71,7 @@ const user = {
             reject(new Error('getInfo: roles must be a non-null array !'))
           }
 
-          commit('SET_NAME', { name: result.name, welcome: welcome() })
+          commit('SET_NAME', { name: result.nickname, welcome: welcome() })
           commit('SET_AVATAR', result.avatar)
 
           resolve(response)
