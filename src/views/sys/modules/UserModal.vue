@@ -28,7 +28,7 @@
           >
             <a-input
               placeholder="名称"
-              v-decorator="['name', { rules: [{ required: true, message: '请输入' }] }]"
+              v-decorator="['nickname', { rules: [{ required: true, message: '请输入' }] }]"
               :max-length="32"
             />
           </a-form-item>
@@ -186,7 +186,7 @@ export default {
           this.visible = true
           this.getAllRole()
           this.$nextTick(() => {
-            this.form.setFieldsValue(pick(this.mdl, 'username', 'name', 'sex', 'enableFlag', 'desc', 'roleId', 'tenantId'))
+            this.form.setFieldsValue(pick(this.mdl, 'username', 'nickname', 'sex', 'enableFlag', 'desc', 'roleId', 'tenantId'))
           })
         }
       }).finally(() => {

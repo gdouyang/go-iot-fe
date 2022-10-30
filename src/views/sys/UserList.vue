@@ -10,7 +10,7 @@
           </a-col>
           <a-col :md="8" :sm="24">
             <a-form-item label="名称">
-              <a-input v-model="queryParam.name" placeholder="请输入"/>
+              <a-input v-model="queryParam.nickname" placeholder="请输入"/>
             </a-form-item>
           </a-col>
           <a-col :md="8" :sm="24">
@@ -33,11 +33,15 @@
       url="user/page"
       :columns="columns"
     >
+      <span slot="enableFlag" slot-scope="text, record">
+        <span v-if="record.enableFlag">启用</span>
+        <span v-if="record.enableFlag === false">禁用</span>
+      </span>
       <span slot="action" slot-scope="text, record">
         <a @click="handleEdit(record)">编辑</a>
         <a-divider type="vertical" />
-        <a size="small" v-if="record.enableFlag === 0" @click="enable(record)">启用</a>
-        <a size="small" v-if="record.enableFlag === 1" @click="disable(record)">禁用</a>
+        <a size="small" v-if="record.enableFlag === false" @click="enable(record)">启用</a>
+        <a size="small" v-if="record.enableFlag" @click="disable(record)">禁用</a>
         <a-divider type="vertical" />
         <a @click="remove(record)">删除</a>
       </span>
@@ -73,11 +77,12 @@ export default {
         },
         {
           title: '名称',
-          dataIndex: 'name'
+          dataIndex: 'nickname'
         },
         {
           title: '状态',
-          dataIndex: 'enableFlagI18n'
+          dataIndex: 'enableFlag',
+          scopedSlots: { customRender: 'enableFlag' }
         },
         {
           title: '创建时间',
