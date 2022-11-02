@@ -106,7 +106,7 @@ export default {
           const config1 = _.find(this.allConfig, c => c.name === param.name)
           const props2 = config1 ? _.filter(config1.properties, p => !_.includes(props, p.property)) : []
           param.properties = _.concat(param.properties, props2)
-          this.$http.post(`/device-product/self-metaconfig/${this.data.id}`, [ param ])
+          this.$http.post(`/product/self-metaconfig/${this.data.id}`, [ param ])
           .then((response) => {
             if (response.success) {
               this.$message.success('配置信息修改成功')

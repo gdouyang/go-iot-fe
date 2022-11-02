@@ -86,6 +86,12 @@ export default {
     method: {
       type: String,
       default: 'post'
+    },
+    pagination: {
+      current: 1,
+      pageSize: 10,
+      showSizeChanger: true,
+      hideOnSinglePage: true
     }
   }),
   watch: {

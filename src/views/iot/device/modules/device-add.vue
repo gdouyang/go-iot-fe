@@ -169,7 +169,7 @@ export default {
       }
     },
     listAllProduct () {
-      return this.$http.get('/device-product/list')
+      return this.$http.get('/product/list')
       .then((resp) => {
         if (resp.success) {
           this.productList = resp.result

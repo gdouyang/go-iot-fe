@@ -103,7 +103,7 @@ export default {
   methods: {
     open () {
       this.tsl = ''
-      this.$http.get(`/device-product/script/${this.id}`)
+      this.$http.get(`/product/script/${this.id}`)
       .then(data => {
         if (data.success) {
           this.tsl = data.result || this.getTpl().tpl
@@ -136,7 +136,7 @@ export default {
       if (!this.tsl) {
         this.$message.error('请填写物模型')
       }
-      this.$http.post(`/device-product/script/${this.id}`, { script: this.tsl })
+      this.$http.post(`/product/script/${this.id}`, { script: this.tsl })
       .then(data => {
         if (data.success) {
           this.$message.success('操作成功')

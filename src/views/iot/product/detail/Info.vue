@@ -7,11 +7,11 @@
           <a-button icon="edit" :style="{marginLeft: 20}" type="link" @click="openBasicInfo">编辑</a-button>
         </span>
         <a-descriptions-item label="产品ID" :span="1">{{ data.id }}</a-descriptions-item>
-        <a-descriptions-item label="所属品类" :span="1">{{ data.classifiedName }}</a-descriptions-item>
-        <a-descriptions-item label="消息协议" :span="1">{{ data.protocolName || data.protocol }}</a-descriptions-item>
-        <a-descriptions-item label="连接协议" :span="1">{{ data.transportProtocol }}</a-descriptions-item>
-        <a-descriptions-item label="设备类型" :span="2">{{ data.deviceType.text }}</a-descriptions-item>
-        <a-descriptions-item label="说明" :span="3">{{ data.describe }}</a-descriptions-item>
+        <!-- <a-descriptions-item label="所属品类" :span="1">{{ data.classifiedName }}</a-descriptions-item> -->
+        <!-- <a-descriptions-item label="消息协议" :span="1">{{ data.protocolName || data.protocol }}</a-descriptions-item> -->
+        <!-- <a-descriptions-item label="连接协议" :span="1">{{ data.transportProtocol }}</a-descriptions-item> -->
+        <!-- <a-descriptions-item label="设备类型" :span="2">{{ data.deviceType.text }}</a-descriptions-item> -->
+        <a-descriptions-item label="说明" :span="3">{{ data.desc }}</a-descriptions-item>
       </a-descriptions>
       <!-- 网络配置 -->
       <div style="width: 100%;margin-top: 10px;">
@@ -118,15 +118,18 @@ export default {
   },
   methods: {
     GetData () {
-      const { id } = this.data
-      this.getConfiguration(id).then(data => {
-        if (data.success) {
-          this.configuration = data.result || []
-        }
-      })
+      // const { id } = this.data
+      // this.getConfiguration(id).then(data => {
+      //   if (data.success) {
+      //     this.configuration = data.result || []
+      //   }
+      // })
     },
     getConfiguration (id) {
-      return this.$http.get(`/device-product/${id}/config-metadata`)
+      return this.$http.get(`/product/${id}/config-metadata`)
+    },
+    getNetwork (id) {
+      return this.$http.get(`/product/network/${id}`)
     },
     openBasicInfo () {
       this.addVisible = true
@@ -145,7 +148,7 @@ export default {
         configuration: item.configuration
       }
       this.updateVisible = false
-      this.$http.put(`/device-product/${this.data.id}`, param)
+      this.$http.put(`/product/${this.data.id}`, param)
       .then((response) => {
         if (response.success) {
           this.$message.success('配置信息修改成功')

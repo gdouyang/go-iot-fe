@@ -22,12 +22,12 @@
         <div class="table-operator">
           <a-button type="primary" icon="plus" @click="add">新建</a-button>
         </div>
-        <PageTable ref="tb" url="device-product/page" :columns="columns" rowKey="id">
+        <PageTable ref="tb" url="product/page" :columns="columns" rowKey="id">
           <span slot="deviceType" slot-scope="text">
             {{ text.text }}
           </span>
-          <span slot="state" slot-scope="text, record">
-            <a-badge :status="text == 1 ? 'success' : 'default'" :text="record.stateI18n" />
+          <span slot="state" slot-scope="text">
+            <a-badge :status="text ? 'success' : 'default'" :text="text ? '发布' : '停用'" />
           </span>
           <span slot="action" slot-scope="text, record">
             <a size="small" @click="detail(record.id)">查看</a>
@@ -68,7 +68,7 @@ export default {
         { title: '产品ID', dataIndex: 'id' },
         { title: '名称', dataIndex: 'name' },
         { title: '状态', dataIndex: 'state', scopedSlots: { customRender: 'state' } },
-        { title: '设备类型', dataIndex: 'deviceType', scopedSlots: { customRender: 'deviceType' } },
+        // { title: '设备类型', dataIndex: 'deviceType', scopedSlots: { customRender: 'deviceType' } },
         // { title: '创建时间', customRender: text => moment(text).format('YYYY-MM-DD HH:mm:ss') },
         // { title: '修改时间', dataIndex: 'modifyTime' },
         { title: '操作', dataIndex: 'action', minWidth: 110, scopedSlots: { customRender: 'action' } }
@@ -107,7 +107,7 @@ export default {
       this.search()
     },
     deploy (id) {
-      this.$http.post(`device-product/${id}/deploy`)
+      this.$http.post(`product/${id}/deploy`)
       .then(data => {
         if (data.success) {
           this.$message.success('操作成功')
@@ -116,7 +116,7 @@ export default {
       })
     },
     unDeploy (id) {
-      this.$http.post(`device-product/${id}/undeploy`)
+      this.$http.post(`product/${id}/undeploy`)
       .then(data => {
         if (data.success) {
           this.$message.success('操作成功')
@@ -129,7 +129,7 @@ export default {
         title: '确认',
         content: '确定要删除吗？',
         onOk: () => {
-          this.$http.delete(`device-product/${id}`)
+          this.$http.delete(`product/${id}`)
           .then(data => {
             if (data.success) {
               this.$message.success('操作成功')

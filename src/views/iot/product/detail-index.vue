@@ -9,24 +9,24 @@
           <span class="detail-title">
             <span>产品：{{ detailData.name }}</span>
           </span>
-          <a-badge :color="detailData.state === 1 ? 'green' : 'red'" :text="detailData.stateI18n" style="margin-left: 10px"/>
+          <a-badge :color="detailData.state ? 'green' : 'red'" :text="detailData.state ? '发布' : '停用'" style="margin-left: 10px"/>
           <a-popconfirm
             title="确认停用？"
             @confirm="unDeploy"
-            v-if="detailData.state === 1">
+            v-if="detailData.state">
             <a style="font-size: 12px;margin-left: 10px;">停用</a>
           </a-popconfirm>
           <a-popconfirm
             title="确认发布？"
             @confirm="deploy"
-            v-if="detailData.state !== 1">
+            v-if="detailData.state">
             <a style="font-size: 12px;margin-left: 10px;">发布</a>
           </a-popconfirm>
           <a-tooltip title="修改物模型后需要重新应用配置" placement="bottom">
             <a-popconfirm
               title="确认重新应用该配置？"
               @confirm="deploy"
-              v-if="detailData.state === 1">
+              v-if="detailData.state">
               <a style="font-size: 12px;margin-left: 10px;">应用配置</a>
             </a-popconfirm>
           </a-tooltip>
@@ -66,9 +66,6 @@ import Info from './detail/Info.vue'
 import TSL from './detail/TslIndex.vue'
 import Codec from './detail/Codec.vue'
 
-const statusMap = new Map()
-statusMap.set('1', '已发布')
-statusMap.set('0', '未发布')
 export default {
   name: 'InsEditor',
   components: {
@@ -111,7 +108,7 @@ export default {
     },
     getDetail (id) {
       this.loading = true
-      return this.$http.get(`/device-product/${id}`)
+      return this.$http.get(`/product/${id}`)
         .then((data) => {
           if (data.success) {
             return data.result
@@ -126,18 +123,18 @@ export default {
         if (result) {
           this.detailData = result
           if (result.metadata) {
-            const metadata = result.metadata // JSON.parse(result.metadata)
+            result.metadata = JSON.parse(result.metadata)
+            const metadata = result.metadata
             this.events = metadata.events
             this.functions = metadata.functions
             this.properties = metadata.properties
-            this.tags = metadata.tags
           }
         }
       })
     },
     unDeploy () {
       const id = this.GetId
-      this.$http.post(`/device-product/${id}/undeploy`)
+      this.$http.put(`/product/${id}/undeploy`)
       .then(data => {
         if (data.success) {
           this.$message.success('操作成功')
@@ -147,7 +144,7 @@ export default {
     },
     deploy () {
       const id = this.GetId
-      this.$http.post(`/device-product/${id}/deploy`)
+      this.$http.put(`/product/${id}/deploy`)
       .then((data) => {
         if (data.success) {
           this.$message.success('操作成功')
@@ -173,8 +170,8 @@ export default {
         metadata = { events: item.events, properties: item.properties, functions: item.functions, tags: item.tags }
       }
       const basicInfo = this.detailData
-      const data = { ...basicInfo, metadata }
-      this.$http.patch(`/device-product`, data)
+      const data = { ...basicInfo, metadata: JSON.stringify(metadata) }
+      this.$http.put(`/product`, data)
       .then((re) => {
         if (re.success) {
           this.$message.success('保存成功，如需生效请重新应用配置')
