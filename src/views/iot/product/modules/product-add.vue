@@ -35,6 +35,26 @@
         >
           <a-input v-model="addObj.name" placeholder="名称" :maxLength="32"></a-input>
         </a-form-model-item>
+        <a-form-model-item
+          label="网络类型"
+          prop="networkType"
+          :rules="[
+            { required: true, message: '网络类型不能为空' }
+          ]"
+        >
+          <a-select
+            placeholder="请选择"
+            v-model="addObj.networkType"
+            :disabled="isEdit"
+          >
+            <a-select-option value="MQTT_BROKER">MQTT_BROKER</a-select-option>
+            <a-select-option value="TCP_SERVER">TCP_SERVER</a-select-option>
+            <a-select-option value="HTTP_SERVER">HTTP_SERVER</a-select-option>
+            <a-select-option value="WEBSOCKET_SERVER">WEBSOCKET_SERVER</a-select-option>
+            <a-select-option value="MQTT_CLIENT">MQTT_CLIENT</a-select-option>
+            <a-select-option value="TCP_CLIENT">TCP_CLIENT</a-select-option>
+          </a-select>
+        </a-form-model-item>
         <a-form-model-item label="说明" prop="desc">
           <a-input
             type="textarea"
@@ -56,7 +76,8 @@ const defaultAddObj = {
   id: null,
   name: '',
   metadata: { events: [], properties: [], functions: [], tags: [] },
-  desc: ''
+  desc: '',
+  networkType: ''
 }
 export default {
   name: 'ProductAdd',
@@ -89,7 +110,10 @@ export default {
         .then((data) => {
           if (data.success) {
             const result = data.result
-            this.addObj = result
+            this.addObj.id = result.id
+            this.addObj.name = result.name
+            this.addObj.desc = result.desc
+            this.addObj.networkType = result.networkType
             this.$refs.addModal.open({ title: '修改产品' })
           }
         })
@@ -103,10 +127,12 @@ export default {
         if (valid) {
           let promise = null
           const saveData = _.cloneDeep(this.addObj)
-          saveData.state = false
           if (this.isEdit) {
+            delete saveData.metadata
             promise = this.$http.put(`product/${saveData.id}`, saveData)
           } else {
+            saveData.state = false
+            saveData.metadata = JSON.stringify(this.addObj.metadata)
             promise = this.$http.post('product', saveData)
           }
           promise.then((resp) => {
