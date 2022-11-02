@@ -35,7 +35,10 @@
       <a-card :bordered="false">
         <a-tabs default-active-key="info">
           <a-tab-pane key="info" tab="基本信息">
-            <Info :data="detailData" v-if="detailData.id" @refresh="reloadDevice"></Info>
+            <Info
+              :data="detailData"
+              v-if="detailData.id"
+              @refresh="reloadDevice"></Info>
           </a-tab-pane>
           <a-tab-pane key="tsl" tab="物模型">
             <TSL
@@ -47,10 +50,10 @@
               @refresh="reloadDevice"
               @save="updateData"></TSL>
           </a-tab-pane>
-          <a-tab-pane key="codec" tab="编解码" v-if="showCodec">
+          <a-tab-pane key="codec" tab="编解码">
             <Codec
               :id="GetId"
-              :data="detailData"
+              :product="detailData"
               @refresh="reloadDevice"
               @save="updateData"></Codec>
           </a-tab-pane>
@@ -91,15 +94,6 @@ export default {
   computed: {
     GetId () {
       return this.$route.query.id
-    },
-    showCodec () {
-      const p = this.detailData.messageProtocol
-      return p === 'tcp-server-script-protocol' ||
-        p === 'tcp-client-script-protocol' ||
-        p === 'OneNet' ||
-        p === 'mqtt-server-script-protocol' ||
-        p === 'websocket-server-script-protocol' ||
-        p === 'http-server-script-protocol'
     }
   },
   methods: {

@@ -52,7 +52,7 @@
         ref="tb"
         :loading="false"
         :columns="columns"
-        :url="`/device-instance/${deviceId}/logs`"
+        :url="`/device/${deviceId}/logs`"
         method="get"
         :resultProcess="tableResultProcess"
         rowKey="id"

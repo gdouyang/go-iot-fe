@@ -61,7 +61,7 @@ export default {
       if (ref) {
         params = ref[0].getData()
       }
-      this.$http.post(`/device-instance/${deviceId}/function/${functionId}`, params)
+      this.$http.post(`/device/${deviceId}/function/${functionId}`, params)
       .then(response => {
         // const tempResult = response.result
         if (response.status === 200) {

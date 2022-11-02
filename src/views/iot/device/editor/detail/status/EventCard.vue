@@ -56,7 +56,7 @@ export default {
   },
   methods: {
     getValue () {
-      this.$http.get(`/device-instance/${ this.device.id }/event/${ this.item.id }?format=true&pageSize=1`)
+      this.$http.get(`/device/${ this.device.id }/event/${ this.item.id }?format=true&pageSize=1`)
       .then(resp => {
         if (resp.success) {
           this.formatValue = resp.result.total

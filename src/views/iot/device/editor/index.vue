@@ -146,7 +146,7 @@ export default {
     },
     getDeviceDetail (id) {
       this.loading = true
-      return this.$http.get(`/device-instance/${id}/detail`)
+      return this.$http.get(`/device/${id}/detail`)
         .then((data) => {
           if (data.success) {
             return data.result
@@ -168,7 +168,7 @@ export default {
     },
     disconnectDevice () {
       const deviceId = this.GetDeviceId
-      this.$http.post(`/device-instance/${deviceId}/disconnect`)
+      this.$http.post(`/device/${deviceId}/disconnect`)
       .then(data => {
         if (data.success) {
           this.$message.success('断开连接成功')
@@ -178,7 +178,7 @@ export default {
     },
     changeDeploy () {
       const deviceId = this.GetDeviceId
-      this.$http.post(`/device-instance/${deviceId}/deploy`)
+      this.$http.post(`/device/${deviceId}/deploy`)
       .then((data) => {
         if (data.success) {
           this.$message.success('激活成功')

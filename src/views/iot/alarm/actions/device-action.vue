@@ -130,7 +130,7 @@ export default {
       this.findDevice(item.id)
     },
     findDevice (deviceId) {
-      this.$http.get(`/device-instance/${deviceId}/detail`)
+      this.$http.get(`/device/${deviceId}/detail`)
         .then((data) => {
           if (data.success) {
             const result = data.result

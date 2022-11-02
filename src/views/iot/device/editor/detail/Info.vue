@@ -173,7 +173,7 @@ export default {
       })
     },
     deviceConfiguration (deviceId) {
-      return this.$http.get(`/device-instance/${deviceId}/config-metadata`)
+      return this.$http.get(`/device/${deviceId}/config-metadata`)
     },
     openBasicInfo () {
       this.addVisible = true
@@ -183,7 +183,7 @@ export default {
     },
     changeDeploy () {
       const { id } = this.data
-      this.$http.post(`/device-instance/${id}/deploy`)
+      this.$http.post(`/device/${id}/deploy`)
       .then(data => {
         if (data.success) {
           this.$message.success('应用成功')
@@ -194,7 +194,7 @@ export default {
     },
     configurationReset () {
       const { deviceId } = this.data
-      this.$http.put(`/device-instance/${deviceId}/configuration/_reset`)
+      this.$http.put(`/device/${deviceId}/configuration/_reset`)
       .then(response => {
         if (response.status === 200) {
           this.$message.success('恢复默认配置成功')
@@ -207,7 +207,7 @@ export default {
         configuration: item.configuration
       }
       this.updateVisible = false
-      this.$http.put(`/device-instance/${this.data.id}`, param)
+      this.$http.put(`/device/${this.data.id}`, param)
       .then((response) => {
         if (response.status === 200) {
           this.$message.success('配置信息修改成功')

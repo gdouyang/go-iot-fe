@@ -26,18 +26,21 @@
         </div>
         <div class="table-operator">
           <a-button type="primary" icon="plus" @click="add">新建</a-button>
-          <a-button icon="upload" @click="showImport">
+          <!-- <a-button icon="upload" @click="showImport">
             批量导入设备
-          </a-button>
+          </a-button> -->
         </div>
-        <PageTable ref="tb" url="device-instance/page" :columns="columns" rowKey="id">
+        <PageTable ref="tb" url="device/page" :columns="columns" rowKey="id">
           <span slot="state" slot-scope="text, record">
-            <a-badge status="success" :text="record.state.text" v-if="record.state && record.state.value == 'online'" />
-            <a-badge status="default" :text="record.state.text" v-else-if="record.state && record.state.value == 'offline'" />
+            <a-badge status="success" :text="record.state" v-if="record.state == 'online'" />
+            <a-badge status="default" :text="record.state" v-else-if="record.state == 'offline'" />
             <a-badge status="default" text="--" v-else />
           </span>
           <span slot="registryTime" slot-scope="text, record">
             {{ $moment(record.registryTime).format('YYYY-MM-DD HH:mm:ss') }}
+          </span>
+          <span slot="createTime" slot-scope="text, record">
+            {{ $moment(record.createTime).format('YYYY-MM-DD HH:mm:ss') }}
           </span>
           <span slot="action" slot-scope="text, record">
             <a size="small" @click="detail(record.id)">查看</a>
@@ -82,10 +85,10 @@ export default {
       columns: [
         { title: '设备ID', dataIndex: 'id' },
         { title: '名称', dataIndex: 'name' },
-        { title: '产品', dataIndex: 'productName' },
+        { title: '产品', dataIndex: 'productId' },
         { title: '状态', dataIndex: 'state', scopedSlots: { customRender: 'state' } },
         { title: '注册时间', dataIndex: 'registryTime', scopedSlots: { customRender: 'registryTime' } },
-        { title: '创建时间', dataIndex: 'createTime' },
+        { title: '创建时间', dataIndex: 'createTime', scopedSlots: { customRender: 'createTime' } },
         { title: '操作', dataIndex: 'action', minWidth: 110, scopedSlots: { customRender: 'action' } }
       ],
       GetDetailStatus: false
@@ -125,7 +128,7 @@ export default {
       this.$refs.DeviceAdd.edit(row)
     },
     deploy (id) {
-      this.$http.post(`device-instance/${id}/deploy`)
+      this.$http.post(`device/${id}/deploy`)
       .then(data => {
         if (data.success) {
           this.$message.success('操作成功')
@@ -134,7 +137,7 @@ export default {
       })
     },
     unDeploy (id) {
-      this.$http.post(`device-instance/${id}/undeploy`)
+      this.$http.post(`device/${id}/undeploy`)
       .then(data => {
         if (data.success) {
           this.$message.success('操作成功')
@@ -147,7 +150,7 @@ export default {
         title: '确认',
         content: '确定要删除吗？',
         onOk: () => {
-          this.$http.delete(`device-instance/${row.id}`)
+          this.$http.delete(`device/${row.id}`)
             .then((data) => {
               if (data.success) {
                 this.$message.success('操作成功')

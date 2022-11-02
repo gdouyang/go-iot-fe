@@ -13,16 +13,8 @@
         <!-- <a-descriptions-item label="设备类型" :span="2">{{ data.deviceType.text }}</a-descriptions-item> -->
         <a-descriptions-item label="说明" :span="3">{{ data.desc }}</a-descriptions-item>
       </a-descriptions>
-      <!-- 网络配置 -->
-      <div style="width: 100%;margin-top: 10px;">
-        <OneNet v-if="data.bindProvider && data.bindProvider === 'onenet'" :productId="data.id" />
-        <TcpConfig v-if="data.messageProtocol === 'tcp-server-script-protocol'" :productId="data.id" />
-        <!-- <TcpConfig v-if="data.messageProtocol === 'tcp-client-script-protocol'" :productId="data.id" /> -->
-        <MqttConfig v-if="data.messageProtocol === 'mqtt-server-script-protocol'" :productId="data.id" />
-        <WebSocketConfig v-if="data.messageProtocol === 'websocket-server-script-protocol'" :productId="data.id" />
-        <HttpConfig v-if="data.messageProtocol === 'http-server-script-protocol'" :productId="data.id" />
-      </div>
-
+      <Network
+        :product="data"></Network>
       <div style="width: 100%;margin-top: 10px;">
         <a-descriptions :style="{marginBottom: 20}" size="small">
           <span slot="title">
@@ -79,11 +71,7 @@
 import ProductAdd from '../modules/product-add.vue'
 import Configuration from './configuration.vue'
 import ConfigurationAdd from './configurationAdd.vue'
-import OneNet from './cloud-bind/OneNet.vue'
-import TcpConfig from './network/TcpConfig.vue'
-import MqttConfig from './network/MqttConfig.vue'
-import WebSocketConfig from './network/WebSocketConfig.vue'
-import HttpConfig from './network/HttpConfig.vue'
+import Network from './Network.vue'
 
 export default {
   name: 'InsEditorDetail',
@@ -97,11 +85,7 @@ export default {
     ProductAdd,
     Configuration,
     ConfigurationAdd,
-    OneNet,
-    TcpConfig,
-    MqttConfig,
-    WebSocketConfig,
-    HttpConfig
+    Network
   },
   data () {
     return {
@@ -127,9 +111,6 @@ export default {
     },
     getConfiguration (id) {
       return this.$http.get(`/product/${id}/config-metadata`)
-    },
-    getNetwork (id) {
-      return this.$http.get(`/product/network/${id}`)
     },
     openBasicInfo () {
       this.addVisible = true

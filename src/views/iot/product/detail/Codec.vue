@@ -51,7 +51,6 @@ import 'brace/mode/javascript'
 import 'brace/theme/chrome'
 // import 'brace/snippets/javascript'
 // import _ from 'lodash'
-import onenetTpl from './codec/onenet-tpl.js'
 import TcpTpl from './codec/tcp-tpl.js'
 import MqttTpl from './codec/mqtt-tpl.js'
 import WebSocketTpl from './codec/websocket-tpl.js'
@@ -64,7 +63,7 @@ export default {
       type: String,
       required: true
     },
-    data: {
+    product: {
       type: Object,
       default: () => {}
     }
@@ -93,7 +92,8 @@ export default {
         wrapEnabled: true,
         showPrintMargin: true,
         readOnly: true
-      }
+      },
+      network: {}
     }
   },
   created () {
@@ -103,10 +103,11 @@ export default {
   methods: {
     open () {
       this.tsl = ''
-      this.$http.get(`/product/script/${this.id}`)
+      this.$http.get(`/product/network/${this.id}`)
       .then(data => {
         if (data.success) {
-          this.tsl = data.result || this.getTpl().tpl
+          this.network = data.result
+          this.tsl = this.network.script || this.getTpl().tpl
           this.$nextTick(() => {
             const editor = this.$refs.AceEditor.editor
             editor.setOptions({
@@ -117,15 +118,13 @@ export default {
       })
     },
     getTpl () {
-      if (this.data.messageProtocol === 'OneNet') {
-        return onenetTpl
-      } else if (this.data.messageProtocol === 'tcp-server-script-protocol' || this.data.messageProtocol === 'tcp-client-script-protocol') {
+      if (this.network.type === 'TCP_SERVER' || this.data.type === 'TCP_CLIENT') {
         return TcpTpl
-      } else if (this.data.messageProtocol === 'mqtt-server-script-protocol') {
+      } else if (this.network.type === 'MQTT_BROKER') {
         return MqttTpl
-      } else if (this.data.messageProtocol === 'websocket-server-script-protocol') {
+      } else if (this.network.type === 'WEBSOCKET_SERVER') {
         return WebSocketTpl
-      } else if (this.data.messageProtocol === 'http-server-script-protocol') {
+      } else if (this.network.type === 'HTTP_SERVER') {
         return HttpTpl
       } else {
         return { tpl: '' }
@@ -136,7 +135,7 @@ export default {
       if (!this.tsl) {
         this.$message.error('请填写物模型')
       }
-      this.$http.post(`/product/script/${this.id}`, { script: this.tsl })
+      this.$http.put(`/product/network`, { productId: this.id, script: this.tsl })
       .then(data => {
         if (data.success) {
           this.$message.success('操作成功')

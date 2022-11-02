@@ -1,6 +1,6 @@
 <template>
   <a-spin :spinning="loading">
-    <a-row :gutter="24" id="device-instance-status" >
+    <a-row :gutter="24" id="device-status" >
       <a-col
         :xs="24"
         :sm="12"

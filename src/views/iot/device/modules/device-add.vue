@@ -117,7 +117,7 @@ export default {
       this.isEdit = true
       this.$http
         .request({
-          url: `device-instance/${row.id}`,
+          url: `device/${row.id}`,
           method: 'get'
         })
         .then((data) => {
@@ -146,9 +146,9 @@ export default {
         if (valid) {
           let promise = null
           if (this.isEdit) {
-            promise = this.$http.put('device-instance/update', this.addObj)
+            promise = this.$http.put('device/update', this.addObj)
           } else {
-            promise = this.$http.post('device-instance/add', this.addObj)
+            promise = this.$http.post('device/add', this.addObj)
           }
           promise.then((resp) => {
             if (resp.success) {

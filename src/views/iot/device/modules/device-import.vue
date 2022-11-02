@@ -43,7 +43,7 @@
         <span>{{ addObj.fileName }}</span>
       </a-form-model-item>
       <div v-if="addObj.productId">
-        <a :href="`api/device-instance/${addObj.productId}/template`">下载模版</a>
+        <a :href="`api/device/${addObj.productId}/template`">下载模版</a>
       </div>
       <div v-if="importLoading">
         <a-badge status="success" text="已完成" v-if="isFinish"/>
@@ -109,7 +109,7 @@ export default {
           const formData = new FormData()
           formData.append('file', this.file)
           this.importLoading = true
-          this.$http.post(`device-instance/${this.addObj.productId}/import`, formData)
+          this.$http.post(`device/${this.addObj.productId}/import`, formData)
           .then((resp) => {
             if (resp.success) {
               this.showImportResult(resp.result)
@@ -121,7 +121,7 @@ export default {
       })
     },
     showImportResult (id) {
-      var source = new EventSource(`api/device-instance/import-result/${id}`)
+      var source = new EventSource(`api/device/import-result/${id}`)
       source.onmessage = (e) => {
         const res = JSON.parse(e.data)
         if (res.success) {

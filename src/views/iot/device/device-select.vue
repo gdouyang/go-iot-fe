@@ -30,7 +30,7 @@
           </a-row>
         </a-form>
       </div>
-      <PageTable ref="tb" url="device-instance/page" :columns="columns" rowKey="id">
+      <PageTable ref="tb" url="device/page" :columns="columns" rowKey="id">
         <span slot="state" slot-scope="text, record">
           {{ record.state && record.state.text }}
         </span>
