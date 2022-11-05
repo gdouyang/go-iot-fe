@@ -35,18 +35,11 @@ export default {
   },
   data () {
     return {
-      data: _.cloneDeep(defaultHttpAddObj),
-      accessIp: null
+      data: _.cloneDeep(defaultHttpAddObj)
     }
   },
   created () {
     this.getData()
-    const sysConfig = this.$store.getters.sysConfig
-    if (sysConfig && sysConfig.accessIp) {
-      this.accessIp = sysConfig.accessIp
-    } else {
-      this.accessIp = '127.0.0.1'
-    }
   },
   computed: {
     accessAddress () {

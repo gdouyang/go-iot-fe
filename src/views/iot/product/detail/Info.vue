@@ -1,16 +1,12 @@
 <template>
   <div>
     <a-card :bordered="false" :style="{marginBottom: '20px'}">
-      <a-descriptions :style="{marginBottom: 20}" bordered :column="3" size="small">
+      <a-descriptions :style="{marginBottom: 20}" bordered :column="2" size="small">
         <span slot="title">
           产品信息
           <a-button icon="edit" :style="{marginLeft: 20}" type="link" @click="openBasicInfo">编辑</a-button>
         </span>
         <a-descriptions-item label="产品ID" :span="1">{{ data.id }}</a-descriptions-item>
-        <!-- <a-descriptions-item label="所属品类" :span="1">{{ data.classifiedName }}</a-descriptions-item> -->
-        <!-- <a-descriptions-item label="消息协议" :span="1">{{ data.protocolName || data.protocol }}</a-descriptions-item> -->
-        <!-- <a-descriptions-item label="连接协议" :span="1">{{ data.transportProtocol }}</a-descriptions-item> -->
-        <!-- <a-descriptions-item label="设备类型" :span="2">{{ data.deviceType.text }}</a-descriptions-item> -->
         <a-descriptions-item label="说明" :span="3">{{ data.desc }}</a-descriptions-item>
       </a-descriptions>
       <Network

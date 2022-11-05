@@ -33,27 +33,13 @@ export default {
   },
   data () {
     return {
-      data: _.cloneDeep(defaultMqttAddObj),
-      accessIp: null
+      data: _.cloneDeep(defaultMqttAddObj)
     }
   },
   created () {
     this.getData()
-    const sysConfig = this.$store.getters.sysConfig
-    if (sysConfig && sysConfig.accessIp) {
-      this.accessIp = sysConfig.accessIp
-    } else {
-      this.accessIp = '127.0.0.1'
-    }
   },
   computed: {
-    accessAddress () {
-      const port = _.get(this.data, 'port', '')
-      if (!port) {
-        return ''
-      }
-      return this.accessIp + ':' + port
-    }
   },
   methods: {
     getData () {

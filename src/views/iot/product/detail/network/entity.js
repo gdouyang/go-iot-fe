@@ -17,14 +17,14 @@ const defaultTcpAddObj = {
 }
 
 function parserType (type) {
-  if (type === '') {
-    return '不处理'
-  } else if (type === 'Delimited') {
+  if (type === 'Delimited') {
     return '分隔符'
   } else if (type === 'FixLength') {
     return '固定长度'
   } else if (type === 'SplitFunc') {
     return '自定义脚本'
+  } else {
+    return '不处理'
   }
 }
 

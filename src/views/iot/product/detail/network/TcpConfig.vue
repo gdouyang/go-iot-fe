@@ -6,8 +6,8 @@
         <a-button icon="edit" :style="{marginLeft: 20}" type="link" @click="openAdd">编辑</a-button>
       </span>
       <a-descriptions-item label="开启SSL" :span="1">{{ data.configuration.useTLS ? '是' : '否' }}</a-descriptions-item>
-      <a-descriptions-item label="解析方式" :span="1">{{ parserType(data.configuration.parserType) }}</a-descriptions-item>
-      <a-descriptions-item label="连接地址" :span="1">{{ accessAddress }}</a-descriptions-item>
+      <a-descriptions-item label="解析方式" :span="1">{{ parserType(data.configuration.delimeter.type) }}</a-descriptions-item>
+      <a-descriptions-item label="连接地址" :span="2">{{ accessAddress }}</a-descriptions-item>
     </a-descriptions>
     <TcpConfigAdd ref="TcpConfigAdd" @success="getData"/>
   </div>
@@ -34,27 +34,13 @@ export default {
   },
   data () {
     return {
-      data: _.cloneDeep(defaultTcpAddObj),
-      accessIp: null
+      data: _.cloneDeep(defaultTcpAddObj)
     }
   },
   created () {
     this.getData()
-    const sysConfig = this.$store.getters.sysConfig
-    if (sysConfig && sysConfig.accessIp) {
-      this.accessIp = sysConfig.accessIp
-    } else {
-      this.accessIp = '127.0.0.1'
-    }
   },
   computed: {
-    accessAddress () {
-      const port = _.get(this.data, 'configuration.port', '')
-      if (!port) {
-        return ''
-      }
-      return this.accessIp + ':' + port
-    }
   },
   methods: {
     parserType (type) {

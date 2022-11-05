@@ -35,26 +35,19 @@ export default {
   },
   data () {
     return {
-      data: _.cloneDeep(defaultWebSocketAddObj),
-      accessIp: null
+      data: _.cloneDeep(defaultWebSocketAddObj)
     }
   },
   created () {
     this.getData()
-    const sysConfig = this.$store.getters.sysConfig
-    if (sysConfig && sysConfig.accessIp) {
-      this.accessIp = sysConfig.accessIp
-    } else {
-      this.accessIp = '127.0.0.1'
-    }
   },
   computed: {
     accessAddress () {
-      const port = _.get(this.data, 'configuration.port', '')
+      const port = _.get(this.data, 'port', '')
       if (!port) {
         return ''
       }
-      const ssl = _.get(this.data, 'configuration.ssl', false)
+      const ssl = _.get(this.data, 'configuration.useTLS', false)
       const address = (ssl ? 'wss://' : 'ws://') + this.accessIp + ':' + port
       const routers = _.get(this.data, 'configuration.routers', [])
       if (!_.isEmpty(routers)) {
