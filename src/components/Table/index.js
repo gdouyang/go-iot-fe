@@ -86,12 +86,6 @@ export default {
     method: {
       type: String,
       default: 'post'
-    },
-    pagination: {
-      current: 1,
-      pageSize: 10,
-      showSizeChanger: true,
-      hideOnSinglePage: true
     }
   }),
   watch: {
@@ -228,7 +222,7 @@ export default {
           }
           this.localPagination = this.showPagination && Object.assign({}, this.localPagination, {
             current: r.pageNum, // 返回结果中的当前分页数
-            total: r.total, // 返回结果中的总记录数
+            total: r.totalCount, // 返回结果中的总记录数
             showSizeChanger: this.showSizeChanger,
             pageSize: (pagination && pagination.pageSize) || this.localPagination.pageSize
           }) || false
