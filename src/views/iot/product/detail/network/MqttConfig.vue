@@ -5,10 +5,8 @@
         MQTT网络配置
         <a-button icon="edit" :style="{marginLeft: 20}" type="link" @click="openAdd">编辑</a-button>
       </span>
-      <a-descriptions-item label="开启SSL" :span="1">{{ data.configuration.ssl ? '是' : '否' }}</a-descriptions-item>
+      <a-descriptions-item label="开启SSL" :span="1">{{ data.configuration.useTLS ? '是' : '否' }}</a-descriptions-item>
       <a-descriptions-item label="连接地址" :span="1">{{ accessAddress }}</a-descriptions-item>
-      <a-descriptions-item label="最大消息长度" :span="1">{{ data.configuration.maxMessageSize }}</a-descriptions-item>
-      <a-descriptions-item label="说明" :span="1">{{ data.description }}</a-descriptions-item>
     </a-descriptions>
     <MqttConfigAdd ref="MqttConfigAdd" @success="getData"/>
   </div>
@@ -19,6 +17,7 @@
 import MqttConfigAdd from './MqttConfigAdd.vue'
 import { defaultMqttAddObj } from './entity.js'
 import _ from 'lodash'
+import Base from './base.vue'
 
 export default {
   name: 'MqttConfig',
@@ -28,6 +27,7 @@ export default {
       default: null
     }
   },
+  mixins: [ Base ],
   components: {
     MqttConfigAdd
   },
@@ -48,7 +48,7 @@ export default {
   },
   computed: {
     accessAddress () {
-      const port = _.get(this.data, 'configuration.port', '')
+      const port = _.get(this.data, 'port', '')
       if (!port) {
         return ''
       }
@@ -57,13 +57,9 @@ export default {
   },
   methods: {
     getData () {
-      if (!this.productId) {
-        this.$message.error('请指定产品ID')
-        return
-      }
-      this.$http.get(`network/config/${this.productId}`)
+      this.getNetwork(this.productId, defaultMqttAddObj)
       .then(data => {
-        this.data = data.result || _.cloneDeep(defaultMqttAddObj)
+        this.data = data
       })
     },
     openAdd () {

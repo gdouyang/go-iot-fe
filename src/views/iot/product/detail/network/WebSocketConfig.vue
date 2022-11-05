@@ -5,11 +5,10 @@
         WebSocket网络配置
         <a-button icon="edit" :style="{marginLeft: 20}" type="link" @click="openAdd">编辑</a-button>
       </span>
-      <a-descriptions-item label="开启SSL" :span="1">{{ data.configuration.ssl ? '是' : '否' }}</a-descriptions-item>
+      <a-descriptions-item label="开启SSL" :span="1">{{ data.configuration.useTLS ? '是' : '否' }}</a-descriptions-item>
       <a-descriptions-item label="连接地址" :span="1">
         <div v-for="a in accessAddress" :key="a">{{ a }}</div>
       </a-descriptions-item>
-      <a-descriptions-item label="说明" :span="1">{{ data.description }}</a-descriptions-item>
     </a-descriptions>
     <WebSocketConfigAdd ref="WebSocketConfigAdd" @success="getData"/>
   </div>
@@ -20,6 +19,7 @@
 import WebSocketConfigAdd from './WebSocketConfigAdd.vue'
 import { defaultWebSocketAddObj } from './entity.js'
 import _ from 'lodash'
+import Base from './base.vue'
 
 export default {
   name: 'MqttConfig',
@@ -29,6 +29,7 @@ export default {
       default: null
     }
   },
+  mixins: [ Base ],
   components: {
     WebSocketConfigAdd
   },
@@ -68,13 +69,9 @@ export default {
   },
   methods: {
     getData () {
-      if (!this.productId) {
-        this.$message.error('请指定产品ID')
-        return
-      }
-      this.$http.get(`network/config/${this.productId}`)
+      this.getNetwork(this.productId, defaultWebSocketAddObj)
       .then(data => {
-        this.data = data.result || _.cloneDeep(defaultWebSocketAddObj)
+        this.data = data
       })
     },
     openAdd () {

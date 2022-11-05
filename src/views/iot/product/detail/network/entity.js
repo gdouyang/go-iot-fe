@@ -2,30 +2,28 @@ const defaultTcpAddObj = {
   id: null,
   name: '',
   type: 'TCP_SERVER',
+  productId: '',
   configuration: {
-    ssl: false,
-    certId: null,
+    useTLS: false,
+    certificate: null,
     host: '0.0.0.0',
     port: '',
-    parserType: '',
-    parserConfiguration: {
-      delimited: null,
-      lang: 'javascript',
-      script: '',
-      size: null
+    delimeter: {
+      type: null, // Delimited, FixLength
+      splitFunc: null,
+      length: null
     }
-  },
-  description: null
+  }
 }
 
 function parserType (type) {
-  if (type === 'DIRECT') {
+  if (type === '') {
     return '不处理'
-  } else if (type === 'delimited') {
+  } else if (type === 'Delimited') {
     return '分隔符'
-  } else if (type === 'fixed_length') {
+  } else if (type === 'FixLength') {
     return '固定长度'
-  } else if (type === 'script') {
+  } else if (type === 'SplitFunc') {
     return '自定义脚本'
   }
 }
@@ -33,49 +31,42 @@ function parserType (type) {
 const defaultMqttAddObj = {
   id: null,
   name: '',
-  type: 'MQTT_SERVER',
+  type: 'MQTT_BROKER',
+  productId: '',
   configuration: {
-    ssl: false,
-    certId: null,
+    useTLS: false,
+    certificate: null,
     host: '0.0.0.0',
-    port: '',
-    instance: 10,
-    maxMessageSize: 8096,
-    productId: ''
-  },
-  description: null
+    port: ''
+  }
 }
 
 const defaultWebSocketAddObj = {
   id: null,
   name: '',
-  type: 'WEB_SOCKET_SERVER',
+  type: 'WEBSOCKET_SERVER',
+  productId: '',
   configuration: {
-    ssl: false,
-    certId: null,
+    useTLS: false,
+    certificate: null,
     host: '0.0.0.0',
     port: '',
-    instance: 10,
-    productId: '',
     routers: [{ id: 1, url: '', protocol: '' }]
-  },
-  description: null
+  }
 }
 
 const defaultHttpAddObj = {
   id: null,
   name: '',
   type: 'HTTP_SERVER',
+  productId: '',
   configuration: {
-    ssl: false,
-    certId: null,
+    useTLS: false,
+    certificate: null,
     host: '0.0.0.0',
     port: '',
-    instance: 10,
-    productId: '',
     routers: [{ id: 1, url: '', protocol: '' }]
-  },
-  description: null
+  }
 }
 
 export { defaultTcpAddObj, parserType, defaultMqttAddObj, defaultWebSocketAddObj, defaultHttpAddObj }

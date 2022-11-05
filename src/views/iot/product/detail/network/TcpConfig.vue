@@ -5,10 +5,9 @@
         TCP网络配置
         <a-button icon="edit" :style="{marginLeft: 20}" type="link" @click="openAdd">编辑</a-button>
       </span>
-      <a-descriptions-item label="开启SSL" :span="1">{{ data.configuration.ssl ? '是' : '否' }}</a-descriptions-item>
+      <a-descriptions-item label="开启SSL" :span="1">{{ data.configuration.useTLS ? '是' : '否' }}</a-descriptions-item>
       <a-descriptions-item label="解析方式" :span="1">{{ parserType(data.configuration.parserType) }}</a-descriptions-item>
       <a-descriptions-item label="连接地址" :span="1">{{ accessAddress }}</a-descriptions-item>
-      <a-descriptions-item label="说明" :span="1">{{ data.description }}</a-descriptions-item>
     </a-descriptions>
     <TcpConfigAdd ref="TcpConfigAdd" @success="getData"/>
   </div>
@@ -19,6 +18,7 @@
 import TcpConfigAdd from './TcpConfigAdd.vue'
 import { defaultTcpAddObj, parserType } from './entity.js'
 import _ from 'lodash'
+import Base from './base.vue'
 
 export default {
   name: 'TcpConfig',
@@ -28,6 +28,7 @@ export default {
       default: null
     }
   },
+  mixins: [ Base ],
   components: {
     TcpConfigAdd
   },
@@ -60,13 +61,9 @@ export default {
       return parserType(type)
     },
     getData () {
-      if (!this.productId) {
-        this.$message.error('请指定产品ID')
-        return
-      }
-      this.$http.get(`network/config/${this.productId}`)
+      this.getNetwork(this.productId, defaultTcpAddObj)
       .then(data => {
-        this.data = data.result || _.cloneDeep(defaultTcpAddObj)
+        this.data = data
       })
     },
     openAdd () {

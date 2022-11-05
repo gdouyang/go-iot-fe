@@ -14,6 +14,7 @@
         <a-descriptions-item label="说明" :span="3">{{ data.desc }}</a-descriptions-item>
       </a-descriptions>
       <Network
+        v-if="data.id"
         :product="data"></Network>
       <div style="width: 100%;margin-top: 10px;">
         <a-descriptions :style="{marginBottom: 20}" size="small">

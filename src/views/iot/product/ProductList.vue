@@ -32,9 +32,9 @@
           <span slot="action" slot-scope="text, record">
             <a size="small" @click="detail(record.id)">查看</a>
             <a-divider type="vertical" />
-            <a size="small" @click="unDeploy(record.id)" v-if="record.state === 1">停用</a>
+            <a size="small" @click="unDeploy(record.id)" v-if="record.state">停用</a>
             <a size="small" @click="deploy(record.id)" v-else>发布</a>
-            <template v-if="record.state === 0">
+            <template v-if="!record.state">
               <a-divider type="vertical" />
               <a size="small" @click="deleteById(record.id)">删除</a>
             </template>

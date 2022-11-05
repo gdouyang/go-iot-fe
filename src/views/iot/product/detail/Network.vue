@@ -1,15 +1,9 @@
 <template>
   <div>
-    <a-descriptions :style="{marginBottom: 20}" bordered :column="3" size="small">
-      <span slot="title">
-        网络配置
-        <a-button icon="edit" :style="{marginLeft: 20}" type="link" @click="openBasicInfo">编辑</a-button>
-      </span>
-      <TcpConfig v-if="network.type === 'TCP_SERVER'" :productId="data.id" />
-      <MqttConfig v-if="network.type === 'MQTT_BROKER'" :productId="data.id" />
-      <WebSocketConfig v-if="network.type === 'WEBSOCKET_SERVER'" :productId="data.id" />
-      <HttpConfig v-if="network.type === 'HTTP_SERVER'" :productId="data.id" />
-    </a-descriptions>
+    <TcpConfig v-if="network.type === 'TCP_SERVER'" :productId="product.id" />
+    <MqttConfig v-if="network.type === 'MQTT_BROKER'" :productId="product.id" />
+    <WebSocketConfig v-if="network.type === 'WEBSOCKET_SERVER'" :productId="product.id" />
+    <HttpConfig v-if="network.type === 'HTTP_SERVER'" :productId="product.id" />
   </div>
 </template>
 
@@ -49,7 +43,7 @@ export default {
   },
   methods: {
     GetData () {
-      const { id } = this.data
+      const { id } = this.product
       this.getNetwork(id).then(data => {
         if (data.success) {
           this.network = data.result || {}
