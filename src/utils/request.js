@@ -35,7 +35,8 @@ const errorHandler = (error) => {
         message: '未登录',
         description: '请先登录'
       })
-      if (token) {
+      if (token && !window.$isReload) {
+        window.$isReload = true
         store.dispatch('ClearToken').then(() => {
           setTimeout(() => {
             window.location.reload()

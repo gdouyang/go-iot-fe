@@ -164,8 +164,8 @@ export default {
         metadata = { events: item.events, properties: item.properties, functions: item.functions, tags: item.tags }
       }
       const basicInfo = this.detailData
-      const data = { ...basicInfo, metadata: JSON.stringify(metadata) }
-      this.$http.put(`/product`, data)
+      const data = { id: basicInfo.id, metadata: JSON.stringify(metadata) }
+      this.$http.put(`/product/${data.id}/modify-tsl`, data)
       .then((re) => {
         if (re.success) {
           this.$message.success('保存成功，如需生效请重新应用配置')
