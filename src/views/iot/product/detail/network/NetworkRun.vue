@@ -1,16 +1,16 @@
 <template>
   <span>
-    <a-badge :color="network.state === 'runing' ? 'green' : 'red'" :text="network.state ? '运行中' : '停止'" style="margin-left: 10px"/>
+    <a-badge :color="isRuning ? 'green' : 'red'" :text="isRuning ? '运行中' : '停止'" style="margin-left: 10px"/>
     <a-popconfirm
       title="确认启动网络服务？"
       @confirm="runNetwork('start')"
-      v-if="network.state !== 'runing'">
+      v-if="!isRuning">
       <a style="font-size: 12px;margin-left: 10px;">启动网络服务</a>
     </a-popconfirm>
     <a-popconfirm
       title="确认停止网络服务？"
       @confirm="runNetwork('stop')"
-      v-if="network.state === 'runing'">
+      v-if="isRuning">
       <a style="font-size: 12px;margin-left: 10px;">停止网络服务</a>
     </a-popconfirm>
   </span>
@@ -38,6 +38,9 @@ export default {
   created () {
   },
   computed: {
+    isRuning () {
+      return this.network.state === 'runing'
+    }
   },
   methods: {
     runNetwork (state) {
