@@ -4,6 +4,7 @@
       <span slot="title">
         TCP网络配置
         <a-button icon="edit" :style="{marginLeft: 20}" type="link" @click="openAdd">编辑</a-button>
+        <NetworkRun :network="data" :productId="productId" @success="getData"/>
       </span>
       <a-descriptions-item label="开启SSL" :span="1">{{ data.configuration.useTLS ? '是' : '否' }}</a-descriptions-item>
       <a-descriptions-item label="解析方式" :span="1">{{ parserType(data.configuration.delimeter.type) }}</a-descriptions-item>

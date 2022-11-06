@@ -1,0 +1,57 @@
+<template>
+  <span>
+    <a-badge :color="network.state === 'runing' ? 'green' : 'red'" :text="network.state ? '运行中' : '停止'" style="margin-left: 10px"/>
+    <a-popconfirm
+      title="确认启动网络服务？"
+      @confirm="runNetwork('start')"
+      v-if="network.state !== 'runing'">
+      <a style="font-size: 12px;margin-left: 10px;">启动网络服务</a>
+    </a-popconfirm>
+    <a-popconfirm
+      title="确认停止网络服务？"
+      @confirm="runNetwork('stop')"
+      v-if="network.state === 'runing'">
+      <a style="font-size: 12px;margin-left: 10px;">停止网络服务</a>
+    </a-popconfirm>
+  </span>
+</template>
+
+<script>
+export default {
+  name: 'NetworkRun',
+  props: {
+    productId: {
+      type: String,
+      default: null
+    },
+    network: {
+      type: Object,
+      default: () => {}
+    }
+  },
+  components: {
+  },
+  data () {
+    return {
+    }
+  },
+  created () {
+  },
+  computed: {
+  },
+  methods: {
+    runNetwork (state) {
+      return this.$http.put(`product/network/${this.productId}/run?state=${state}`).then((resp) => {
+        if (resp.success) {
+          this.$message.success('操作成功')
+          this.$emit('success')
+        }
+        return resp
+      })
+    }
+  }
+}
+</script>
+
+<style lang="less" scoped>
+</style>

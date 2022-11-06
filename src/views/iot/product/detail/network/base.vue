@@ -4,11 +4,14 @@
 
 <script>
 import _ from 'lodash'
+import NetworkRun from './NetworkRun.vue'
+
 export default {
   name: 'NetworConfig',
   props: {
   },
   components: {
+    NetworkRun
   },
   data () {
     return {
