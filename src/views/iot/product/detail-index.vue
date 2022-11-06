@@ -19,7 +19,7 @@
           <a-popconfirm
             title="确认发布？"
             @confirm="deploy"
-            v-if="detailData.state">
+            v-if="!detailData.state">
             <a style="font-size: 12px;margin-left: 10px;">发布</a>
           </a-popconfirm>
           <a-tooltip title="修改物模型后需要重新应用配置" placement="bottom">
@@ -68,9 +68,11 @@ import { PageHeaderWrapper } from '@ant-design-vue/pro-layout'
 import Info from './detail/Info.vue'
 import TSL from './detail/TslIndex.vue'
 import Codec from './detail/Codec.vue'
+import ProductMix from './product-mix.vue'
 
 export default {
-  name: 'InsEditor',
+  name: 'ProductDetialIndex',
+  mixins: [ ProductMix ],
   components: {
     PageHeaderWrapper,
     Info,
@@ -128,20 +130,18 @@ export default {
     },
     unDeploy () {
       const id = this.GetId
-      this.$http.put(`/product/${id}/undeploy`)
+      this.doUndeploy(id)
       .then(data => {
         if (data.success) {
-          this.$message.success('操作成功')
           this.reloadDevice()
         }
       })
     },
     deploy () {
       const id = this.GetId
-      this.$http.put(`/product/${id}/deploy`)
+      this.doDeploy(id)
       .then((data) => {
         if (data.success) {
-          this.$message.success('操作成功')
           this.reloadDevice()
         }
       })

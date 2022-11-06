@@ -52,11 +52,13 @@ import _ from 'lodash'
 // import moment from 'moment'
 import ProductAdd from './modules/product-add.vue'
 import Detail from './detail-index.vue'
+import ProductMix from './product-mix.vue'
 
 const defautSearchObj = {
   name: ''
 }
 export default {
+  mixins: [ ProductMix ],
   components: {
     ProductAdd,
     Detail
@@ -107,19 +109,17 @@ export default {
       this.search()
     },
     deploy (id) {
-      this.$http.post(`product/${id}/deploy`)
+      return this.doDeploy(id)
       .then(data => {
         if (data.success) {
-          this.$message.success('操作成功')
           this.search()
         }
       })
     },
     unDeploy (id) {
-      this.$http.post(`product/${id}/undeploy`)
+      return this.doUndeploy(id)
       .then(data => {
         if (data.success) {
-          this.$message.success('操作成功')
           this.search()
         }
       })
