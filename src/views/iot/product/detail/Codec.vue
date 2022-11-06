@@ -8,7 +8,7 @@
     </a-alert>
     <AceEditor
       ref="AceEditor"
-      v-model="tsl"
+      v-model="script"
       lang="javascript"
       theme="chrome"
       width="900"
@@ -24,8 +24,6 @@
 
     <Dialog
       ref="DemoCodeModal"
-      @confirm="addConfirm"
-      @close="addClose"
       :width="600"
       :showOk="false"
       cancelText="关闭"
@@ -73,7 +71,7 @@ export default {
   },
   data () {
     return {
-      tsl: null,
+      script: null,
       aceOptions: {
         enableBasicAutocompletion: true, // 启用基本自动完成功能
         enableLiveAutocompletion: true, // 启用实时自动完成功能 （比如：智能代码提示）
@@ -98,16 +96,16 @@ export default {
   },
   created () {
     this.open()
-    this.codeTip = this.getTpl().codeTip
   },
   methods: {
     open () {
-      this.tsl = ''
+      this.script = ''
       this.$http.get(`/product/network/${this.id}`)
       .then(data => {
         if (data.success) {
           this.network = data.result
-          this.tsl = this.network.script || this.getTpl().tpl
+          this.script = this.network.script || ''
+          this.codeTip = this.getTpl().codeTip
           this.$nextTick(() => {
             const editor = this.$refs.AceEditor.editor
             editor.setOptions({
@@ -118,13 +116,14 @@ export default {
       })
     },
     getTpl () {
-      if (this.network.type === 'TCP_SERVER' || this.data.type === 'TCP_CLIENT') {
+      var net = this.network
+      if (net.type === 'TCP_SERVER' || net.type === 'TCP_CLIENT') {
         return TcpTpl
-      } else if (this.network.type === 'MQTT_BROKER') {
+      } else if (net.type === 'MQTT_BROKER') {
         return MqttTpl
-      } else if (this.network.type === 'WEBSOCKET_SERVER') {
+      } else if (net.type === 'WEBSOCKET_SERVER') {
         return WebSocketTpl
-      } else if (this.network.type === 'HTTP_SERVER') {
+      } else if (net.type === 'HTTP_SERVER') {
         return HttpTpl
       } else {
         return { tpl: '' }
@@ -132,10 +131,10 @@ export default {
     },
     save () {
       this.$message.destroy()
-      if (!this.tsl) {
+      if (!this.script) {
         this.$message.error('请填写物模型')
       }
-      this.$http.put(`/product/network`, { productId: this.id, script: this.tsl })
+      this.$http.put(`/product/network`, { productId: this.id, script: this.script })
       .then(data => {
         if (data.success) {
           this.$message.success('操作成功')
