@@ -94,6 +94,12 @@ const user = {
           storage.remove(ACCESS_TOKEN)
         })
       })
+    },
+    ClearToken ({ commit }) {
+      commit('SET_TOKEN', '')
+      commit('SET_ROLES', [])
+      storage.remove(ACCESS_TOKEN)
+      return Promise.resolve()
     }
 
   }

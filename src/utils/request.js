@@ -36,7 +36,7 @@ const errorHandler = (error) => {
         description: '请先登录'
       })
       if (token) {
-        store.dispatch('Logout').then(() => {
+        store.dispatch('ClearToken').then(() => {
           setTimeout(() => {
             window.location.reload()
           }, 1500)
