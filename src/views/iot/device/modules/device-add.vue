@@ -37,35 +37,10 @@
           <a-select-option v-for="p in productList" :key="p.id" :value="p.id">{{ p.name }}</a-select-option>
         </a-select>
       </a-form-model-item>
-      <a-form-model-item
-        label="分组"
-        prop="projectId"
-      >
-        <a-select v-model="addObj.projectId" placeholder="分组">
-          <a-select-option v-for="p in projectList" :key="p.id" :value="p.id">{{ p.name }}</a-select-option>
-        </a-select>
-      </a-form-model-item>
-      <!-- <a-form-model-item
-        label="项目"
-        prop="projectId"
-        :rules="[{ required: true, message: '项目不能为空', trigger: 'blur' }]"
-      >
-        <a-select v-model="addObj.projectId" placeholder="项目" @change="projectIdChange">
-          <a-select-option v-for="p in projectList" :key="p.id" :value="p.id">{{ p.name }}</a-select-option>
-        </a-select>
-      </a-form-model-item>
-      <a-form-model-item
-        label="分组"
-        prop="deviceGroupId"
-      >
-        <a-select v-model="addObj.deviceGroupId" placeholder="分组">
-          <a-select-option v-for="p in groupList" :key="p.id" :value="p.id">{{ p.name }}</a-select-option>
-        </a-select>
-      </a-form-model-item> -->
-      <a-form-model-item label="说明" prop="describe">
+      <a-form-model-item label="说明" prop="desc">
         <a-input
           type="textarea"
-          v-model="addObj.describe"
+          v-model="addObj.desc"
           placeholder="说明"
           :maxLength="200"
           show-word-limit></a-input>
@@ -76,7 +51,6 @@
 
 <script>
 import _ from 'lodash'
-import { listAllProject, listByProject } from '@/views/iot/project/service.js'
 const defaultAddObj = {
   id: null,
   name: '',
@@ -108,7 +82,6 @@ export default {
   methods: {
     add () {
       this.isEdit = false
-      this.listAllProject()
       this.listAllProduct().then(() => {
         this.$refs.addModal.open({ title: '新增设备' })
       })
@@ -123,7 +96,6 @@ export default {
         .then((data) => {
           if (data.success) {
             const result = data.result
-            this.listAllProject()
             this.projectIdChange(result.projectId)
             this.listAllProduct().then(() => {
               this.addObj = result
@@ -146,9 +118,9 @@ export default {
         if (valid) {
           let promise = null
           if (this.isEdit) {
-            promise = this.$http.put('device/update', this.addObj)
+            promise = this.$http.put('/device', this.addObj)
           } else {
-            promise = this.$http.post('device/add', this.addObj)
+            promise = this.$http.post('/device', this.addObj)
           }
           promise.then((resp) => {
             if (resp.success) {
@@ -174,16 +146,6 @@ export default {
         if (resp.success) {
           this.productList = resp.result
         }
-      })
-    },
-    listAllProject () {
-      return listAllProject().then(list => {
-        this.projectList = list
-      })
-    },
-    listByProject (projectId) {
-      return listByProject(projectId).then(list => {
-        this.groupList = list
       })
     }
   }

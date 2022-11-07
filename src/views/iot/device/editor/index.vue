@@ -126,11 +126,11 @@ export default {
       return this.$route.query.id
     },
     GetDeviceStatus () {
-      const status = (this.detailData.state && this.detailData.state.value) ? this.detailData.state.value : ''
+      const status = (this.detailData.state) ? this.detailData.state : ''
       return statusMap.get(status)
     },
     GetDeviceStatusText () {
-      return this.detailData.state && this.detailData.state.text
+      return this.detailData.state
     }
   },
   methods: {
@@ -146,7 +146,7 @@ export default {
     },
     getDeviceDetail (id) {
       this.loading = true
-      return this.$http.get(`/device/${id}/detail`)
+      return this.$http.get(`/device/${id}`)
         .then((data) => {
           if (data.success) {
             return data.result
@@ -168,7 +168,7 @@ export default {
     },
     disconnectDevice () {
       const deviceId = this.GetDeviceId
-      this.$http.post(`/device/${deviceId}/disconnect`)
+      this.$http.put(`/device/${deviceId}/disconnect`)
       .then(data => {
         if (data.success) {
           this.$message.success('断开连接成功')
@@ -178,7 +178,7 @@ export default {
     },
     changeDeploy () {
       const deviceId = this.GetDeviceId
-      this.$http.post(`/device/${deviceId}/deploy`)
+      this.$http.put(`/device/${deviceId}/deploy`)
       .then((data) => {
         if (data.success) {
           this.$message.success('激活成功')

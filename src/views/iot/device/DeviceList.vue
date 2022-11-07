@@ -36,9 +36,9 @@
             <a-badge status="default" :text="record.state" v-else-if="record.state == 'offline'" />
             <a-badge status="default" text="--" v-else />
           </span>
-          <span slot="registryTime" slot-scope="text, record">
+          <!-- <span slot="registryTime" slot-scope="text, record">
             {{ $moment(record.registryTime).format('YYYY-MM-DD HH:mm:ss') }}
-          </span>
+          </span> -->
           <span slot="createTime" slot-scope="text, record">
             {{ $moment(record.createTime).format('YYYY-MM-DD HH:mm:ss') }}
           </span>
@@ -47,9 +47,9 @@
             <a-divider type="vertical" />
             <a size="small" @click="edit(record)">修改</a>
             <a-divider type="vertical" />
-            <a size="small" @click="deploy(record.id)" v-if="record.state.value === 'notActive'">激活</a>
+            <a size="small" @click="deploy(record.id)" v-if="record.state === 'notActive'">激活</a>
             <a size="small" @click="unDeploy(record.id)" v-else>停用</a>
-            <template v-if="record.state.value === 'notActive'">
+            <template v-if="record.state === 'notActive'">
               <a-divider type="vertical" />
               <a size="small" @click="remove(record)">删除</a>
             </template>
@@ -87,7 +87,7 @@ export default {
         { title: '名称', dataIndex: 'name' },
         { title: '产品', dataIndex: 'productId' },
         { title: '状态', dataIndex: 'state', scopedSlots: { customRender: 'state' } },
-        { title: '注册时间', dataIndex: 'registryTime', scopedSlots: { customRender: 'registryTime' } },
+        // { title: '注册时间', dataIndex: 'registryTime', scopedSlots: { customRender: 'registryTime' } },
         { title: '创建时间', dataIndex: 'createTime', scopedSlots: { customRender: 'createTime' } },
         { title: '操作', dataIndex: 'action', minWidth: 110, scopedSlots: { customRender: 'action' } }
       ],
