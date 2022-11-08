@@ -51,6 +51,7 @@
 
 <script>
 import _ from 'lodash'
+import { get, getProductList, addDevice, updateDevice } from '@/views/iot/device/api.js'
 const defaultAddObj = {
   id: null,
   name: '',
@@ -88,21 +89,16 @@ export default {
     },
     edit (row) {
       this.isEdit = true
-      this.$http
-        .request({
-          url: `device/${row.id}`,
-          method: 'get'
-        })
-        .then((data) => {
-          if (data.success) {
-            const result = data.result
-            this.projectIdChange(result.projectId)
-            this.listAllProduct().then(() => {
-              this.addObj = result
-              this.$refs.addModal.open({ title: '修改设备' })
-            })
-          }
-        })
+      get(row.id).then((data) => {
+        if (data.success) {
+          const result = data.result
+          this.projectIdChange(result.projectId)
+          this.listAllProduct().then(() => {
+            this.addObj = result
+            this.$refs.addModal.open({ title: '修改设备' })
+          })
+        }
+      })
     },
     projectIdChange (value) {
       if (value) {
@@ -118,9 +114,9 @@ export default {
         if (valid) {
           let promise = null
           if (this.isEdit) {
-            promise = this.$http.put('/device', this.addObj)
+            promise = updateDevice(this.addObj)
           } else {
-            promise = this.$http.post('/device', this.addObj)
+            promise = addDevice(this.addObj)
           }
           promise.then((resp) => {
             if (resp.success) {
@@ -141,8 +137,7 @@ export default {
       }
     },
     listAllProduct () {
-      return this.$http.get('/product/list')
-      .then((resp) => {
+      return getProductList().then((resp) => {
         if (resp.success) {
           this.productList = resp.result
         }

@@ -71,6 +71,7 @@
 
 <script>
 import { PageHeaderWrapper } from '@ant-design-vue/pro-layout'
+import { get, disconnect, deploy } from '@/views/iot/device/api.js'
 import Info from './detail/Info'
 import Status from './detail/Status'
 import Function from './detail/Function'
@@ -146,7 +147,7 @@ export default {
     },
     getDeviceDetail (id) {
       this.loading = true
-      return this.$http.get(`/device/${id}`)
+      return get(id)
         .then((data) => {
           if (data.success) {
             return data.result
@@ -168,8 +169,7 @@ export default {
     },
     disconnectDevice () {
       const deviceId = this.GetDeviceId
-      this.$http.put(`/device/${deviceId}/disconnect`)
-      .then(data => {
+      disconnect(deviceId).then(data => {
         if (data.success) {
           this.$message.success('断开连接成功')
           this.reloadDevice()
@@ -178,8 +178,7 @@ export default {
     },
     changeDeploy () {
       const deviceId = this.GetDeviceId
-      this.$http.put(`/device/${deviceId}/deploy`)
-      .then((data) => {
+      deploy(deviceId).then((data) => {
         if (data.success) {
           this.$message.success('激活成功')
           this.reloadDevice()

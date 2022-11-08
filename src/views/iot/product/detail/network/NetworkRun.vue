@@ -44,7 +44,7 @@ export default {
   },
   methods: {
     runNetwork (state) {
-      return this.$http.put(`product/network/${this.productId}/run?state=${state}`).then((resp) => {
+      return this.$http.post(`product/network/${this.productId}/run?state=${state}`).then((resp) => {
         if (resp.success) {
           this.$message.success('操作成功')
           this.$emit('success')

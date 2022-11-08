@@ -20,6 +20,7 @@
 </template>
 
 <script>
+import { cmdInvoke } from '@/views/iot/device/api.js'
 import FunctionForm from './functions/FunctionForm.vue'
 export default {
   name: 'DeviceFunction',
@@ -57,14 +58,15 @@ export default {
       const deviceId = this.device.id
       const refId = 'funcForm-' + functionId
       const ref = this.$refs[refId]
-      let params = {}
-      if (ref) {
-        params = ref[0].getData()
+      const params = {
+        functionId: functionId
       }
-      this.$http.post(`/device/${deviceId}/function/${functionId}`, params)
-      .then(response => {
+      if (ref) {
+        params.data = ref[0].getData()
+      }
+      cmdInvoke(deviceId, params).then(resp => {
         // const tempResult = response.result
-        if (response.status === 200) {
+        if (resp.status === 200) {
           // typeof tempResult === 'object' ?
           //   setFieldsValue({logs: JSON.stringify(tempResult)}) :
           //   setFieldsValue({logs: tempResult})

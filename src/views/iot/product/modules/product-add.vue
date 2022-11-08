@@ -71,7 +71,7 @@
 
 <script>
 import _ from 'lodash'
-
+import { get, addProduct, updateProduct } from '@/views/iot/product/api.js'
 const defaultAddObj = {
   id: null,
   name: '',
@@ -106,8 +106,7 @@ export default {
     },
     edit (row) {
       this.isEdit = true
-      this.$http.get(`product/${row.id}`)
-        .then((data) => {
+      get(row.id).then((data) => {
           if (data.success) {
             const result = data.result
             this.addObj.id = result.id
@@ -129,11 +128,11 @@ export default {
           const saveData = _.cloneDeep(this.addObj)
           if (this.isEdit) {
             delete saveData.metadata
-            promise = this.$http.put(`product/${saveData.id}`, saveData)
+            promise = updateProduct(saveData.id, saveData)
           } else {
             saveData.state = false
             saveData.metadata = JSON.stringify(this.addObj.metadata)
-            promise = this.$http.post('product', saveData)
+            promise = addProduct(saveData)
           }
           promise.then((resp) => {
             if (resp.success) {

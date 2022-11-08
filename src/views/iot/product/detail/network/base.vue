@@ -4,6 +4,7 @@
 
 <script>
 import _ from 'lodash'
+import { getNetwork, updateNetwork } from '@/views/iot/product/api.js'
 import NetworkRun from './NetworkRun.vue'
 
 export default {
@@ -41,8 +42,7 @@ export default {
         this.$message.error('请指定产品ID')
         return Promise.reject(new Error('请指定产品ID'))
       }
-      return this.$http.get(`product/network/${productId}`)
-      .then(data => {
+      return getNetwork(productId).then(data => {
         var result = null
         if (data.result) {
           if (data.result.configuration) {
@@ -62,7 +62,7 @@ export default {
         saveData.configuration.certificate = null
       }
       saveData.configuration = JSON.stringify(saveData.configuration)
-      return this.$http.put(`product/network`, saveData).then((resp) => {
+      return updateNetwork(saveData).then((resp) => {
         return resp
       })
     }

@@ -50,15 +50,15 @@
 <script>
 import _ from 'lodash'
 // import moment from 'moment'
+import { deploy, undeploy, remove } from '@/views/iot/product/api.js'
 import ProductAdd from './modules/product-add.vue'
 import Detail from './detail-index.vue'
-import ProductMix from './product-mix.vue'
 
 const defautSearchObj = {
   name: ''
 }
 export default {
-  mixins: [ ProductMix ],
+  mixins: [ ],
   components: {
     ProductAdd,
     Detail
@@ -109,17 +109,17 @@ export default {
       this.search()
     },
     deploy (id) {
-      return this.doDeploy(id)
-      .then(data => {
+      return deploy(id).then(data => {
         if (data.success) {
+          this.$message.success('操作成功')
           this.search()
         }
       })
     },
     unDeploy (id) {
-      return this.doUndeploy(id)
-      .then(data => {
+      return undeploy(id).then(data => {
         if (data.success) {
+          this.$message.success('操作成功')
           this.search()
         }
       })
@@ -129,8 +129,7 @@ export default {
         title: '确认',
         content: '确定要删除吗？',
         onOk: () => {
-          this.$http.delete(`product/${id}`)
-          .then(data => {
+          remove(id).then(data => {
             if (data.success) {
               this.$message.success('操作成功')
               this.search()

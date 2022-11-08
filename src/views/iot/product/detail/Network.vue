@@ -10,13 +10,14 @@
 <script>
 // import moment from 'moment'
 // import _ from 'lodash'
+import { getNetwork } from '@/views/iot/product/api.js'
 import TcpConfig from './network/TcpConfig.vue'
 import MqttConfig from './network/MqttConfig.vue'
 import WebSocketConfig from './network/WebSocketConfig.vue'
 import HttpConfig from './network/HttpConfig.vue'
 
 export default {
-  name: 'InsEditorDetail',
+  name: 'Network',
   props: {
     product: {
       type: Object,
@@ -44,14 +45,11 @@ export default {
   methods: {
     GetData () {
       const { id } = this.product
-      this.getNetwork(id).then(data => {
+      getNetwork(id).then(data => {
         if (data.success) {
           this.network = data.result || {}
         }
       })
-    },
-    getNetwork (id) {
-      return this.$http.get(`/product/network/${id}`)
     },
     refresh () {
       this.$emit('refresh')

@@ -137,7 +137,7 @@ export default {
     },
     GetRegisterTime () {
       if (this.data.state) {
-        return this.data.state.value !== 'notActive'
+        return this.data.state !== 'notActive'
           ? moment(this.data.registerTime).format('YYYY-MM-DD HH:mm:ss')
           : '/'
       }
@@ -145,7 +145,7 @@ export default {
     },
     GetLastOnlineTime () {
       if (this.data.state) {
-        return this.data.state.value !== 'notActive'
+        return this.data.state !== 'notActive'
           ? moment(this.data.onlineTime).format('YYYY-MM-DD HH:mm:ss')
           : '/'
       }

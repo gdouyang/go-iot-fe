@@ -64,15 +64,15 @@
 </template>
 
 <script>
+import { deploy, undeploy, get, modifyTsl } from '@/views/iot/product/api.js'
 import { PageHeaderWrapper } from '@ant-design-vue/pro-layout'
 import Info from './detail/Info.vue'
 import TSL from './detail/TslIndex.vue'
 import Codec from './detail/Codec.vue'
-import ProductMix from './product-mix.vue'
 
 export default {
   name: 'ProductDetialIndex',
-  mixins: [ ProductMix ],
+  mixins: [ ],
   components: {
     PageHeaderWrapper,
     Info,
@@ -104,7 +104,7 @@ export default {
     },
     getDetail (id) {
       this.loading = true
-      return this.$http.get(`/product/${id}`)
+      return get(id)
         .then((data) => {
           if (data.success) {
             return data.result
@@ -130,18 +130,18 @@ export default {
     },
     unDeploy () {
       const id = this.GetId
-      this.doUndeploy(id)
-      .then(data => {
+      undeploy(id).then(data => {
         if (data.success) {
+          this.$message.success('操作成功')
           this.reloadDevice()
         }
       })
     },
     deploy () {
       const id = this.GetId
-      this.doDeploy(id)
-      .then((data) => {
+      deploy(id).then((data) => {
         if (data.success) {
+          this.$message.success('操作成功')
           this.reloadDevice()
         }
       })
@@ -165,8 +165,7 @@ export default {
       }
       const basicInfo = this.detailData
       const data = { id: basicInfo.id, metadata: JSON.stringify(metadata) }
-      this.$http.put(`/product/${data.id}/modify-tsl`, data)
-      .then((re) => {
+      modifyTsl(data.id, data).then((re) => {
         if (re.success) {
           this.$message.success('保存成功，如需生效请重新应用配置')
           // if (!onlySave) {
