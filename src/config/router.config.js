@@ -93,22 +93,6 @@ export const asyncRouterMap = [
           }
         ]
       },
-      // 项目
-      // {
-      //   path: '/project',
-      //   name: 'projectPage',
-      //   component: RouteView,
-      //   redirect: '/project/project-list',
-      //   meta: { title: '项目管理', icon: 'setting', permission: [ 'sys' ] },
-      //   children: [
-      //     {
-      //       path: '/project/group-list',
-      //       name: 'GroupList',
-      //       component: () => import('@/views/iot/project/DeviceGroupList'),
-      //       meta: { title: '分组', keepAlive: true }
-      //     },
-      //   ]
-      // },
       // iot
       {
         path: '/iot',
@@ -117,18 +101,6 @@ export const asyncRouterMap = [
         redirect: '/project/group-list',
         meta: { title: '设备管理', icon: 'setting' },
         children: [
-          {
-            path: '/project/group-list',
-            name: 'ProjectList',
-            component: () => import('@/views/iot/project/ProjectList'),
-            meta: { title: '分组', keepAlive: true, permission: [ 'group-mgr' ] }
-          },
-          {
-            path: '/project/datapush-list',
-            name: 'DataPushList',
-            component: () => import('@/views/iot/project/ProjectDataPushList'),
-            meta: { title: '推送', keepAlive: true, permission: [ 'datapush-mgr' ] }
-          },
           {
             path: '/iot/product-list',
             name: 'ProductList',
