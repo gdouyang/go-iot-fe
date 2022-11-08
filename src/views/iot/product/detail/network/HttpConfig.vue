@@ -20,7 +20,7 @@
 import HttpConfigAdd from './HttpConfigAdd.vue'
 import { defaultHttpAddObj } from './entity.js'
 import _ from 'lodash'
-import Base from './base.vue'
+import Base from './Base.vue'
 
 export default {
   name: 'MqttConfig',

@@ -65,9 +65,9 @@
 <script>
 // import moment from 'moment'
 // import _ from 'lodash'
-import ProductAdd from '../modules/product-add.vue'
-import Configuration from './configuration.vue'
-import ConfigurationAdd from './configurationAdd.vue'
+import ProductAdd from '../modules/ProductAdd.vue'
+import Configuration from './Configuration.vue'
+import ConfigurationAdd from './ConfigurationAdd.vue'
 import Network from './Network.vue'
 
 export default {

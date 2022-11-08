@@ -20,7 +20,7 @@
 import WebSocketConfigAdd from './WebSocketConfigAdd.vue'
 import { defaultWebSocketAddObj } from './entity.js'
 import _ from 'lodash'
-import Base from './base.vue'
+import Base from './Base.vue'
 
 export default {
   name: 'MqttConfig',

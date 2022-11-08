@@ -49,7 +49,7 @@
 // import moment from 'moment'
 import _ from 'lodash'
 import { defaultWebSocketAddObj } from './entity.js'
-import Base from './base.vue'
+import Base from './Base.vue'
 
 export default {
   name: 'WebSocketConfigAdd',

@@ -19,7 +19,7 @@
 import TcpConfigAdd from './TcpConfigAdd.vue'
 import { defaultTcpAddObj, parserType } from './entity.js'
 import _ from 'lodash'
-import Base from './base.vue'
+import Base from './Base.vue'
 
 export default {
   name: 'TcpConfig',

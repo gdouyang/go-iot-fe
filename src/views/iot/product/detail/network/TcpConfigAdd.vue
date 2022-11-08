@@ -81,7 +81,7 @@ import 'brace/theme/chrome'
 // import moment from 'moment'
 import _ from 'lodash'
 import { defaultTcpAddObj } from './entity.js'
-import Base from './base.vue'
+import Base from './Base.vue'
 
 export default {
   name: 'TcpConfigAdd',

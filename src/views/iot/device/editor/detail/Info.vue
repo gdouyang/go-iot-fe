@@ -100,8 +100,8 @@
 <script>
 import moment from 'moment'
 import { deploy, updateDevice, getConfigMetadata, configReset, updateLocation } from '@/views/iot/device/api.js'
-import DeviceAdd from '../../modules/device-add'
-import Configuration from './configuration'
+import DeviceAdd from '../../modules/DeviceAdd.vue'
+import Configuration from './Configuration.vue'
 import LocationConfig from '@/components/tools/LocationConfig.vue'
 
 export default {

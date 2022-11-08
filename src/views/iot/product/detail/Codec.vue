@@ -49,10 +49,10 @@ import 'brace/mode/javascript'
 import 'brace/theme/chrome'
 // import 'brace/snippets/javascript'
 // import _ from 'lodash'
-import TcpTpl from './codec/tcp-tpl.js'
-import MqttTpl from './codec/mqtt-tpl.js'
-import WebSocketTpl from './codec/websocket-tpl.js'
-import HttpTpl from './codec/http-tpl.js'
+import TcpTpl from './codec/TcpTpl.js'
+import MqttTpl from './codec/MqttTpl.js'
+import WebSocketTpl from './codec/WebsocketTpl.js'
+import HttpTpl from './codec/HttpTpl.js'
 
 export default {
   name: 'Codec1',

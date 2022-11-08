@@ -51,8 +51,8 @@
 import _ from 'lodash'
 // import moment from 'moment'
 import { deploy, undeploy, remove } from '@/views/iot/product/api.js'
-import ProductAdd from './modules/product-add.vue'
-import Detail from './detail-index.vue'
+import ProductAdd from './modules/ProductAdd.vue'
+import Detail from './DetailIndex.vue'
 
 const defautSearchObj = {
   name: ''

@@ -28,7 +28,7 @@
 import _ from 'lodash'
 import BaiduMap from 'vue-baidu-map/components/map/Map.vue'
 import BmGeolocation from 'vue-baidu-map/components/controls/Geolocation.vue'
-import DeviceDetail from './editor/index.vue'
+import DeviceDetail from './editor/Index.vue'
 
 const defautSearchObj = {
   name: ''

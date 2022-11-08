@@ -66,9 +66,9 @@
 <script>
 import _ from 'lodash'
 import { remove, undeploy, deploy } from '@/views/iot/device/api.js'
-import DeviceAdd from './modules/device-add'
-import DeviceImport from './modules/device-import'
-import DeviceDetail from './editor/index.vue'
+import DeviceAdd from './modules/DeviceAdd.vue'
+import DeviceImport from './modules/DeviceImport.vue'
+import DeviceDetail from './editor/Index.vue'
 
 const defautSearchObj = {
   username: '',

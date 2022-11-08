@@ -32,7 +32,7 @@
 <script>
 import _ from 'lodash'
 import { defaultMqttAddObj } from './entity.js'
-import Base from './base.vue'
+import Base from './Base.vue'
 
 export default {
   name: 'MqttConfigAdd',
