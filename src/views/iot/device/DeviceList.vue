@@ -65,6 +65,7 @@
 
 <script>
 import _ from 'lodash'
+import { remove, undeploy, deploy } from '@/views/iot/device/api.js'
 import DeviceAdd from './modules/device-add'
 import DeviceImport from './modules/device-import'
 import DeviceDetail from './editor/index.vue'
@@ -128,8 +129,7 @@ export default {
       this.$refs.DeviceAdd.edit(row)
     },
     deploy (id) {
-      this.$http.post(`device/${id}/deploy`)
-      .then(data => {
+      deploy(id).then(data => {
         if (data.success) {
           this.$message.success('操作成功')
           this.search()
@@ -137,8 +137,7 @@ export default {
       })
     },
     unDeploy (id) {
-      this.$http.post(`device/${id}/undeploy`)
-      .then(data => {
+      undeploy(id).then(data => {
         if (data.success) {
           this.$message.success('操作成功')
           this.search()
@@ -150,8 +149,7 @@ export default {
         title: '确认',
         content: '确定要删除吗？',
         onOk: () => {
-          this.$http.delete(`device/${row.id}`)
-            .then((data) => {
+          remove(row.id).then((data) => {
               if (data.success) {
                 this.$message.success('操作成功')
                 this.search()

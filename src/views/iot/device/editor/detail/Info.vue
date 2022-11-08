@@ -99,6 +99,7 @@
 
 <script>
 import moment from 'moment'
+import { deploy, updateDevice, getConfigMetadata, configReset, updateLocation } from '@/views/iot/device/api.js'
 import DeviceAdd from '../../modules/device-add'
 import Configuration from './configuration'
 import LocationConfig from '@/components/tools/LocationConfig.vue'
@@ -159,21 +160,11 @@ export default {
   methods: {
     GetData () {
       const id = this.deviceId
-      this.deviceConfiguration(id).then(data => {
+      getConfigMetadata(id).then(data => {
         if (data.success) {
           this.configuration = data.result || []
         }
       })
-      this.getExtend()
-    },
-    getExtend () {
-      const id = this.deviceId
-      this.$http.get(`/device-extend/${id}`).then(data => {
-        this.extendData = data.result
-      })
-    },
-    deviceConfiguration (deviceId) {
-      return this.$http.get(`/device/${deviceId}/config-metadata`)
     },
     openBasicInfo () {
       this.addVisible = true
@@ -183,8 +174,7 @@ export default {
     },
     changeDeploy () {
       const { id } = this.data
-      this.$http.post(`/device/${id}/deploy`)
-      .then(data => {
+      deploy(id).then(data => {
         if (data.success) {
           this.$message.success('应用成功')
           this.GetData()
@@ -194,8 +184,7 @@ export default {
     },
     configurationReset () {
       const { deviceId } = this.data
-      this.$http.put(`/device/${deviceId}/configuration/_reset`)
-      .then(response => {
+      configReset(deviceId).then(response => {
         if (response.status === 200) {
           this.$message.success('恢复默认配置成功')
           this.$emit('refresh')
@@ -204,11 +193,11 @@ export default {
     },
     updateData (item) {
       const param = {
+        id: this.data.id,
         configuration: item.configuration
       }
       this.updateVisible = false
-      this.$http.put(`/device/${this.data.id}`, param)
-      .then((response) => {
+      updateDevice(param).then((response) => {
         if (response.status === 200) {
           this.$message.success('配置信息修改成功')
           this.$emit('refresh')
@@ -224,12 +213,10 @@ export default {
         longitude: value.longitude,
         latitude: value.latitude
       }
-      this.$http.put('device-extend/location', param)
-      .then((resp) => {
+      updateLocation(param).then((resp) => {
         if (resp.success) {
           this.$message.success('操作成功')
           this.$refs.LocationConfig.close()
-          this.getExtend()
         } else {
           this.$message.success(resp.message)
         }

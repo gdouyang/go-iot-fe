@@ -108,8 +108,6 @@ export default {
         { key: 'function', tab: '设备功能' },
         { key: 'log', tab: '日志' },
         { key: 'alarm', tab: '告警设置' }
-        // { key: 'visualization', tab: '可视化' },
-        // { key: 'shadow', tab: '设备影子' }
       ],
       reloadFuncs: new Map()
     }

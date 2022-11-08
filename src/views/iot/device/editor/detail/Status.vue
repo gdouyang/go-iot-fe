@@ -41,6 +41,7 @@
 
 <script>
 import _ from 'lodash'
+import { queryProperty } from '@/views/iot/device/api.js'
 import DeviceState from './status/DeviceState.vue'
 import PropertiesCard from './status/PropertiesCard.vue'
 import EventCard from './status/EventCard.vue'
@@ -78,19 +79,8 @@ export default {
   methods: {
     propertiesRealTime () {
       const device = this.device
-      const list = [{
-          'dashboard': 'device',
-          'object': device.productId,
-          'measurement': 'properties',
-          'dimension': 'history',
-          'params': {
-              'deviceId': device.id,
-              'history': 15
-          }
-      }]
       this.loading = true
-      this.$http.post('/dashboard/_multi', list)
-      .then(resp => {
+      queryProperty(device.id).then(resp => {
         const metadata = JSON.parse(this.device.metadata)
         const properties = _.cloneDeep(metadata.properties)
         this.events = metadata.events
