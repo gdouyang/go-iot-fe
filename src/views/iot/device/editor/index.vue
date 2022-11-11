@@ -71,11 +71,11 @@
 
 <script>
 import { PageHeaderWrapper } from '@ant-design-vue/pro-layout'
-import { get, disconnect, deploy } from '@/views/iot/device/api.js'
-import Info from './detail/Info'
-import Status from './detail/Status'
-import Function from './detail/Function'
-import Log from './detail/Log'
+import { getDetail, disconnect, deploy } from '@/views/iot/device/api.js'
+import Info from './detail/Info.vue'
+import Status from './detail/Status.vue'
+import Function from './detail/Function.vue'
+import Log from './detail/Log.vue'
 import DeviceAlarm from '@/views/iot/alarm/index.vue'
 
 const statusMap = new Map()
@@ -145,7 +145,7 @@ export default {
     },
     getDeviceDetail (id) {
       this.loading = true
-      return get(id)
+      return getDetail(id)
         .then((data) => {
           if (data.success) {
             return data.result

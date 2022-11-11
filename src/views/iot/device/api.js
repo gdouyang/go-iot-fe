@@ -15,6 +15,10 @@ export function get (id) {
   return Vue.prototype.$http.get(`/device/${id}`)
 }
 
+export function getDetail (id) {
+  return Vue.prototype.$http.get(`/device/${id}/detail`)
+}
+
 export function disconnect (deviceId) {
   return Vue.prototype.$http.put(`/device/${deviceId}/disconnect`)
 }
@@ -48,7 +52,7 @@ export function configReset (deviceId) {
 }
 
 export function queryProperty (deviceId) {
-  return Vue.prototype.$http.put(`/device/query-property/${deviceId}`)
+  return Vue.prototype.$http.get(`/device/query-property/${deviceId}`)
 }
 
 // export function getEvent (deviceId, itemId) {

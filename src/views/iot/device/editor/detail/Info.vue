@@ -1,20 +1,15 @@
 <template>
   <div>
     <a-card :bordered="false">
-      <a-descriptions bordered :column="3" size="small">
+      <a-descriptions bordered :column="2" size="small">
         <span slot="title">
           设备信息
           <a-button icon="edit" :style="{marginLeft: 20}" type="link" @click="openBasicInfo">编辑</a-button>
         </span>
         <a-descriptions-item label="产品名称" :span="1">{{ data.productName }}</a-descriptions-item>
-        <a-descriptions-item label="设备类型" :span="1">{{ data.deviceType ? data.deviceType.text : '' }}</a-descriptions-item>
-        <a-descriptions-item label="连接协议" :span="1">{{ data.transport }}</a-descriptions-item>
-        <a-descriptions-item label="消息协议" :span="1">{{ data.protocolName || data.protocol }}</a-descriptions-item>
-        <a-descriptions-item label="IP地址" :span="1">{{ data.address }}</a-descriptions-item>
         <a-descriptions-item label="创建时间" :span="1">{{ GetCreateTime }}</a-descriptions-item>
-        <a-descriptions-item label="注册时间" :span="1">{{ GetRegisterTime }}</a-descriptions-item>
-        <a-descriptions-item label="最后上线时间" :span="2">{{ GetLastOnlineTime }}</a-descriptions-item>
-        <a-descriptions-item label="说明" :span="3">{{ data.describe || data.description }}</a-descriptions-item>
+        <!-- <a-descriptions-item label="最后上线时间" :span="2">{{ GetLastOnlineTime }}</a-descriptions-item> -->
+        <a-descriptions-item label="说明" :span="2">{{ data.describe || data.description }}</a-descriptions-item>
       </a-descriptions>
 
       <div style="width: 100%;margin-top: 10px;" v-if="configuration.length">
