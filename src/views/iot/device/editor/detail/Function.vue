@@ -66,7 +66,7 @@ export default {
       }
       cmdInvoke(deviceId, params).then(resp => {
         // const tempResult = response.result
-        if (resp.status === 200) {
+        if (resp.success) {
           // typeof tempResult === 'object' ?
           //   setFieldsValue({logs: JSON.stringify(tempResult)}) :
           //   setFieldsValue({logs: tempResult})

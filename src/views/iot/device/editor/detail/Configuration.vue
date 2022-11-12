@@ -126,8 +126,8 @@ export default {
       updateDevice({
         id: this.deviceId,
         metaconfig: '{}'
-      }).then(response => {
-        if (response.status === 200) {
+      }).then(resp => {
+        if (resp.success) {
           this.$message.success('恢复默认配置成功')
           this.refresh()
         }
