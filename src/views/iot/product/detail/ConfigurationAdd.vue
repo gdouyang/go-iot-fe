@@ -118,7 +118,7 @@ export default {
             find.type = p.type
             const param = {
               id: this.productId,
-              metaconfig: JSON.stringify(conf)
+              metaconfig: conf
             }
             this.updateData(param)
           } else {
@@ -126,7 +126,7 @@ export default {
             conf.push(p)
             const param = {
               id: this.productId,
-              metaconfig: JSON.stringify(conf)
+              metaconfig: conf
             }
             this.updateData(param)
           }

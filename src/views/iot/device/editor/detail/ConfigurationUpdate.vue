@@ -84,7 +84,7 @@ export default {
       p[item.property] = item.value
       const param = {
         id: this.deviceId,
-        metaconfig: JSON.stringify(p)
+        metaconfig: p
       }
       this.updateVisible = false
       updateDevice(param).then((resp) => {

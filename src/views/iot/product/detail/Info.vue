@@ -61,7 +61,7 @@ export default {
   methods: {
     GetData () {
       const data = this.data
-      this.configuration = data.metaconfig ? JSON.parse(data.metaconfig) : []
+      this.configuration = data.metaconfig ? data.metaconfig : []
     },
     openBasicInfo () {
       this.addVisible = true

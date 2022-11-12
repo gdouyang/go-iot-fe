@@ -73,7 +73,7 @@ export default {
   },
   computed: {
     deviceConfig () {
-      return this.device.metaconfig ? JSON.parse(this.device.metaconfig) : {}
+      return this.device.metaconfig ? this.device.metaconfig : {}
     },
     canResetConfig () {
       return !_.isEmpty(this.deviceConfig)

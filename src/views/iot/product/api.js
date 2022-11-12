@@ -28,7 +28,7 @@ export function get (id) {
 export function getMetaconfig (id) {
   return Vue.prototype.$http.get(`/product/${id}`).then(resp => {
     if (resp.success && resp.result) {
-      return resp.result.metaconfig ? JSON.parse(resp.result.metaconfig) : []
+      return resp.result.metaconfig ? resp.result.metaconfig : []
     }
     return []
   })

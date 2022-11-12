@@ -57,8 +57,6 @@ const defaultAddObj = {
   name: '',
   productId: undefined,
   productName: undefined,
-  projectId: undefined,
-  deviceGroupId: undefined,
   desc: ''
 }
 export default {
