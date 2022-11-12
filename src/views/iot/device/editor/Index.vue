@@ -44,7 +44,7 @@
       </div>
 
       <template v-if="ActiveTabKey === 'info'">
-        <Info :data="detailData" v-if="detailData.id" @refresh="reloadDevice"></Info>
+        <Info :device="detailData" v-if="detailData.id" @refresh="reloadDevice"></Info>
       </template>
       <template v-if="ActiveTabKey === 'status'">
         <Status :device="detailData" @refresh="reloadDevice"></Status>

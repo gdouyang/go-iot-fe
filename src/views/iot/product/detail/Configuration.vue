@@ -23,7 +23,7 @@
               <a-button icon="delete" :style="{marginLeft: 20}" type="link"></a-button>
             </a-popconfirm>
           </span>
-          <span v-if="item.type && item.type.type == 'password' && item.value">••••••</span>
+          <span v-if="item.type == 'password' && item.value">••••••</span>
           <span v-else>{{ item.value }}</span>
         </a-descriptions-item>
       </a-descriptions>

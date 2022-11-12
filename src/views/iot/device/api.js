@@ -43,14 +43,6 @@ export function updateLocation (params) {
   return Vue.prototype.$http.post(`/device/location`, params)
 }
 
-export function getConfigMetadata (deviceId) {
-  return Vue.prototype.$http.get(`/device/${deviceId}/config-metadata`)
-}
-
-export function configReset (deviceId) {
-  return Vue.prototype.$http.put(`/device/${deviceId}/config/reset`)
-}
-
 export function queryProperty (deviceId) {
   return Vue.prototype.$http.get(`/device/query-property/${deviceId}`)
 }

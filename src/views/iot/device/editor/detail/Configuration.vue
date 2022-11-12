@@ -1,97 +1,136 @@
 <template>
-  <a-drawer title="编辑配置" width="500" visible :afterVisibleChange="visibleChange" @close="visibleChange(false)">
-    <div :style="{marginBottom: '20px'}" v-for="(item,index) in configuration" :key="'configuration' + index">
-      <h3>{{ item.name }}</h3>
-      <a-form-model :labelCol="{ span: 8 }" :wrapperCol="{ span: 16 }">
-        <a-row :gutter="16">
-          <a-col v-for="(property, inx) in item.properties" :key="property.property + inx">
-            <h4>{{ item.configName }}</h4>
-            <a-form-item>
-              <span slot="label">
-                <span>{{ property.name }}</span>
-                <a-tooltip :title="property.description">
-                  <a-icon type="question-circle-o" />
-                </a-tooltip>
-              </span>
-              <span v-if="property.type">
-                <a-input-password v-if=" property.type.type === 'password'" v-model="cData.configuration[property.property]"/>
-                <a-input v-else v-model="cData.configuration[property.property]"/>
-              </span>
-            </a-form-item>
-          </a-col>
-        </a-row>
-      </a-form-model>
-    </div>
-    <div class="demo-drawer-footer">
-      <a-button style="margin-right: 8px" @click="visibleChange(false)">关闭</a-button>
-      <a-button type="primary" @click="saveData">保存</a-button>
-    </div>
-  </a-drawer>
+  <div style="width: 100%;margin-top: 10px;" v-if="configuration.length">
+    <a-descriptions :style="{marginBottom: 20}" :column="3" size="small">
+      <span slot="title">
+        配置
+        <a-button icon="edit" type="link" @click="updateVisible = true;">编辑</a-button>
+        <a-popconfirm title="确认重新应用该配置？" @confirm="changeDeploy">
+          <a-button type="link" style="padding-right: 2px;">应用配置</a-button>
+          <a-tooltip title="修改配置后需重新应用后才能生效。">
+            <a-icon type="question-circle-o"/>
+          </a-tooltip>
+        </a-popconfirm>
+        <template v-if="canResetConfig">
+          <a-popconfirm title="确认恢复默认配置？" @confirm="configurationReset">
+            <a-button type="link" style="padding-right: 2px;">恢复默认</a-button>
+            <a-tooltip :title="`该设备单独编辑过${deviceConfigKeys}，点击此将恢复成默认的配置信息，请谨慎操作。`">
+              <a-icon type="question-circle-o"/>
+            </a-tooltip>
+          </a-popconfirm>
+        </template>
+      </span>
+    </a-descriptions>
+
+    <a-descriptions bordered :column="2" title="">
+      <a-descriptions-item v-for="(item, inx) in configuration" :key="inx">
+        <span slot="label">
+          <a-tooltip :title="item.desc">
+            <span>{{ item.property }}</span>
+          </a-tooltip>
+          <a-button icon="edit" type="link" @click="editConfigItem(item)"></a-button>
+        </span>
+        <span>{{ getValue(item) }}</span>
+      </a-descriptions-item>
+    </a-descriptions>
+
+    <ConfigurationUpdate
+      v-if="updateVisible"
+      :deviceId="device.id"
+      :data="configItem"
+      :allConfig="deviceConfig"
+      @close="() => {
+        updateVisible = false
+      }"
+      @refresh="refresh"/>
+  </div>
 </template>
 
 <script>
+import _ from 'lodash'
+import { deploy, updateDevice } from '@/views/iot/device/api.js'
+import { getMetaconfig } from '@/views/iot/product/api.js'
+import ConfigurationUpdate from './ConfigurationUpdate.vue'
 export default {
   name: 'Configuration',
   props: {
-    visible: {
-      type: Boolean,
-      default: false
-    },
-    data: {
+    device: {
       type: Object,
       default: () => {}
-    },
-    configuration: {
-      type: Array,
-      default: () => []
     }
   },
-  watch: {
-    visible (newVal) {
-      this.openFlag = newVal
-    }
+  components: {
+    ConfigurationUpdate
   },
   data () {
     return {
-      openFlag: false,
-      cData: {
-        configuration: {}
-      }
+      configuration: [],
+      updateVisible: false,
+      configItem: {}
+    }
+  },
+  created () {
+    this.GetData()
+  },
+  computed: {
+    deviceConfig () {
+      return this.device.metaconfig ? JSON.parse(this.device.metaconfig) : {}
+    },
+    canResetConfig () {
+      return !_.isPlainObject(this.deviceConfig)
+    },
+    deviceConfigKeys () {
+      return _.keys(this.deviceConfig)
     }
   },
   methods: {
-    parseConfig (configData) {
-      const cData = { configuration: {} }
-      configData.forEach(i => {
-        i.properties.forEach((item) => {
-          cData.configuration[item.property] = this.data.configuration[item.property]
-        })
-      })
-      this.cData = cData
-    },
-    visibleChange (flag) {
-      if (!flag) {
-        this.$emit('close')
-      } else {
-        this.parseConfig(this.configuration)
+    getValue (item) {
+      const has = _.has(this.deviceConfig, item.property)
+      let value = item.value
+      if (has) {
+        value = _.get(this.deviceConfig, item.property)
       }
+      if (item.type === 'password') {
+        return '••••••'
+      }
+      return value
     },
-    saveData () {
-      this.$emit('save', this.cData)
+    GetData () {
+      const id = this.device.productId
+      getMetaconfig(id).then(data => {
+        this.configuration = data
+      })
+    },
+    changeDeploy () {
+      deploy(this.deviceId).then(data => {
+        if (data.success) {
+          this.$message.success('应用成功')
+          this.refresh()
+        }
+      })
+    },
+    refresh () {
+      this.$emit('refresh')
+    },
+    editConfigItem (item) {
+      this.configItem = item
+      this.updateVisible = true
+    },
+    configurationReset () {
+      const { deviceId } = this.device
+      updateDevice({
+        id: deviceId,
+        metaconfig: '{}'
+      }).then(response => {
+        if (response.status === 200) {
+          this.$message.success('恢复默认配置成功')
+          this.refresh()
+        }
+      })
     }
   }
 }
 </script>
 
 <style lang="less" scoped>
-.demo-drawer-footer{
-    width: 100%;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    border-top: 1px solid #e8e8e8;
-    padding: 10px 16px;
-    text-align: right;
-    background: #fff;
-}
+
 </style>

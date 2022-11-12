@@ -39,7 +39,6 @@
             <a-input v-model="configuration.desc" :maxLength="100"></a-input>
           </a-form-model-item>
         </a-col>
-        <a-divider />
       </a-row>
     </a-form-model>
     <div class="drawer-footer">
