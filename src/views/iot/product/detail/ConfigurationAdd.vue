@@ -1,34 +1,36 @@
 <template>
-  <a-drawer title="自定义配置" width="500" visible :afterVisibleChange="visibleChange" @close="visibleChange(false)">
-    <!-- <h3>{{ configuration.name }}</h3> -->
+  <a-drawer :title="isEdit ? '修改配置' : '添加配置'" width="500" visible :afterVisibleChange="visibleChange" @close="visibleChange(false)">
     <a-form-model :labelCol="{ span: 3 }" :wrapperCol="{ span: 16 }" ref="addFormRef" :model="configuration">
-      <a-row :gutter="16" v-for="(property, inx) in configuration.properties" :key="property.property + inx">
+      <a-row :gutter="16">
         <a-col>
           <a-form-model-item
-            :prop="'properties.' + inx + '.name'"
+            prop="property"
             label="Key"
             :rules="[
               { required: true, message: 'Key不能为空', trigger: 'blur' }
             ]"
           >
-            <a-input v-model="property.name" :maxLength="32"></a-input>
+            <a-input v-model="configuration.property" :disabled="isEdit" :maxLength="32"></a-input>
           </a-form-model-item>
           <a-form-model-item
-            :prop="'properties.' + inx + '.type'"
+            prop="type"
             label="类型"
             :rules="[
               { required: true, message: '类型不能为空', trigger: 'change' }
             ]"
           >
             <a-select
-              v-model="property.type"
+              v-model="configuration.type"
             >
               <a-select-option value="string">字符串</a-select-option>
               <a-select-option value="password">密码</a-select-option>
             </a-select>
           </a-form-model-item>
+          <a-form-model-item label="值">
+            <a-input v-model="configuration.value" :maxLength="100"></a-input>
+          </a-form-model-item>
           <a-form-model-item label="描述">
-            <a-input v-model="property.description" :maxLength="100"></a-input>
+            <a-input v-model="configuration.desc" :maxLength="100"></a-input>
           </a-form-model-item>
         </a-col>
         <a-divider />
@@ -43,12 +45,8 @@
 
 <script>
 import _ from 'lodash'
-const defaultData = {
-  name: '自定义配置',
-  properties: [
-    { property: '', name: '', description: '', scopes: [], type: null }
-  ]
-}
+import { updateProduct } from '@/views/iot/product/api.js'
+const defaultData = { property: '', desc: '', type: null, value: '' }
 export default {
   name: 'ConfigurationAdd',
   props: {
@@ -56,13 +54,17 @@ export default {
       type: Boolean,
       default: false
     },
-    data: {
-      type: Object,
-      default: () => {}
-    },
     allConfig: {
       type: Array,
       default: () => []
+    },
+    productId: {
+      type: String,
+      default: () => null
+    },
+    data: {
+      type: Object,
+      default: () => null
     }
   },
   watch: {
@@ -73,7 +75,8 @@ export default {
   data () {
     return {
       openFlag: false,
-      configuration: _.cloneDeep(defaultData)
+      configuration: _.cloneDeep(defaultData),
+      isEdit: false
     }
   },
   methods: {
@@ -81,33 +84,52 @@ export default {
       if (!flag) {
         this.$emit('close')
       } else {
-        this.configuration = _.cloneDeep(defaultData)
+        if (this.data) {
+          const d = _.cloneDeep(this.data)
+          this.configuration = d
+          this.isEdit = true
+        } else {
+          this.isEdit = false
+          this.configuration = _.cloneDeep(defaultData)
+        }
       }
     },
     saveData () {
       this.$refs.addFormRef.validate((valid, object) => {
         if (valid) {
-          const param = _.cloneDeep(this.configuration)
-          const props = []
-          const config1 = _.find(this.allConfig, c => c.name === param.name)
-          let exist = null
-          _.forEach(param.properties, p => {
-            p.property = p.name
-            if (p.type === 'string') {
-              p.type = { name: '字符串', id: 'string', type: 'string' }
-            } else if (p.type === 'password') {
-              p.type = { name: '密码', id: 'password', type: 'password' }
-            }
-            if (!_.isEmpty(_.filter(config1.properties, p => _.includes(props, p.property)))) {
-              exist = p.property + '已经存在'
-            }
-            props.push(p.property)
-          })
-          if (exist) {
-            this.$message.error(exist)
+          const p = _.cloneDeep(this.configuration)
+          const config1 = _.filter(this.allConfig, c => c.property === p.property)
+          if ((!this.isEdit && _.size(config1) > 0) || (this.isEdit && _.size(config1) > 1)) {
+            this.$message.error(p.property + '已经存在')
             return
           }
-          this.$emit('save', param)
+          if (this.isEdit) {
+            const conf = _.cloneDeep(this.allConfig)
+            const find = _.find(conf, c => c.property === p.property)
+            find.value = p.value
+            find.desc = p.desc
+            find.type = p.type
+            const param = {
+              id: this.productId,
+              metaconfig: JSON.stringify(conf)
+            }
+            this.updateData(param)
+          } else {
+            const conf = _.cloneDeep(this.allConfig)
+            conf.push(p)
+            const param = {
+              id: this.productId,
+              metaconfig: JSON.stringify(conf)
+            }
+            this.updateData(param)
+          }
+        }
+      })
+    },
+    updateData (item) {
+      updateProduct(this.productId, item).then((resp) => {
+        if (resp.success) {
+          this.$message.success('配置信息修改成功')
           this.visibleChange(false)
         }
       })

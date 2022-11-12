@@ -9,71 +9,28 @@
         <a-descriptions-item label="产品ID" :span="1">{{ data.id }}</a-descriptions-item>
         <a-descriptions-item label="说明" :span="3">{{ data.desc }}</a-descriptions-item>
       </a-descriptions>
+
       <Network
         v-if="data.id"
         :product="data"></Network>
-      <div style="width: 100%;margin-top: 10px;">
-        <a-descriptions :style="{marginBottom: 20}" size="small">
-          <span slot="title">
-            配置
-            <a-button icon="edit" :style="{marginLeft: 20}" type="link" @click="updateVisibleAdd = true;">添加</a-button>
-            <a-button icon="edit" :style="{marginLeft: 20}" type="link" @click="updateVisible = true;" v-if="configuration.length > 0">编辑</a-button>
-          </span>
-        </a-descriptions>
 
-        <div :style="{marginBottom: '20px'}" v-for="(item,index) in configuration" :key="'configuration' + index">
-          <h3>{{ item.name }}</h3>
-          <a-descriptions bordered :column="2" title="" size="small">
-            <a-descriptions-item v-for="(property, inx) in item.properties" :key="property.property + inx">
-              <span slot="label">
-                <span>{{ property.name }}
-                  <a-tooltip :title="property.description">
-                    <a-icon type="question-circle-o"/>
-                  </a-tooltip>
-                </span>
-              </span>
-              <span v-if="property.type && property.type.type == 'password' && data.configuration[property.property]">••••••</span>
-              <span v-else>{{ data.configuration[property.property] }}</span>
-            </a-descriptions-item>
-          </a-descriptions>
-        </div>
-      </div>
+      <Configuration :productId="data.id" :configuration="configuration" @refresh="refresh()"/>
     </a-card>
 
     <ProductAdd ref="ProductAdd" @success="refresh()" v-if="addVisible" />
 
-    <Configuration
-      v-if="updateVisible"
-      :data="data"
-      :configuration="configuration"
-      @close="() => {
-        updateVisible = false
-        refresh()
-      }"
-      @save="updateData"/>
-    <ConfigurationAdd
-      v-if="updateVisibleAdd"
-      :data="data"
-      :all-config="configuration"
-      @save="addMetaconfig"
-      @close="() => {
-        updateVisibleAdd = false
-        refresh()
-      }"/>
   </div>
 </template>
 
 <script>
 // import moment from 'moment'
-import _ from 'lodash'
-import { get, updateProduct } from '@/views/iot/product/api.js'
+// import _ from 'lodash'
 import ProductAdd from '../modules/ProductAdd.vue'
 import Configuration from './Configuration.vue'
-import ConfigurationAdd from './ConfigurationAdd.vue'
 import Network from './Network.vue'
 
 export default {
-  name: 'InsEditorDetail',
+  name: 'ProductInfo',
   props: {
     data: {
       type: Object,
@@ -83,15 +40,12 @@ export default {
   components: {
     ProductAdd,
     Configuration,
-    ConfigurationAdd,
     Network
   },
   data () {
     return {
       configuration: [],
-      addVisible: false,
-      updateVisible: false,
-      updateVisibleAdd: false
+      addVisible: false
     }
   },
   created () {
@@ -99,14 +53,15 @@ export default {
   },
   computed: {
   },
+  watch: {
+    'data.metaconfig' (newVal) {
+      this.GetData()
+    }
+  },
   methods: {
     GetData () {
-      const { id } = this.data
-      get(id).then(data => {
-        if (data.success) {
-          this.configuration = data.result.metaconfig ? JSON.parse(data.result.metaconfig) : []
-        }
-      })
+      const data = this.data
+      this.configuration = data.metaconfig ? JSON.parse(data.metaconfig) : []
     },
     openBasicInfo () {
       this.addVisible = true
@@ -117,25 +72,6 @@ export default {
     refresh () {
       this.$emit('refresh')
       this.GetData()
-    },
-    addMetaconfig (item) {
-      const conf = _.cloneDeep(this.configuration)
-      conf.push(item)
-      this.updateData({
-        configuration: conf
-      })
-    },
-    updateData (item) {
-      const param = {
-        metaconfig: item.configuration
-      }
-      this.updateVisible = false
-      updateProduct(this.data.id, param)
-      .then((response) => {
-        if (response.success) {
-          this.$message.success('配置信息修改成功')
-        }
-      })
     }
   }
 }

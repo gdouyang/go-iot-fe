@@ -1,83 +1,72 @@
 <template>
-  <a-drawer title="编辑配置" width="500" visible :afterVisibleChange="visibleChange" @close="visibleChange(false)">
-    <div :style="{marginBottom: '20px'}" v-for="(item,index) in configuration" :key="'configuration' + index">
-      <h3>{{ item.name }}</h3>
-      <a-form-model :labelCol="{ span: 8 }" :wrapperCol="{ span: 16 }">
-        <a-row :gutter="16">
-          <a-col v-for="(property, inx) in item.properties" :key="property.property + inx">
-            <h4>{{ item.configName }}</h4>
-            <a-form-item>
-              <span slot="label">
-                <span>{{ property.name }}</span>
-                <a-tooltip :title="property.description">
-                  <a-icon type="question-circle-o" />
-                </a-tooltip>
+  <div style="width: 100%;margin-top: 10px;">
+    <a-descriptions :style="{marginBottom: 20}" size="small">
+      <span slot="title">
+        配置
+        <a-button icon="edit" :style="{marginLeft: 20}" type="link" @click="addConfig">添加</a-button>
+      </span>
+    </a-descriptions>
+
+    <div :style="{marginBottom: '20px'}">
+      <a-descriptions bordered :column="1" title="" size="small">
+        <a-descriptions-item v-for="(item, index) in configuration" :key="index">
+          <span slot="label">
+            <a-tooltip :title="item.desc">
+              <span>
+                {{ item.property }}
               </span>
-              <span v-if="property.type">
-                <a-input-password v-if=" property.type.type === 'password'" v-model="cData.configuration[property.property]"/>
-                <a-input v-else v-model="cData.configuration[property.property]"/>
-              </span>
-            </a-form-item>
-          </a-col>
-        </a-row>
-      </a-form-model>
+            </a-tooltip>
+            <a-button icon="edit" :style="{marginLeft: 20}" type="link" @click="modifyConfig(item)"></a-button>
+          </span>
+          <span v-if="item.type && item.type.type == 'password' && item.value">••••••</span>
+          <span v-else>{{ item.value }}</span>
+        </a-descriptions-item>
+      </a-descriptions>
     </div>
-    <div class="drawer-footer">
-      <a-button style="margin-right: 8px" @click="visibleChange(false)">关闭</a-button>
-      <a-button type="primary" @click="saveData">保存</a-button>
-    </div>
-  </a-drawer>
+
+    <ConfigurationAdd
+      v-if="updateVisibleAdd"
+      :productId="productId"
+      :all-config="configuration"
+      :data="currentConfig"
+      @close="() => {
+        updateVisibleAdd = false
+        $emit('refresh')
+      }"/>
+  </div>
 </template>
 
 <script>
+import ConfigurationAdd from './ConfigurationAdd.vue'
 export default {
   name: 'Configuration',
   props: {
-    visible: {
-      type: Boolean,
-      default: false
-    },
-    data: {
-      type: Object,
-      default: () => {}
+    productId: {
+      type: String,
+      default: () => null
     },
     configuration: {
       type: Array,
       default: () => []
     }
   },
-  watch: {
-    visible (newVal) {
-      this.openFlag = newVal
-    }
+  components: {
+    ConfigurationAdd
   },
   data () {
     return {
-      openFlag: false,
-      cData: {
-        configuration: {}
-      }
+      updateVisibleAdd: false,
+      currentConfig: null
     }
   },
   methods: {
-    parseConfig (configData) {
-      const cData = { configuration: {} }
-      configData.forEach(i => {
-        i.properties.forEach((item) => {
-          cData.configuration[item.property] = this.data.configuration[item.property]
-        })
-      })
-      this.cData = cData
+    addConfig () {
+      this.currentConfig = null
+      this.updateVisibleAdd = true
     },
-    visibleChange (flag) {
-      if (!flag) {
-        this.$emit('close')
-      } else {
-        this.parseConfig(this.configuration)
-      }
-    },
-    saveData () {
-      this.$emit('save', this.cData)
+    modifyConfig (data) {
+      this.currentConfig = data
+      this.updateVisibleAdd = true
     }
   }
 }
