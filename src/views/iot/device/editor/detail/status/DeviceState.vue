@@ -3,7 +3,7 @@
     <!-- <a href="#" slot="action">
       <a-icon type="sync" />
     </a> -->
-    <span v-if="state.value === 'online'">上线时间：{{ GetTime(runInfo.onlineTime) }}</span>
+    <span v-if="state === 'online'">上线时间：{{ GetTime(runInfo.onlineTime) }}</span>
     <span v-else>离线时间：{{ GetTime(runInfo.onlineTime) }}</span>
   </ChartCard>
 </template>
@@ -17,7 +17,7 @@ export default {
   props: {
     state: {
       type: Object,
-      default: () => { return { text: '', value: '' } }
+      default: () => ''
     },
     runInfo: {
       type: Object,

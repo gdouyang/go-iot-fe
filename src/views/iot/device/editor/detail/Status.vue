@@ -23,7 +23,7 @@
       >
         <PropertiesCard :item="item" :device="device" />
       </a-col>
-      <a-col
+      <!-- <a-col
         :xs="24"
         :sm="12"
         :md="12"
@@ -34,7 +34,7 @@
         :key="item.id"
       >
         <EventCard :item="item" :device="device" />
-      </a-col>
+      </a-col> -->
     </a-row>
   </a-spin>
 </template>
@@ -84,7 +84,7 @@ export default {
         const metadata = JSON.parse(this.device.metadata)
         const properties = _.cloneDeep(metadata.properties)
         this.events = metadata.events
-        const data = resp.result
+        const data = resp.result.list
         const mapdata = _.map(data, item => {
           return {
             timeString: item.data.timeString,
