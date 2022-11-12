@@ -12,7 +12,7 @@
         <a-descriptions-item label="说明" :span="2">{{ data.describe || data.description }}</a-descriptions-item>
       </a-descriptions>
 
-      <div style="width: 100%;margin-top: 10px;" v-if="configuration.length">
+      <!-- <div style="width: 100%;margin-top: 10px;" v-if="configuration.length">
         <a-descriptions :style="{marginBottom: 20}" :column="3" size="small">
           <span slot="title">
             位置
@@ -33,7 +33,7 @@
             <span>{{ extendData.latitude }}</span>
           </a-descriptions-item>
         </a-descriptions>
-      </div>
+      </div> -->
 
       <div style="width: 100%;margin-top: 10px;" v-if="configuration.length">
         <a-descriptions :style="{marginBottom: 20}" :column="3" size="small">

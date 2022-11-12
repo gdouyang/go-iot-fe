@@ -81,12 +81,7 @@ export default {
       if (!flag) {
         this.$emit('close')
       } else {
-        // const config1 = _.find(this.allConfig, c => c.name === defaultData.name)
-        // if (config1) {
-        //   this.configuration = _.cloneDeep(config1)
-        // } else {
-          this.configuration = _.cloneDeep(defaultData)
-        // }
+        this.configuration = _.cloneDeep(defaultData)
       }
     },
     saveData () {
@@ -94,6 +89,8 @@ export default {
         if (valid) {
           const param = _.cloneDeep(this.configuration)
           const props = []
+          const config1 = _.find(this.allConfig, c => c.name === param.name)
+          let exist = null
           _.forEach(param.properties, p => {
             p.property = p.name
             if (p.type === 'string') {
@@ -101,18 +98,17 @@ export default {
             } else if (p.type === 'password') {
               p.type = { name: '密码', id: 'password', type: 'password' }
             }
+            if (!_.isEmpty(_.filter(config1.properties, p => _.includes(props, p.property)))) {
+              exist = p.property + '已经存在'
+            }
             props.push(p.property)
           })
-          const config1 = _.find(this.allConfig, c => c.name === param.name)
-          const props2 = config1 ? _.filter(config1.properties, p => !_.includes(props, p.property)) : []
-          param.properties = _.concat(param.properties, props2)
-          this.$http.post(`/product/self-metaconfig/${this.data.id}`, [ param ])
-          .then((response) => {
-            if (response.success) {
-              this.$message.success('配置信息修改成功')
-              this.visibleChange(false)
-            }
-          })
+          if (exist) {
+            this.$message.error(exist)
+            return
+          }
+          this.$emit('save', param)
+          this.visibleChange(false)
         }
       })
     }

@@ -55,6 +55,7 @@
       v-if="updateVisibleAdd"
       :data="data"
       :all-config="configuration"
+      @save="addMetaconfig"
       @close="() => {
         updateVisibleAdd = false
         refresh()
@@ -64,7 +65,8 @@
 
 <script>
 // import moment from 'moment'
-// import _ from 'lodash'
+import _ from 'lodash'
+import { get, updateProduct } from '@/views/iot/product/api.js'
 import ProductAdd from '../modules/ProductAdd.vue'
 import Configuration from './Configuration.vue'
 import ConfigurationAdd from './ConfigurationAdd.vue'
@@ -99,15 +101,12 @@ export default {
   },
   methods: {
     GetData () {
-      // const { id } = this.data
-      // this.getConfiguration(id).then(data => {
-      //   if (data.success) {
-      //     this.configuration = data.result || []
-      //   }
-      // })
-    },
-    getConfiguration (id) {
-      return this.$http.get(`/product/${id}/config-metadata`)
+      const { id } = this.data
+      get(id).then(data => {
+        if (data.success) {
+          this.configuration = data.result.metaconfig ? JSON.parse(data.result.metaconfig) : []
+        }
+      })
     },
     openBasicInfo () {
       this.addVisible = true
@@ -119,14 +118,19 @@ export default {
       this.$emit('refresh')
       this.GetData()
     },
+    addMetaconfig (item) {
+      const conf = _.cloneDeep(this.configuration)
+      conf.push(item)
+      this.updateData({
+        configuration: conf
+      })
+    },
     updateData (item) {
-      // const list = _.filter(this.configuration, c => c.name !== item.name)
-      // list.push(item)
       const param = {
-        configuration: item.configuration
+        metaconfig: item.configuration
       }
       this.updateVisible = false
-      this.$http.put(`/product/${this.data.id}`, param)
+      updateProduct(this.data.id, param)
       .then((response) => {
         if (response.success) {
           this.$message.success('配置信息修改成功')
