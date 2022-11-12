@@ -19,7 +19,8 @@
             <a-input v-model="configuration.property" :disabled="true" :maxLength="32"></a-input>
           </a-form-model-item>
           <a-form-model-item label="值">
-            <a-input v-model="configuration.value" :maxLength="100"></a-input>
+            <a-input-password v-model="configuration.value" v-if="configuration.type === 'password'" :maxLength="100"></a-input-password>
+            <a-input v-model="configuration.value" :maxLength="100" v-else></a-input>
           </a-form-model-item>
         </a-col>
       </a-row>
@@ -55,14 +56,8 @@ export default {
       default: () => null
     }
   },
-  watch: {
-    visible (newVal) {
-      this.openFlag = newVal
-    }
-  },
   data () {
     return {
-      openFlag: false,
       configuration: _.cloneDeep(defaultData),
       isEdit: false
     }
@@ -89,12 +84,13 @@ export default {
       p[item.property] = item.value
       const param = {
         id: this.deviceId,
-        metaconfig: p
+        metaconfig: JSON.stringify(p)
       }
       this.updateVisible = false
-      updateDevice(param).then((response) => {
-        if (response.status === 200) {
+      updateDevice(param).then((resp) => {
+        if (resp.success) {
           this.$message.success('配置信息修改成功')
+          this.visibleChange(false)
           this.$emit('refresh')
         }
       })

@@ -13,7 +13,8 @@
             prop="property"
             label="Key"
             :rules="[
-              { required: true, message: 'Key不能为空', trigger: 'blur' }
+              { required: true, message: 'Key不能为空', trigger: 'blur' },
+              { pattern: new RegExp(/^[0-9a-zA-Z]+$/, 'g'), message: 'key只能由数字、字母组成', trigger: 'blur' }
             ]"
           >
             <a-input v-model="configuration.property" :disabled="isEdit" :maxLength="32"></a-input>
@@ -33,7 +34,8 @@
             </a-select>
           </a-form-model-item>
           <a-form-model-item label="值">
-            <a-input v-model="configuration.value" :maxLength="100"></a-input>
+            <a-input-password v-model="configuration.value" v-if="configuration.type === 'password'" :maxLength="100"></a-input-password>
+            <a-input v-model="configuration.value" :maxLength="100" v-else></a-input>
           </a-form-model-item>
           <a-form-model-item label="描述">
             <a-input v-model="configuration.desc" :maxLength="100"></a-input>

@@ -34,12 +34,10 @@
         </a-descriptions>
       </div> -->
 
-      <Configuration
-        :device="device"
-        @save="$emit('refresh')"/>
+      <Configuration :device="device" @refresh="refresh"/>
     </a-card>
 
-    <DeviceAdd ref="DeviceAdd" @success="$emit('refresh')" v-if="deviceVisible" />
+    <DeviceAdd ref="DeviceAdd" @success="refresh" v-if="deviceVisible" />
     <LocationConfig ref="LocationConfig" @success="selectLocation" />
 
   </div>
@@ -87,6 +85,9 @@ export default {
     }
   },
   methods: {
+    refresh () {
+      this.$emit('refresh')
+    },
     openBasicInfo () {
       this.deviceVisible = true
       this.$nextTick(() => {

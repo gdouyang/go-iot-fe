@@ -6,17 +6,17 @@
         <a-button icon="edit" type="link" @click="updateVisible = true;">编辑</a-button>
         <a-popconfirm title="确认重新应用该配置？" @confirm="changeDeploy">
           <a-button type="link" style="padding-right: 2px;">应用配置</a-button>
-          <a-tooltip title="修改配置后需重新应用后才能生效。">
-            <a-icon type="question-circle-o"/>
-          </a-tooltip>
         </a-popconfirm>
+        <a-tooltip title="修改配置后需重新应用后才能生效。">
+          <a-icon type="question-circle-o"/>
+        </a-tooltip>
         <template v-if="canResetConfig">
           <a-popconfirm title="确认恢复默认配置？" @confirm="configurationReset">
             <a-button type="link" style="padding-right: 2px;">恢复默认</a-button>
-            <a-tooltip :title="`该设备单独编辑过${deviceConfigKeys}，点击此将恢复成默认的配置信息，请谨慎操作。`">
-              <a-icon type="question-circle-o"/>
-            </a-tooltip>
           </a-popconfirm>
+          <a-tooltip :title="`该设备单独编辑过[${deviceConfigKeys}]，点击此将恢复成默认的配置信息，请谨慎操作。`">
+            <a-icon type="question-circle-o"/>
+          </a-tooltip>
         </template>
       </span>
     </a-descriptions>
@@ -76,10 +76,13 @@ export default {
       return this.device.metaconfig ? JSON.parse(this.device.metaconfig) : {}
     },
     canResetConfig () {
-      return !_.isPlainObject(this.deviceConfig)
+      return !_.isEmpty(this.deviceConfig)
     },
     deviceConfigKeys () {
       return _.keys(this.deviceConfig)
+    },
+    deviceId () {
+      return this.device.id
     }
   },
   methods: {
@@ -112,13 +115,16 @@ export default {
       this.$emit('refresh')
     },
     editConfigItem (item) {
-      this.configItem = item
+      this.configItem = _.cloneDeep(item)
+      const has = _.has(this.deviceConfig, item.property)
+      if (has) {
+        this.configItem.value = _.get(this.deviceConfig, item.property)
+      }
       this.updateVisible = true
     },
     configurationReset () {
-      const { deviceId } = this.device
       updateDevice({
-        id: deviceId,
+        id: this.deviceId,
         metaconfig: '{}'
       }).then(response => {
         if (response.status === 200) {
