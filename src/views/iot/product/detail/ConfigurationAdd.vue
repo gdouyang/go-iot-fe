@@ -1,5 +1,11 @@
 <template>
-  <a-drawer :title="isEdit ? '修改配置' : '添加配置'" width="500" visible :afterVisibleChange="visibleChange" @close="visibleChange(false)">
+  <a-drawer
+    :title="isEdit ? '修改配置' : '添加配置'"
+    width="500"
+    visible
+    :afterVisibleChange="visibleChange"
+    :maskClosable="false"
+    @close="visibleChange(false)">
     <a-form-model :labelCol="{ span: 3 }" :wrapperCol="{ span: 16 }" ref="addFormRef" :model="configuration">
       <a-row :gutter="16">
         <a-col>

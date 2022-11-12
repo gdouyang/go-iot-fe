@@ -3,12 +3,12 @@
     <a-descriptions :style="{marginBottom: 20}" size="small">
       <span slot="title">
         配置
-        <a-button icon="edit" :style="{marginLeft: 20}" type="link" @click="addConfig">添加</a-button>
+        <a-button icon="plus" :style="{marginLeft: 20}" type="link" @click="addConfig">添加</a-button>
       </span>
     </a-descriptions>
 
     <div :style="{marginBottom: '20px'}">
-      <a-descriptions bordered :column="1" title="" size="small">
+      <a-descriptions bordered :column="2" title="" size="small">
         <a-descriptions-item v-for="(item, index) in configuration" :key="index">
           <span slot="label">
             <a-tooltip :title="item.desc">
@@ -17,6 +17,11 @@
               </span>
             </a-tooltip>
             <a-button icon="edit" :style="{marginLeft: 20}" type="link" @click="modifyConfig(item)"></a-button>
+            <a-popconfirm
+              title="确认删除配置？"
+              @confirm="deleteConfig(item)">
+              <a-button icon="delete" :style="{marginLeft: 20}" type="link"></a-button>
+            </a-popconfirm>
           </span>
           <span v-if="item.type && item.type.type == 'password' && item.value">••••••</span>
           <span v-else>{{ item.value }}</span>
@@ -31,12 +36,14 @@
       :data="currentConfig"
       @close="() => {
         updateVisibleAdd = false
-        $emit('refresh')
+        refresh()
       }"/>
   </div>
 </template>
 
 <script>
+import _ from 'lodash'
+import { updateProduct } from '@/views/iot/product/api.js'
 import ConfigurationAdd from './ConfigurationAdd.vue'
 export default {
   name: 'Configuration',
@@ -60,6 +67,9 @@ export default {
     }
   },
   methods: {
+    refresh () {
+      this.$emit('refresh')
+    },
     addConfig () {
       this.currentConfig = null
       this.updateVisibleAdd = true
@@ -67,6 +77,19 @@ export default {
     modifyConfig (data) {
       this.currentConfig = data
       this.updateVisibleAdd = true
+    },
+    deleteConfig (data) {
+      const conf = _.filter(this.configuration, p => p.property !== data.property)
+      const param = {
+        id: this.productId,
+        metaconfig: JSON.stringify(conf)
+      }
+      updateProduct(this.productId, param).then((resp) => {
+        if (resp.success) {
+          this.$message.success('操作成功')
+          this.refresh()
+        }
+      })
     }
   }
 }
