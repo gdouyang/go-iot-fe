@@ -175,7 +175,7 @@ export default {
       console.log(data)
       let promise = null
       if (data.id) {
-        promise = updateScene(data)
+        promise = updateScene(data.id, data)
       } else {
         promise = addScene(data)
       }
