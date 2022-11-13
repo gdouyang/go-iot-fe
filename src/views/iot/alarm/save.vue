@@ -57,14 +57,14 @@
               </a-radio-group>
             </template>
           </p>
-          <div v-for="(item, index) in trigger" :key="index + '-trigger'">
-            <Triggers
-              :trigger="item"
-              :metaData="metaData"
-              :position="index"
-              @remove="removeTriggers"
-            />
-          </div>
+          <Trigger
+            v-for="(item, index) in trigger"
+            :key="index + '-trigger'"
+            :trigger="item"
+            :metaData="metaData"
+            :position="index"
+            @remove="removeTriggers"
+          />
           <a-button
             icon="plus"
             type="link"
@@ -80,7 +80,7 @@
               <a-icon type="question-circle-o"/>
             </a-tooltip>
           </p>
-          <div style="max-height: 200; overflow-y: 'auto'; overflow-x: 'hidden';background-color: '#F5F5F6';padding-top: 10;">
+          <!-- <div style="max-height: 200; overflow-y: 'auto'; overflow-x: 'hidden';background-color: '#F5F5F6';padding-top: 10;">
             <a-row
               :gutter="16"
               style="padding-bottom: 10px; margin-left: 13px; margin-right: 3px;"
@@ -108,20 +108,18 @@
                   properties = ([...properties, {_id: Math.round(Math.random() * 100000)}])
                 }">添加</a>
             </a-col>
-          </div>
+          </div> -->
         </a-card>
         <!-- 执行动作 -->
         <a-card :bordered="false" size="small">
-          <p style="font-size: 16px;">执行动作
-          </p>
-          <template v-for="(item, index) in action">
-            <Actions
-              :key="index + '-action'"
-              :action="item"
-              :position="index"
-              @save="saveAction"
-              @remove="removeAction"/>
-          </template>
+          <p style="font-size: 16px;">执行动作</p>
+          <Action
+            v-for="(item, index) in action"
+            :key="index + '-action'"
+            :action="item"
+            :position="index"
+            @save="saveAction"
+            @remove="removeAction"/>
           <a-button
             icon="plus"
             type="link"
@@ -137,8 +135,8 @@
 <script>
 import { newTrigger } from './triggers/data.js'
 import { newEmtpyAction } from './actions/data.js'
-import Triggers from './triggers/triggers-index.vue'
-import Actions from './actions/index.vue'
+import Trigger from './triggers/TriggerIndex.vue'
+import Action from './actions/index.vue'
 import _ from 'lodash'
 // import moment from 'moment'
 
@@ -180,8 +178,8 @@ export default {
     }
   },
   components: {
-    Triggers,
-    Actions
+    Trigger,
+    Action
   },
   computed: {
     title () {

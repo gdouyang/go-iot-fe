@@ -15,13 +15,13 @@
           <a-col :span="4">
             <a-select
               placeholder="选择触发器类型"
-              v-model="trigger.trigger"
+              v-model="trigger.type"
             >
               <a-select-option value="device">设备触发</a-select-option>
               <a-select-option value="timer">定时触发</a-select-option>
             </a-select>
           </a-col>
-          <template v-if="trigger.trigger === 'device'">
+          <template v-if="trigger.type === 'device'">
             <a-switch
               v-model="shakeLimit.enabled"
               checkedChildren="开启防抖"
@@ -52,7 +52,7 @@
             </template>
           </template>
         </a-col>
-        <a-col :span="24" style="margin-top: 5px;" v-if="trigger.trigger === 'timer'">
+        <a-col :span="24" style="margin-top: 5px;" v-if="trigger.type === 'timer'">
           <a-col :span="5">
             <a-input
               placeholder="cron表达式"
@@ -60,7 +60,7 @@
             />
           </a-col>
         </a-col>
-        <template v-if="trigger.trigger === 'device'">
+        <template v-if="trigger.type === 'device'">
           <a-col :span="24" style="margin-top: 5px;">
             <a-col :span="4">
               <a-input
@@ -206,22 +206,20 @@ export default {
   created () {
     const metadata = this.metaData
     const trigger = this.trigger
-    if (metadata && trigger.trigger === 'device') {
+    if (metadata && trigger.type === 'device') {
       let data = null
-      if (trigger.type === 'event') {
+      if (trigger.device.type === 'event') {
         data = metadata['events']
-      } else if (trigger.type === 'function') {
+      } else if (trigger.device.type === 'function') {
         data = metadata['functions']
       } else {
-        data = metadata[trigger.type]
+        data = metadata[trigger.device.type]
       }
       if (data) {
         this.dataSource = []
-        // const dataSource = this.dataSource
-        // dataSource.push(trigger.modelId)
         data.map((item) => {
           if (item.id === trigger.modelId) {
-            this.setDataSourceValue(trigger.type, item, trigger.modelId)
+            this.setDataSourceValue(trigger.device.type, item, trigger.modelId)
           }
         })
       }
@@ -230,15 +228,15 @@ export default {
       if (deviceId) {
         this.findDevice(deviceId)
       }
-    }
-    if (_.isNil(this.trigger.filters)) {
-      this.trigger.filters = []
-    } else {
-      // 回显触发器filter
-      _.forEach(this.trigger.filters, f => {
-        const data = _.find(this.dataSource, d => d.id === f.key)
-        f.valueType = (data && (data.valueType || {})) || {}
-      })
+      if (_.isNil(trigger.device.filters)) {
+        this.trigger.device.filters = []
+      } else {
+        // 回显触发器filter
+        _.forEach(trigger.device.filters, f => {
+          const data = _.find(this.dataSource, d => d.id === f.key)
+          f.valueType = (data && (data.valueType || {})) || {}
+        })
+      }
     }
   },
   data () {

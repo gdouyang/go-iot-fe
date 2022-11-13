@@ -74,7 +74,7 @@
 import { addScene, updateScene } from '../api.js'
 import { newTrigger } from './triggers/data.js'
 import { newEmtpyAction } from '@/views/iot/alarm/actions/data.js'
-import Trigger from './triggers/triggers-index.vue'
+import Trigger from './triggers/TriggerIndex.vue'
 import Action from '@/views/iot/alarm/actions/index.vue'
 import _ from 'lodash'
 // import moment from 'moment'
@@ -118,8 +118,7 @@ export default {
   },
   methods: {
     init () {
-      const props = this
-      const data = props.data
+      const data = this.data
       if (data) {
         this.triggers = _.isEmpty(data.triggers) ? [ newTrigger() ] : data.triggers
         this.actions = _.isEmpty(data.actions) ? [ newEmtpyAction() ] : data.actions
@@ -156,14 +155,19 @@ export default {
       if (!isPass) {
         return
       }
-      const props = this
-      const data = _.cloneDeep(props.data)
+      const data = _.cloneDeep(this.data)
       const triggers = []
       _.forEach(this.triggers, t => {
         t = _.cloneDeep(t)
-        _.forEach(t.filters, f => {
-          delete f.valueType
-        })
+        if (t.type === 'device') {
+          t.device.filters = _.map(t.device.filters, f => {
+            return {
+              key: f.key,
+              value: _.toString(f.value),
+              operator: f.operator
+            }
+          })
+        }
         triggers.push(t)
       })
       data.triggers = triggers

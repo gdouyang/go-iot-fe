@@ -145,7 +145,7 @@
 import _ from 'lodash'
 import { newFilter } from './data'
 export default {
-  name: 'AlarmTriggers',
+  name: 'AlarmTrigger',
   props: {
     trigger: {
       type: Object,
