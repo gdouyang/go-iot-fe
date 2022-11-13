@@ -32,7 +32,7 @@
       </div>
       <PageTable ref="tb" url="device/page" :columns="columns" rowKey="id">
         <span slot="state" slot-scope="text, record">
-          {{ record.state && record.state.text }}
+          {{ record.state }}
         </span>
         <span slot="action" slot-scope="text, record">
           <a size="small" @click="select(record)">选择</a>
@@ -46,7 +46,7 @@
 import _ from 'lodash'
 
 const defautSearchObj = {
-  username: '',
+  code: '',
   name: ''
 }
 export default {
@@ -58,7 +58,7 @@ export default {
       columns: [
         { title: '编码', dataIndex: 'id' },
         { title: '名称', dataIndex: 'name' },
-        { title: '产品', dataIndex: 'productName' },
+        { title: '产品', dataIndex: 'productId' },
         { title: '状态', dataIndex: 'state', scopedSlots: { customRender: 'state' } },
         { title: '操作', dataIndex: 'action', minWidth: 110, scopedSlots: { customRender: 'action' } }
       ]

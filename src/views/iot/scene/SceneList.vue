@@ -22,7 +22,10 @@
       <a-button type="primary" icon="plus" @click="handleAdd">新建</a-button>
     </div>
 
-    <PageTable ref="tb" url="rule-engine/scene/page" :columns="columns">
+    <PageTable ref="tb" url="/scene/page" :columns="columns">
+      <span slot="state" slot-scope="text">
+        {{ text }}
+      </span>
       <span slot="action" slot-scope="text, record">
         <a @click="edit(record)">查看</a>
         <a-divider type="vertical"/>
@@ -64,6 +67,7 @@
 
 <script>
 import _ from 'lodash'
+import { get, remove, start, stop } from './api.js'
 import SceneAdd from './modules/SceneAdd.vue'
 
 export default {
@@ -77,20 +81,13 @@ export default {
       queryParam: {},
       // 表头
       columns: [
+        { title: 'ID', dataIndex: 'id' },
+        { title: '名称', dataIndex: 'name' },
+        { title: '创建时间', dataIndex: 'createTime', minWidth: 110 },
+        { title: '状态', dataIndex: 'state', scopedSlots: { customRender: 'state' } },
         {
-          title: 'ID',
-          dataIndex: 'id'
-        },
-        {
-          title: '名称',
-          dataIndex: 'name'
-        },
-        {
-          title: '创建时间',
-          dataIndex: 'createTime'
-        }, {
           title: '操作',
-          width: '150px',
+          minWidth: 110,
           dataIndex: 'action',
           scopedSlots: { customRender: 'action' }
         }
@@ -115,8 +112,7 @@ export default {
       this.openModal = true
     },
     edit (record) {
-      this.$http.get(`/rule-engine/scene/${record.id}`)
-      .then(resp => {
+      get(record.id).then(resp => {
         if (resp.success) {
           this.currentData = _.cloneDeep(resp.result)
           this.openModal = true
@@ -130,8 +126,7 @@ export default {
     },
     start (item) {
       this.spinning = true
-      this.$http.post(`/rule-engine/scene/${item.id}/_start`)
-      .then(resp => {
+      start(item.id).then(resp => {
         if (resp.success) {
            this.$message.success('启动成功')
            this.search()
@@ -142,8 +137,7 @@ export default {
     },
     deleteScene (id) {
       this.spinning = true
-      this.$http.delete(`/rule-engine/scene/${id}`)
-      .then((response) => {
+      remove(id).then((response) => {
         if (response.success) {
           this.$message.success('操作成功')
           this.search()
@@ -154,8 +148,7 @@ export default {
     },
     stop (item) {
       this.spinning = true
-      this.$http.post(`/rule-engine/scene/${item.id}/_stop`)
-      .then((response) => {
+      stop(item.id).then((response) => {
         if (response.success) {
           this.$message.success('停止成功')
           this.search()

@@ -135,7 +135,6 @@
   </Dialog>
 </template>
 <script>
-
 import { newTrigger } from './triggers/data.js'
 import { newEmtpyAction } from './actions/data.js'
 import Triggers from './triggers/triggers-index.vue'

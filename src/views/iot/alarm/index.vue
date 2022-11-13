@@ -23,8 +23,8 @@
   </a-spin>
 </template>
 <script>
-import AlarmSetting from './alarm-setting.vue'
-import AlarmLog from './alarm-log.vue'
+import AlarmSetting from './AlarmSetting.vue'
+import AlarmLog from './AlarmLog.vue'
 export default {
   props: {
     target: {

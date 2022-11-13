@@ -63,6 +63,7 @@
 </template>
 <script>
 import _ from 'lodash'
+import { remove, start, stop, addAlarm, updateAlarm, getAlarmList } from './api.js'
 import moment from 'moment'
 import Save from './save.vue'
 
@@ -138,10 +139,12 @@ export default {
   },
   methods: {
     add () {
+      this.isEdit = false
       this.saveAlarmData = {}
       this.saveVisible = true
     },
     edit (item) {
+      this.isEdit = true
       this.saveAlarmData = _.cloneDeep(item)
       this.saveVisible = true
     },
@@ -150,8 +153,7 @@ export default {
     },
     start (item) {
       this.spinning = true
-      this.$http.post(`/device/alarm/${item.id}/_start`)
-      .then(resp => {
+      start(item.id).then(resp => {
         if (resp.success) {
            this.$message.success('启动成功')
            this.getProductAlarms()
@@ -162,8 +164,7 @@ export default {
     },
     deleteAlarm (id) {
       this.spinning = true
-      this.$http.delete(`/device/alarm/${id}`)
-      .then((response) => {
+      remove(id).then((response) => {
         if (response.success) {
           this.$message.success('操作成功')
           this.getProductAlarms()
@@ -174,8 +175,7 @@ export default {
     },
     stop (item) {
       this.spinning = true
-      this.$http.post(`/device/alarm/${item.id}/_stop`)
-      .then((response) => {
+      stop(item.id).then((response) => {
         if (response.success) {
           this.$message.success('停止成功')
           this.getProductAlarms()
@@ -187,10 +187,7 @@ export default {
     getProductAlarms () {
       const alarmDataList = this.alarmDataList
       alarmDataList.splice(0, alarmDataList.length)
-      const target = this.target
-      const targetId = this.targetId
-      this.$http.get(`/device/alarm/${target}/${targetId}`)
-      .then(resp => {
+      getAlarmList(this.target, this.targetId).then(resp => {
         if (resp.success) {
           this.data = resp.result
           _.map(resp.result, item => {
@@ -199,10 +196,8 @@ export default {
         }
         this.spinning = false
       })
-      if (target === 'device') {
-        const productId = this.productId
-        this.$http.get(`/device/alarm/product/${productId}`)
-        .then(resp => {
+      if (this.target === 'device') {
+        getAlarmList('product', this.productId).then(resp => {
           if (resp.success) {
             resp.result.map((item) => {
               alarmDataList.push(item)
@@ -222,8 +217,13 @@ export default {
       this.getProductAlarms()
     },
     submitData (data) {
-      this.$http.patch(`/device/alarm/${this.target}/${this.targetId}`, data)
-      .then((response) => {
+      let promise = null
+      if (data.id) {
+        promise = updateAlarm(data)
+      } else {
+        promise = addAlarm(data)
+      }
+      promise.then((response) => {
         if (response.success) {
           this.$message.success('保存成功')
           this.saveVisible = false

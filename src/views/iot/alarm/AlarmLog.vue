@@ -1,6 +1,6 @@
 <template>
   <a-card :bordered="false">
-    <PageTable ref="tb" rowKey="id" :columns="columns" url="/device/alarm/history/page">
+    <PageTable ref="tb" rowKey="id" :columns="columns" url="/alarm/log/page">
       <span slot="state" slot-scope="text">
         <a-tag color="#87d068" v-if="text === 'solve'">已处理</a-tag>
         <a-tag color="#f50" v-else>未处理</a-tag>

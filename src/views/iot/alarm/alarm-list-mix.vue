@@ -1,6 +1,7 @@
 <script>
 // import _ from 'lodash'
 // import moment from 'moment'
+import { solveAlarmLog } from './api.js'
 import encodeQueryParam from '@/utils/encodeParam.js'
 export default {
   name: 'AlamrListMix',
@@ -92,11 +93,7 @@ export default {
       this.$refs.form.validate((valid) => {
         if (valid) {
           const id = this.currentLog.id
-          const description = this.currentLog.description
-          this.$http.put(`/device/alarm/history/${id}/_solve`, description, {
-            headers: { 'Content-Type': 'text/plain;charset=UTF-8' }
-          })
-          .then((response) => {
+          solveAlarmLog(id, this.currentLog).then((response) => {
             if (response.success) {
               this.$message.success('保存成功')
               this.findAlarmLog()

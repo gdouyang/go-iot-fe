@@ -186,7 +186,7 @@
 <script>
 import _ from 'lodash'
 import { newFilter } from './data'
-import DeviceSelect from '@/views/iot/device/device-select.vue'
+import DeviceSelect from '@/views/iot/device/DeviceSelect.vue'
 
 export default {
   name: 'SceneTrigger',

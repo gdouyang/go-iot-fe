@@ -12,21 +12,6 @@
         <a-row>
           <a-col :span="12">
             <a-form-model-item
-              label="场景联动ID"
-              prop="id"
-              :rules="[
-                { required: true, message: '场景联动ID不能为空' },
-                { max: 50, message: '不能超过50个字符' }
-              ]"
-            >
-              <a-input
-                v-model="data.id"
-                placeholder="输入场景联动名称 "
-              />
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="12">
-            <a-form-model-item
               label="场景联动名称"
               prop="name"
               :rules="[
@@ -36,7 +21,7 @@
             >
               <a-input
                 v-model="data.name"
-                placeholder="输入场景联动名称 "
+                placeholder="输入场景联动名称"
               />
             </a-form-model-item>
           </a-col>
@@ -65,16 +50,14 @@
         </a-card>
         <!-- 执行动作 -->
         <a-card :bordered="false" size="small">
-          <p style="font-size: 16px;">执行动作
-          </p>
-          <template v-for="(item, index) in actions">
-            <Action
-              :key="index + '-action'"
-              :action="item"
-              :position="index"
-              @save="saveAction"
-              @remove="removeAction"/>
-          </template>
+          <p style="font-size: 16px;">执行动作</p>
+          <Action
+            v-for="(item, index) in actions"
+            :key="index + '-action'"
+            :action="item"
+            :position="index"
+            @save="saveAction"
+            @remove="removeAction"/>
           <a-button
             icon="plus"
             type="link"
@@ -88,7 +71,7 @@
   </Dialog>
 </template>
 <script>
-
+import { addScene, updateScene } from '../api.js'
 import { newTrigger } from './triggers/data.js'
 import { newEmtpyAction } from '@/views/iot/alarm/actions/data.js'
 import Trigger from './triggers/triggers-index.vue'
@@ -186,8 +169,13 @@ export default {
       data.triggers = triggers
       data.actions = this.actions
       console.log(data)
-      this.$http.patch(`/rule-engine/scene`, data)
-      .then(resp => {
+      let promise = null
+      if (data.id) {
+        promise = updateScene(data)
+      } else {
+        promise = addScene(data)
+      }
+      promise.then(resp => {
         if (resp.success) {
           this.$message.success('启动成功')
           this.$emit('success', data)

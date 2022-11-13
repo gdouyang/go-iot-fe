@@ -61,7 +61,7 @@ import _ from 'lodash'
 import { WRITE_PROPERTY, INVOKE_FUNCTION } from './data.js'
 import Properties from './device-properties.vue'
 import FunctionOnType from './device-function.vue'
-import DeviceSelect from '@/views/iot/device/device-select.vue'
+import DeviceSelect from '@/views/iot/device/DeviceSelect.vue'
 export default {
   name: 'DeviceAction',
   props: {
