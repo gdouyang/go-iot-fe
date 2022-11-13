@@ -37,9 +37,7 @@
           :value="functionDefaultValue"
           @change="functionIdChange"
         >
-          <template v-for="item in functions">
-            <a-select-option :key="item.id" :value="item.id">{{ item.name }}({{ item.id }})</a-select-option>
-          </template>
+          <a-select-option template v-for="item in functions" :key="item.id" :value="item.id">{{ item.name }}({{ item.id }})</a-select-option>
         </a-select>
       </a-col>
       <a-col :span="24" v-for="(item, index) in functionData.inputs" :key="`function_${item.id}_${index}`">
@@ -59,8 +57,8 @@
 <script>
 import _ from 'lodash'
 import { WRITE_PROPERTY, INVOKE_FUNCTION } from './data.js'
-import Properties from './device-properties.vue'
-import FunctionOnType from './device-function.vue'
+import Properties from './DeviceProperties.vue'
+import FunctionOnType from './DeviceFunction.vue'
 import DeviceSelect from '@/views/iot/device/DeviceSelect.vue'
 export default {
   name: 'DeviceAction',

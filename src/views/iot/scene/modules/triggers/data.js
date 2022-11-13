@@ -1,8 +1,8 @@
 export function newTrigger () {
   return {
     type: undefined, // device, timer
-    cron: undefined, // trigger == 'timer'时才有
-    device: { // trigger == 'device'时才有
+    cron: undefined, // type == 'timer'时才有
+    device: { // type == 'device'时才有
       type: undefined,
       modelId: undefined,
       productId: undefined,

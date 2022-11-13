@@ -92,7 +92,7 @@
 
 <script>
 import _ from 'lodash'
-import PropertiesObject from './device-properties-object.vue'
+import PropertiesObject from './DevicePropertiesObject.vue'
 export default {
   name: 'DeviceProperties',
   props: {
