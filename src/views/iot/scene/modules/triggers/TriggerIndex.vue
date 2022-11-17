@@ -1,177 +1,153 @@
 <template>
   <div>
+    <p style="font-size: 16px;">触发条件</p>
     <a-card size="small" :bordered="false" style="background-color: #eee;">
-      <a-row>
-        <span>触发器: {{ position + 1 }}</span>
-        <a-popconfirm
-          title="确认删除此触发器？"
-          @confirm="$emit('remove', position)"
-        >
-          <a>删除</a>
-        </a-popconfirm>
-      </a-row>
       <a-row :gutter="16">
         <a-col :span="24">
-          <a-col :span="4">
-            <a-select
-              placeholder="选择触发器类型"
-              v-model="trigger.type"
-            >
-              <a-select-option value="device">设备触发</a-select-option>
-              <a-select-option value="timer">定时触发</a-select-option>
-            </a-select>
-          </a-col>
-          <template v-if="trigger.type === 'device'">
-            <a-switch
-              v-model="shakeLimit.enabled"
-              checkedChildren="开启防抖"
-              unCheckedChildren="关闭防抖"
-              style="margin-left: 20px;"
+          <a-switch
+            v-model="shakeLimit.enabled"
+            checkedChildren="开启防抖"
+            unCheckedChildren="关闭防抖"
+            style="margin-left: 20px;"
+          />
+          <template v-if="shakeLimit.enabled">
+            <a-input
+              v-model="shakeLimit.time"
+              style="width: 70px; margin-left: 3px"
+              size="small"
             />
-            <template v-if="shakeLimit.enabled">
-              <a-input
-                v-model="shakeLimit.time"
-                style="width: 70px; margin-left: 3px"
-                size="small"
-              />
-              <small style="margin: 0px 5px;">秒内发生</small>
-              <a-input
-                v-model="shakeLimit.threshold"
-                style="width: 70px;"
-                size="small"
-              />
-              <small style="margin: 0px 5px;">次及以上时，处理</small>
-              <a-radio-group
-                v-model="shakeLimit.alarmFirst"
-                size="small"
-                buttonStyle="solid"
-              >
-                <a-radio-button :value="true">第一次</a-radio-button>
-                <a-radio-button :value="false">最后一次</a-radio-button>
-              </a-radio-group>
-            </template>
+            <small style="margin: 0px 5px;">秒内发生</small>
+            <a-input
+              v-model="shakeLimit.threshold"
+              style="width: 70px;"
+              size="small"
+            />
+            <small style="margin: 0px 5px;">次及以上时，处理</small>
+            <a-radio-group
+              v-model="shakeLimit.alarmFirst"
+              size="small"
+              buttonStyle="solid"
+            >
+              <a-radio-button :value="true">第一次</a-radio-button>
+              <a-radio-button :value="false">最后一次</a-radio-button>
+            </a-radio-group>
           </template>
         </a-col>
-        <a-col :span="24" style="margin-top: 5px;" v-if="trigger.type === 'timer'">
-          <a-col :span="5">
+        <a-col :span="24" style="margin-top: 5px;">
+          <a-col :span="4">
+            <a-select v-model="scene.productId" @change="productIdChange" placeholder="产品">
+              <a-select-option v-for="p in productList" :key="p.id" :value="p.id">{{ p.name }}</a-select-option>
+            </a-select>
+          </a-col>
+          <a-col :span="4">
             <a-input
-              placeholder="cron表达式"
-              v-model="trigger.cron"
-            />
+              placeholder="点击选择设备"
+              v-model="scene.deviceName"
+              :disabled="true"
+            >
+              <a-icon slot="addonAfter" type="api" @click="selectDevice" title="点击选择设备"></a-icon>
+            </a-input>
+          </a-col>
+          <a-col :span="4" v-if="scene.deviceId">
+            <a-select
+              placeholder="选择类型，如：属性/事件"
+              v-model="scene.filterType"
+              @change="triggerTypeChange"
+            >
+              <a-select-option value="online">上线</a-select-option>
+              <a-select-option value="offline">离线</a-select-option>
+              <a-select-option value="properties" v-if="metaData.properties">属性</a-select-option>
+              <a-select-option value="event" v-if="metaData.events">事件</a-select-option>
+            </a-select>
+          </a-col>
+          <a-col :span="4" v-if="scene.trigger.filterType === 'properties'">
+            <a-select
+              placeholder="物模型属性"
+              v-model="scene.modelId"
+              @change="modelIdPropertiesChange"
+            >
+              <a-select-option v-for="item in metaData.properties" :key="item.id" :value="item.id">
+                {{ `${item.name}（${item.id}）` }}
+              </a-select-option>
+            </a-select>
+          </a-col>
+          <a-col :span="4" v-else-if="scene.trigger.filterType === 'event'">
+            <a-select
+              placeholder="物模型事件"
+              v-model="scene.modelId"
+              @change="modelIdEventChange"
+            >
+              <a-select-option v-for="item in metaData.events" :key="item.id" :value="item.id">
+                {{ `${item.name}（${item.id}）` }}
+              </a-select-option>
+            </a-select>
           </a-col>
         </a-col>
-        <template v-if="trigger.type === 'device'">
-          <a-col :span="24" style="margin-top: 5px;">
-            <a-col :span="4">
-              <a-input
-                placeholder="点击选择设备"
-                v-model="trigger.device.deviceName"
-                :disabled="true"
-              >
-                <a-icon slot="addonAfter" type="api" @click="selectDevice" title="点击选择设备"></a-icon>
-              </a-input>
-            </a-col>
-            <a-col :span="4" v-if="trigger.device.deviceId">
-              <a-select
-                placeholder="选择类型，如：属性/事件"
-                v-model="trigger.device.type"
-                @change="triggerTypeChange"
-              >
-                <a-select-option value="online">上线</a-select-option>
-                <a-select-option value="offline">离线</a-select-option>
-                <a-select-option value="properties" v-if="metaData.properties">属性</a-select-option>
-                <a-select-option value="event" v-if="metaData.events">事件</a-select-option>
-              </a-select>
-            </a-col>
-            <a-col :span="4" v-if="trigger.device.type === 'properties'">
-              <a-select
-                placeholder="物模型属性"
-                v-model="trigger.device.modelId"
-                @change="modelIdPropertiesChange"
-              >
-                <a-select-option v-for="item in metaData.properties" :key="item.id" :value="item.id">
-                  {{ `${item.name}（${item.id}）` }}
-                </a-select-option>
-              </a-select>
-            </a-col>
-            <a-col :span="4" v-else-if="trigger.device.type === 'event'">
-              <a-select
-                placeholder="物模型事件"
-                v-model="trigger.device.modelId"
-                @change="modelIdEventChange"
-              >
-                <a-select-option v-for="item in metaData.events" :key="item.id" :value="item.id">
-                  {{ `${item.name}（${item.id}）` }}
-                </a-select-option>
-              </a-select>
-            </a-col>
+        <a-col
+          :span="24"
+          style="margin-top: 5px;"
+          v-for="(item, index) in scene.trigger.filters"
+          :key="index">
+          <a-col :span="4">
+            <a-select
+              placeholder="过滤条件KEY"
+              v-model="item.key"
+              @change="filterKeyChange($event, item)"
+            >
+              <a-select-option v-for="d in dataSource" :value="d.id" :key="d.id">{{ d.id }}</a-select-option>
+            </a-select>
           </a-col>
-          <a-col
-            :span="24"
-            style="margin-top: 5px;"
-            v-for="(item, index) in trigger.device.filters"
-            :key="index">
-            <a-col :span="4">
-              <a-select
-                placeholder="过滤条件KEY"
-                v-model="item.key"
-                @change="filterKeyChange($event, item)"
-              >
-                <a-select-option v-for="d in dataSource" :value="d.id" :key="d.id">{{ d.id }}</a-select-option>
-              </a-select>
-            </a-col>
-            <a-col :span="4" >
-              <a-select
-                placeholder="操作符"
-                v-model="item.operator"
-              >
-                <a-select-option value="eq">等于(=)</a-select-option>
-                <a-select-option value="not">不等于(!=)</a-select-option>
-                <a-select-option value="gt">大于(>)</a-select-option>
-                <a-select-option value="lt">小于(&lt;)</a-select-option>
-                <a-select-option value="gte">大于等于(>=)</a-select-option>
-                <a-select-option value="lte">小于等于(&lt;=)</a-select-option>
-                <a-select-option value="like">模糊(%)</a-select-option>
-              </a-select>
-            </a-col>
-            <a-col :span="4">
-              <a-select
-                v-if="item.valueType.type === 'boolean' && !$_.isNil(item.valueType.trueValue) && !$_.isNil(item.valueType.falseValue)"
-                placeholder="过滤条件值"
-                v-model="item.value"
-              >
-                <a-select-option :key="item.valueType.trueValue+''">
-                  {{ `${item.valueType.trueText}（${item.valueType.trueValue}）` }}
-                </a-select-option>
-                <a-select-option :key="item.valueType.falseValue+''">
-                  {{ `${item.valueType.falseText}（${item.valueType.falseValue}）` }}
-                </a-select-option>
-              </a-select>
-              <a-input-number
-                v-else-if="['float', 'double'].indexOf(item.valueType.type) !== -1"
-                v-model="item.value"
-                placeholder="过滤条件值"
-                style="width: 150px;"
-              />
-              <a-input-number
-                v-else-if="['int', 'long'].indexOf(item.valueType.type) !== -1"
-                v-model="item.value"
-                :precision="0"
-                :step="1"
-                placeholder="过滤条件值"
-                style="width: 150px;"
-              />
-              <a-input
-                v-else
-                placeholder="过滤条件值"
-                v-model="item.value"
-              />
-            </a-col>
-            <a-col :span="5">
-              <a @click="removeFilter(index)">删除</a>
-            </a-col>
+          <a-col :span="4" >
+            <a-select
+              placeholder="操作符"
+              v-model="item.operator"
+            >
+              <a-select-option value="eq">等于(=)</a-select-option>
+              <a-select-option value="not">不等于(!=)</a-select-option>
+              <a-select-option value="gt">大于(>)</a-select-option>
+              <a-select-option value="lt">小于(&lt;)</a-select-option>
+              <a-select-option value="gte">大于等于(>=)</a-select-option>
+              <a-select-option value="lte">小于等于(&lt;=)</a-select-option>
+              <a-select-option value="like">模糊(%)</a-select-option>
+            </a-select>
           </a-col>
-        </template>
+          <a-col :span="4">
+            <a-select
+              v-if="item.valueType.type === 'boolean' && !$_.isNil(item.valueType.trueValue) && !$_.isNil(item.valueType.falseValue)"
+              placeholder="过滤条件值"
+              v-model="item.value"
+            >
+              <a-select-option :key="item.valueType.trueValue+''">
+                {{ `${item.valueType.trueText}（${item.valueType.trueValue}）` }}
+              </a-select-option>
+              <a-select-option :key="item.valueType.falseValue+''">
+                {{ `${item.valueType.falseText}（${item.valueType.falseValue}）` }}
+              </a-select-option>
+            </a-select>
+            <a-input-number
+              v-else-if="['float', 'double'].indexOf(item.valueType.type) !== -1"
+              v-model="item.value"
+              placeholder="过滤条件值"
+              style="width: 150px;"
+            />
+            <a-input-number
+              v-else-if="['int', 'long'].indexOf(item.valueType.type) !== -1"
+              v-model="item.value"
+              :precision="0"
+              :step="1"
+              placeholder="过滤条件值"
+              style="width: 150px;"
+            />
+            <a-input
+              v-else
+              placeholder="过滤条件值"
+              v-model="item.value"
+            />
+          </a-col>
+          <a-col :span="5">
+            <a @click="removeFilter(index)">删除</a>
+          </a-col>
+        </a-col>
         <a-col :span="24">
           <div>
             <a @click="addFilter">添加</a>
@@ -179,65 +155,26 @@
         </a-col>
       </a-row>
     </a-card>
-    <DeviceSelect @select="select" ref="DeviceSelect"/>
+    <DeviceSelect @select="select" :productId="scene.productId" ref="DeviceSelect"/>
   </div>
 </template>
 
 <script>
 import _ from 'lodash'
+import { getDetail, getProductList } from '@/views/iot/device/api.js'
 import { newFilter } from './data'
 import DeviceSelect from '@/views/iot/device/DeviceSelect.vue'
 
 export default {
   name: 'SceneTrigger',
   props: {
-    trigger: {
+    data: {
       type: Object,
-      default: null
-    },
-    position: {
-      type: Number,
       default: null
     }
   },
   components: {
     DeviceSelect
-  },
-  created () {
-    const metadata = this.metaData
-    const trigger = this.trigger
-    if (metadata && trigger.type === 'device') {
-      let data = null
-      if (trigger.device.type === 'event') {
-        data = metadata['events']
-      } else if (trigger.device.type === 'function') {
-        data = metadata['functions']
-      } else {
-        data = metadata[trigger.device.type]
-      }
-      if (data) {
-        this.dataSource = []
-        data.map((item) => {
-          if (item.id === trigger.modelId) {
-            this.setDataSourceValue(trigger.device.type, item, trigger.modelId)
-          }
-        })
-      }
-      this.shakeLimit = trigger.device.shakeLimit
-      const deviceId = trigger.device.deviceId
-      if (deviceId) {
-        this.findDevice(deviceId)
-      }
-      if (_.isNil(trigger.device.filters)) {
-        this.trigger.device.filters = []
-      } else {
-        // 回显触发器filter
-        _.forEach(trigger.device.filters, f => {
-          const data = _.find(this.dataSource, d => d.id === f.key)
-          f.valueType = (data && (data.valueType || {})) || {}
-        })
-      }
-    }
   },
   data () {
     return {
@@ -252,12 +189,53 @@ export default {
         time: undefined,
         threshold: undefined,
         alarmFirst: true
+      },
+      scene: {},
+      productList: []
+    }
+  },
+  created () {
+    this.scene = this.data
+    const metadata = this.metaData
+    const scene = this.scene
+    const trigger = this.scene.trigger
+    if (metadata) {
+      let data = null
+      if (trigger.filterType === 'event') {
+        data = metadata['events']
+      } else if (trigger.filterType === 'function') {
+        data = metadata['functions']
+      } else {
+        data = metadata[trigger.filterType]
+      }
+      if (data) {
+        this.dataSource = []
+        data.map((item) => {
+          if (item.id === scene.modelId) {
+            this.setDataSourceValue(trigger.filterType, item, scene.modelId)
+          }
+        })
+      }
+      this.shakeLimit = trigger.shakeLimit
+      const deviceId = scene.deviceId
+      if (deviceId) {
+        this.findDevice(deviceId)
+      }
+      if (_.isNil(trigger.filters)) {
+        this.scene.filters = []
+      } else {
+        // 回显触发器filter
+        _.forEach(trigger.filters, f => {
+          const data = _.find(this.dataSource, d => d.id === f.key)
+          f.valueType = (data && (data.valueType || {})) || {}
+        })
       }
     }
+    this.listAllProduct()
   },
   methods: {
     triggerTypeChange (value) {
-      this.trigger.device.filters = []
+      this.scene.filters = []
     },
     modelIdPropertiesChange (value) {
       const data = _.find(this.metaData.properties, p => p.id === value)
@@ -266,7 +244,7 @@ export default {
       }
       const f = newFilter()
       f.valueType = {}
-      this.trigger.device.filters = [f]
+      this.scene.filters = [f]
     },
     modelIdEventChange (value) {
       const data = _.find(this.metaData.events, p => p.id === value)
@@ -275,15 +253,15 @@ export default {
       }
       const f = newFilter()
       f.valueType = {}
-      this.trigger.device.filters = [f]
+      this.scene.filters = [f]
     },
     removeFilter (index) {
-      this.trigger.device.filters.splice(index, 1)
+      this.scene.filters.splice(index, 1)
     },
     addFilter () {
       const f = newFilter()
       f.valueType = {}
-      this.trigger.device.filters.push(f)
+      this.scene.filters.push(f)
     },
     filterKeyChange (value, item) {
       if (item) {
@@ -327,9 +305,19 @@ export default {
     select (item) {
       this.findDevice(item.id)
     },
+    listAllProduct () {
+      return getProductList().then((resp) => {
+        if (resp.success) {
+          this.productList = resp.result
+        }
+      })
+    },
+    productIdChange () {
+      this.scene.deviceId = null
+      this.scene.deviceName = null
+    },
     findDevice (deviceId) {
-      this.$http.get(`/device/${deviceId}/detail`)
-      .then((data) => {
+      getDetail(deviceId).then((data) => {
         if (data.success) {
           const result = data.result
           if (result.metadata) {
@@ -341,7 +329,7 @@ export default {
               events: []
             }
           }
-          const device = this.trigger.device
+          const device = this.scene
           device.deviceId = result.id
           device.deviceName = result.name
           device.productId = result.productId

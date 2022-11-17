@@ -72,9 +72,7 @@ export default {
       },
       addObj: _.cloneDeep(defaultAddObj),
       isEdit: false,
-      productList: [],
-      projectList: [],
-      groupList: []
+      productList: []
     }
   },
   created () {},

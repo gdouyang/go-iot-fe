@@ -8,9 +8,9 @@
     style="margin-top: -3%;"
   >
     <div :style="{ maxHeight: 750, overflowY: 'auto', overflowX: 'hidden' }">
-      <a-form-model :model="data" :labelCol="{span: 5}" :wrapperCol="{span: 12}" ref="addAlarmForm">
+      <a-form-model :model="scene" :labelCol="{span: 5}" :wrapperCol="{span: 12}" ref="addAlarmForm">
         <a-row>
-          <a-col :span="12">
+          <a-col :span="14">
             <a-form-model-item
               label="场景联动名称"
               prop="name"
@@ -20,33 +20,48 @@
               ]"
             >
               <a-input
-                v-model="data.name"
+                v-model="scene.name"
                 placeholder="输入场景联动名称"
+              />
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-model-item
+              label="触发器类型"
+              prop="triggerType"
+              :rules="[
+                { required: true, message: '选择触发器类型' }
+              ]"
+            >
+              <a-select
+                placeholder="选择触发器类型"
+                v-model="scene.triggerType"
+                @change="sceneTypeChange"
+              >
+                <a-select-option value="device">设备触发</a-select-option>
+                <a-select-option value="timer">定时触发</a-select-option>
+              </a-select>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="12" v-if="scene.triggerType === 'timer'">
+            <a-form-model-item
+              label="cron表达式"
+              prop="cron"
+              :rules="[
+                { required: true, message: 'cron表达式不能为空' },
+                { max: 50, message: '不能超过50个字符' }
+              ]"
+            >
+              <a-input
+                placeholder="cron表达式"
+                v-model="scene.cron"
               />
             </a-form-model-item>
           </a-col>
         </a-row>
         <!-- 触发条件 -->
-        <a-card style="margin-bottom: 10px;" :bordered="false" size="small">
-          <p style="font-size: 16px;">触发条件
-            <a-tooltip title="触发条件满足条件中任意一个即可触发">
-              <a-icon type="question-circle-o"/>
-            </a-tooltip>
-          </p>
-          <div v-for="(item, index) in triggers" :key="index + '-trigger'">
-            <Trigger
-              :trigger="item"
-              :position="index"
-              @remove="removeTriggers"
-            />
-          </div>
-          <a-button
-            icon="plus"
-            type="link"
-            @click="addTrigger"
-          >
-            新增触发器
-          </a-button>
+        <a-card style="margin-bottom: 10px;" :bordered="false" size="small" v-if="scene.triggerType === 'device'">
+          <Trigger :data="scene"/>
         </a-card>
         <!-- 执行动作 -->
         <a-card :bordered="false" size="small">
@@ -72,7 +87,7 @@
 </template>
 <script>
 import { addScene, updateScene } from '../api.js'
-import { newTrigger } from './triggers/data.js'
+import { newScene } from './triggers/data.js'
 import { newEmtpyAction } from '@/views/iot/alarm/actions/data.js'
 import Trigger from './triggers/TriggerIndex.vue'
 import Action from '@/views/iot/alarm/actions/index.vue'
@@ -102,6 +117,7 @@ export default {
     }
   },
   created () {
+    this.scene = _.cloneDeep(this.data)
     this.init()
   },
   mounted () {
@@ -111,27 +127,30 @@ export default {
   },
   data () {
     return {
-      triggers: [],
+      scene: {},
       actions: [],
       formChecker: new Map()
     }
   },
   methods: {
     init () {
-      const data = this.data
-      if (data) {
-        this.triggers = _.isEmpty(data.triggers) ? [ newTrigger() ] : data.triggers
+      const data = this.scene
+      if (data && data.id) {
         this.actions = _.isEmpty(data.actions) ? [ newEmtpyAction() ] : data.actions
       } else {
-        this.triggers = [ newTrigger() ]
+        this.scene = newScene()
         this.actions = [ newEmtpyAction() ]
       }
     },
-    addTrigger () {
-      this.triggers.push(newTrigger())
-    },
-    removeTriggers (position) {
-      this.triggers.splice(position, 1)
+    sceneTypeChange () {
+      if (this.scene.triggerType === 'timer') {
+        const s = newScene()
+        s.name = this.scene.name
+        s.triggerType = this.scene.triggerType
+        this.scene = s
+      } else {
+        this.scene.cron = null
+      }
     },
     removeAction (position) {
       this.actions.splice(position, 1)
@@ -155,22 +174,16 @@ export default {
       if (!isPass) {
         return
       }
-      const data = _.cloneDeep(this.data)
-      const triggers = []
-      _.forEach(this.triggers, t => {
-        t = _.cloneDeep(t)
-        if (t.type === 'device') {
-          t.device.filters = _.map(t.device.filters, f => {
-            return {
-              key: f.key,
-              value: _.toString(f.value),
-              operator: f.operator
-            }
-          })
-        }
-        triggers.push(t)
-      })
-      data.triggers = triggers
+      const data = _.cloneDeep(this.scene)
+      if (data.triggerType === 'device') {
+        data.trigger.filters = _.map(data.trigger.filters, f => {
+          return {
+            key: f.key,
+            value: _.toString(f.value),
+            operator: f.operator
+          }
+        })
+      }
       data.actions = this.actions
       console.log(data)
       let promise = null

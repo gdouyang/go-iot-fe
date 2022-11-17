@@ -52,6 +52,12 @@ const defautSearchObj = {
 export default {
   components: {
   },
+  props: {
+    productId: {
+      type: String,
+      default: null
+    }
+  },
   data () {
     return {
       searchObj: _.cloneDeep(defautSearchObj),
@@ -68,6 +74,7 @@ export default {
   },
   methods: {
     search () {
+      this.searchObj.productId = this.productId
       this.$refs.tb.search(this.searchObj)
     },
     resetSearch () {

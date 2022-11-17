@@ -1,14 +1,15 @@
-export function newTrigger () {
+export function newScene () {
   return {
-    type: undefined, // device, timer
-    cron: undefined, // type == 'timer'时才有
-    device: { // type == 'device'时才有
-      type: undefined,
-      modelId: undefined,
-      productId: undefined,
-      productName: undefined,
-      deviceId: undefined,
-      deviceName: undefined,
+    name: '',
+    triggerType: '', // device, timer
+    cron: '', // type == 'timer'时才有
+    modelId: undefined,
+    productId: undefined,
+    productName: undefined,
+    deviceId: undefined,
+    deviceName: undefined,
+    trigger: {
+      filterType: undefined,
       shakeLimit: {
         enabled: false,
         time: undefined,
