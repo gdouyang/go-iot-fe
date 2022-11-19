@@ -58,17 +58,14 @@ export default {
     this.getAllTypes()
     const checkerId = this.checkerId = 'notifier-action' + _.uniqueId()
     this.formChecker.set(checkerId, () => {
-      this.notifyTypeError = this.notifierIdError = this.templateIdError = false
+      this.notifyTypeError = this.notifierIdError = false
       if (!this.actionData.configuration.notifyType) {
         this.notifyTypeError = true
       }
       if (!this.actionData.configuration.notifierId) {
         this.notifierIdError = true
       }
-      if (!this.actionData.configuration.templateId) {
-        this.templateIdError = true
-      }
-      if (this.notifyTypeError || this.notifierIdError || this.templateIdError) {
+      if (this.notifyTypeError || this.notifierIdError) {
         return false
       }
       return true
