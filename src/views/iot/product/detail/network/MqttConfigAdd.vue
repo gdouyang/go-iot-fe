@@ -19,28 +19,28 @@
         </a-form-model-item>
         <a-form-model-item
           v-if="addObj.configuration.useTLS"
-          label="密钥库"
-          prop="keystoreBase64"
+          label="crt文件"
+          prop="certBase64"
           :rules="[
-            { required: true, message: '密钥库不能为空', trigger: 'blur' }
+            { required: true, message: 'crt文件不能为空', trigger: 'blur' }
           ]">
-          <CertificateUpload v-model="addObj.keystoreBase64" />
+          <CertificateUpload v-model="addObj.certBase64" />
           <a-input
             type="textarea"
-            v-model="addObj.keystoreBase64"
+            v-model="addObj.certBase64"
             show-word-limit></a-input>
         </a-form-model-item>
         <a-form-model-item
           v-if="addObj.configuration.useTLS"
-          label="信任库"
-          prop="trustKeyStoreBase64"
+          label="key文件"
+          prop="keyBase64"
           :rules="[
-            { required: true, message: '信任库不能为空', trigger: 'blur' }
+            { required: true, message: 'key文件不能为空', trigger: 'blur' }
           ]">
-          <CertificateUpload v-model="addObj.trustKeyStoreBase64" />
+          <CertificateUpload v-model="addObj.keyBase64" />
           <a-input
             type="textarea"
-            v-model="addObj.trustKeyStoreBase64"
+            v-model="addObj.keyBase64"
             show-word-limit></a-input>
         </a-form-model-item>
       </a-form-model>

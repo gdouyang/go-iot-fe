@@ -2,7 +2,7 @@
   <a-upload
     name="file"
     :multiple="false"
-    action="api/network/certificate/upload"
+    action="api/file/base64"
     @change="handleChange"
     :showUploadList="false"
     :withCredentials="true"
