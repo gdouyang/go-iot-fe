@@ -147,26 +147,6 @@ export const asyncRouterMap = [
           }
         ]
       },
-      {
-        path: '/notice',
-        name: 'noticePage',
-        component: RouteView,
-        meta: { title: '通知管理', icon: 'setting', permission: [ 'notify' ] },
-        children: [
-          {
-            path: '/notice/config-list',
-            name: 'ConfigList',
-            component: () => import('@/views/notice/config/ConfigList.vue'),
-            meta: { title: '通知配置', keepAlive: true, permission: [ 'notify-config' ] }
-          },
-          {
-            path: '/notice/template-list',
-            name: 'TemplateAdd',
-            component: () => import('@/views/notice/template/TemplateList.vue'),
-            meta: { title: '通知模板', keepAlive: true, permission: [ 'notify-template' ] }
-          }
-        ]
-      },
       // sys
       {
         path: '/sys',
@@ -197,6 +177,12 @@ export const asyncRouterMap = [
             name: 'SystemConfig',
             component: () => import('@/views/sys/config/SysConfig'),
             meta: { title: '系统配置', keepAlive: true, permission: [ 'sys-config' ] }
+          },
+          {
+            path: '/notice/config-list',
+            name: 'ConfigList',
+            component: () => import('@/views/notice/config/ConfigList.vue'),
+            meta: { title: '通知配置', keepAlive: true, permission: [ 'notify-config' ] }
           }
         ]
       }

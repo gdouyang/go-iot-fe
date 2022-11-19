@@ -40,6 +40,7 @@
 
 <script>
 // import _ from 'lodash'
+import { remove } from '@/views/notice/api.js'
 import ConfigAdd from './modules/ConfigAdd'
 import NoticeHistory from './modules/NoticeHistory'
 // import encodeQueryParam from '@/utils/encodeParam.js'
@@ -68,10 +69,6 @@ export default {
         {
           dataIndex: 'type',
           title: '通知类型'
-        },
-        {
-          dataIndex: 'provider',
-          title: '服务商'
         },
         {
           title: '操作',
@@ -109,8 +106,7 @@ export default {
         title: '确认',
         content: '确定要删除吗？',
         onOk: () => {
-          _this.$http.delete(`/notifier/config/${row.id}`)
-          .then(data => {
+          remove(row.id).then(data => {
             if (data.success) {
               _this.$message.success('操作成功')
               _this.handleOk()

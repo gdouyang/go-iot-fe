@@ -27,102 +27,51 @@
         ]"
       >
         <a-select v-model="addObj.type" @change="typeChange">
-          <a-select-option v-for="item in typeList" :key="item.id" :value="item.id">
+          <a-select-option v-for="item in typeList" :key="item.type" :value="item.type">
             {{ item.name }}
           </a-select-option>
         </a-select>
       </a-form-model-item>
-      <a-form-model-item
-        label="服务商"
-        prop="provider"
-        :rules="[
-          { required: true, message: '请选择服务商' }
-        ]"
-      >
-        <a-select v-model="addObj.provider" @change="providerChange">
-          <a-select-option v-for="item in providerInfos" :key="item.id" :value="item.id">
-            {{ item.name }}
-          </a-select-option>
-        </a-select>
-      </a-form-model-item>
-      <template v-if="metadata && metadata.properties">
+      <template v-if="metadata">
         <a-form-model-item
-          v-for="item in metadata.properties"
-          :key="item.property"
-          :label="item.name"
+          v-for="item in metadata"
+          :key="item.name"
+          :label="item.title"
         >
-          <template v-if="['int','string','number','password'].indexOf(item.type.type) !== -1">
+          <template v-if="['int','string','number','password'].indexOf(item.type) !== -1">
             <a-input-password
-              v-if=" item.type.type === 'password'"
-              v-model="addObj.configuration[item.property]"/>
+              v-if=" item.type === 'password'"
+              v-model="addObj.config[item.property]"/>
             <a-input
               v-else
-              v-model="addObj.configuration[item.property]"></a-input>
+              :placeholder="item.desc"
+              v-model="addObj.config[item.property]"></a-input>
           </template>
-          <template v-else-if="item.property === 'properties'">
-            <a-card>
-              <template v-for="(i, index) in otherConfig">
-                <a-row :key="i.id" style="margin-bottom: 5px;">
-                  <a-col :span="6">
-                    <a-input
-                      v-model="i.name"
-                      placeholder="key"
-                    />
-                  </a-col>
-                  <a-col :span="2">
-                    <a-icon type="double-right" />
-                  </a-col>
-                  <a-col :span="6">
-                    <a-input
-                      v-model="i.value"
-                      placeholder="value"
-                    />
-                  </a-col>
-                  <a-col :span="2">
-                    <a-icon type="double-right" />
-                  </a-col>
-                  <a-col :span="6">
-                    <a-input
-                      v-model="i.description"
-                      placeholder="说明"
-                    />
-                  </a-col>
-                  <a-col :span="2">
-                    <a-icon
-                      v-if="index === 0"
-                      type="plus"
-                      @click="add1"
-                    />
-                    <a-icon
-                      v-else
-                      type="minus"
-                      @click="minus1(index)"
-                    />
-                  </a-col>
-                </a-row>
-              </template>
-            </a-card>
-          </template>
-          <p v-else>缺少</p>
         </a-form-model-item>
       </template>
+      <!-- <template v-if="addObj.type === 'email'">
+        <Email :data="addObj" ref="email"/>
+      </template> -->
     </a-form-model>
   </Dialog>
 </template>
 
 <script>
 import _ from 'lodash'
-import { configTypes } from '@/views/notice/config/service.js'
+import { get, addNotify, updateNotify, configTypes } from '@/views/notice/api.js'
+import Email from './Email.vue'
 
 const defaultAddObj = {
   id: null,
   name: '',
-  configuration: {
-    properties: []
-  }
+  config: {},
+  template: {}
 }
 export default {
   name: 'ConfigAdd',
+  components: {
+    Email
+  },
   data () {
     return {
       labelCol: {
@@ -136,9 +85,7 @@ export default {
       addObj: _.cloneDeep(defaultAddObj),
       isEdit: false,
       typeList: [],
-      providerInfos: [],
-      metadata: {},
-      otherConfig: [] // { id: null, name: '', value: '', description: '' }
+      metadata: []
     }
   },
   created () {},
@@ -146,44 +93,26 @@ export default {
     add () {
       this.isEdit = false
       this.configType()
-      this.otherConfig = [
-        {
-          id: new Date().getTime() + _.uniqueId(),
-          name: '',
-          value: '',
-          description: ''
-        }
-      ]
       this.$refs.addModal.open({ title: '新增通知配置' })
     },
     edit (row) {
       this.isEdit = true
       this.configType().then(() => {
-        this.$http.get(`/notifier/config/${row.id}`)
-          .then((data) => {
+        get(row.id).then((data) => {
             if (data.success) {
               const result = data.result
               this.addObj = result
-              this.otherConfig = result.configuration.properties
               this.typeChange(result.type)
-              this.providerChange(result.provider)
               this.$refs.addModal.open({ title: '编辑通知配置' })
             }
           })
       })
     },
     typeChange (value) {
-      const find = _.find(this.typeList, p => p.id === value)
+      const find = _.find(this.typeList, p => p.type === value)
       if (find) {
-        this.providerInfos = find.providerInfos
+        this.metadata = find.config
       }
-    },
-    providerChange (provider) {
-      const type = this.addObj.type
-      this.$http.get(`/notifier/config/${type}/${provider}/metadata`)
-      .then(resp => {
-        this.metadata = resp.result
-      })
     },
     addClose () {
       this.addObj = _.cloneDeep(defaultAddObj)
@@ -193,12 +122,15 @@ export default {
       this.$refs.addFormRef.validate((valid) => {
         if (valid) {
           const data = _.cloneDeep(this.addObj)
-          if (data.type === 'email') {
-            data.configuration.properties = this.otherConfig
-          }
           data.template = JSON.stringify(data.template)
-          this.$http.patch('/notifier/config', data)
-          .then((resp) => {
+          data.config = JSON.stringify(data.config)
+          let promise = null
+          if (data.id) {
+            promise = updateNotify(data)
+          } else {
+            promise = addNotify(data)
+          }
+          promise.then((resp) => {
             if (resp.success) {
               this.$message.success('操作成功')
               this.$refs.addModal.close()
@@ -215,17 +147,6 @@ export default {
       .then(result => {
         this.typeList = result
       })
-    },
-    add1 () {
-      this.otherConfig.push({
-        id: new Date().getTime() + _.uniqueId(),
-        name: '',
-        value: '',
-        description: ''
-      })
-    },
-    minus1 (index) {
-      this.otherConfig.splice(index, 1)
     }
   }
 }
