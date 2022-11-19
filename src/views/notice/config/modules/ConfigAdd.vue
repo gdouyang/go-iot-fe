@@ -2,7 +2,7 @@
 </style>
 
 <template>
-  <Dialog ref="addModal" @confirm="addConfirm" @close="addClose">
+  <Dialog ref="addModal" @confirm="addConfirm" @close="addClose" :width="1000">
     <a-form-model
       ref="addFormRef"
       :model="addObj"
@@ -41,17 +41,17 @@
           <template v-if="['int','string','number','password'].indexOf(item.type) !== -1">
             <a-input-password
               v-if=" item.type === 'password'"
-              v-model="addObj.config[item.property]"/>
+              v-model="addObj.config[item.name]"/>
             <a-input
               v-else
               :placeholder="item.desc"
-              v-model="addObj.config[item.property]"></a-input>
+              v-model="addObj.config[item.name]"></a-input>
           </template>
         </a-form-model-item>
       </template>
-      <!-- <template v-if="addObj.type === 'email'">
+      <template v-if="addObj.type === 'email'">
         <Email :data="addObj" ref="email"/>
-      </template> -->
+      </template>
     </a-form-model>
   </Dialog>
 </template>
@@ -64,8 +64,9 @@ import Email from './Email.vue'
 const defaultAddObj = {
   id: null,
   name: '',
+  type: null,
   config: {},
-  template: {}
+  template: null
 }
 export default {
   name: 'ConfigAdd',
@@ -101,6 +102,7 @@ export default {
         get(row.id).then((data) => {
             if (data.success) {
               const result = data.result
+              result.config = JSON.parse(result.config)
               this.addObj = result
               this.typeChange(result.type)
               this.$refs.addModal.open({ title: '编辑通知配置' })
@@ -116,13 +118,16 @@ export default {
     },
     addClose () {
       this.addObj = _.cloneDeep(defaultAddObj)
+      this.metadata = []
       this.$refs.addFormRef.resetFields()
     },
     addConfirm () {
       this.$refs.addFormRef.validate((valid) => {
         if (valid) {
           const data = _.cloneDeep(this.addObj)
-          data.template = JSON.stringify(data.template)
+          if (data.type === 'email') {
+            data.template = this.$refs.email.getTemplate()
+          }
           data.config = JSON.stringify(data.config)
           let promise = null
           if (data.id) {

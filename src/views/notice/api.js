@@ -30,3 +30,7 @@ export function configTypes () {
     return res.result
   })
 }
+
+export function listAll (data) {
+  return Vue.prototype.$http.post(`/notifier/config/list`, data)
+}

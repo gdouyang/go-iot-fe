@@ -6,13 +6,15 @@
 import _ from 'lodash'
 import { getNetwork, updateNetwork } from '@/views/iot/product/api.js'
 import NetworkRun from './NetworkRun.vue'
+import CertificateUpload from './upload.vue'
 
 export default {
   name: 'NetworConfig',
   props: {
   },
   components: {
-    NetworkRun
+    NetworkRun,
+    CertificateUpload
   },
   data () {
     return {

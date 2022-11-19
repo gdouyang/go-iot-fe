@@ -18,11 +18,30 @@
           </a-radio-group>
         </a-form-model-item>
         <a-form-model-item
-          label="证书"
-          prop="configuration.certificate"
           v-if="addObj.configuration.useTLS"
-        >
-          <a-input v-model="addObj.configuration.certificate"></a-input>
+          label="密钥库"
+          prop="keystoreBase64"
+          :rules="[
+            { required: true, message: '密钥库不能为空', trigger: 'blur' }
+          ]">
+          <CertificateUpload v-model="addObj.keystoreBase64" />
+          <a-input
+            type="textarea"
+            v-model="addObj.keystoreBase64"
+            show-word-limit></a-input>
+        </a-form-model-item>
+        <a-form-model-item
+          v-if="addObj.configuration.useTLS"
+          label="信任库"
+          prop="trustKeyStoreBase64"
+          :rules="[
+            { required: true, message: '信任库不能为空', trigger: 'blur' }
+          ]">
+          <CertificateUpload v-model="addObj.trustKeyStoreBase64" />
+          <a-input
+            type="textarea"
+            v-model="addObj.trustKeyStoreBase64"
+            show-word-limit></a-input>
         </a-form-model-item>
         <a-form-model-item
           label="解析方式"

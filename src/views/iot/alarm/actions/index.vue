@@ -36,7 +36,7 @@
 
 <script>
 import { newNotifierAction, newDeviceMessageAction } from './data.js'
-import NotifierAction from './notifier-action.vue'
+import NotifierAction from './NotifierAction.vue'
 import DeviceAction from './DeviceAction.vue'
 export default {
   name: 'Actions',

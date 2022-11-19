@@ -12,16 +12,6 @@
       <a-input v-model="data.template.subject"/>
     </a-form-model-item>
     <a-form-model-item
-      label="收件人"
-      :rules="[
-        { required: true, message: '请输入收件人' }
-      ]"
-    >
-      <a-tooltip title="多个收件人以 英文 ,  分隔">
-        <a-textarea v-model="data.template.sendTo" :rows="3" placeholder="多个收件人以 英文 , 分隔"></a-textarea>
-      </a-tooltip>
-    </a-form-model-item>
-    <a-form-model-item
       label="正文"
       prop="template.text"
       :rules="[
@@ -52,18 +42,20 @@ export default {
   },
   data () {
     return {
+      template: {}
     }
   },
   created () {
-    const template = JSON.parse(this.data.template || '{"subject":"","sendTo":[],"text":""}')
-    template.sendTo = _.join(template.sendTo, ',')
+    let str = this.data.template
+    if (_.isEmpty(str)) {
+      str = '{"subject":"", "text":""}'
+    }
+    const template = JSON.parse(str)
     this.data.template = template
   },
   methods: {
     getTemplate () {
-      const data = _.cloneDeep(this.data)
-      data.template.sendTo = _.split(data.template.sendTo, ',')
-      return JSON.stringify(data.template)
+      return JSON.stringify(this.data.template)
     }
   }
 }

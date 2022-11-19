@@ -133,20 +133,6 @@ export const asyncRouterMap = [
           }
         ]
       },
-      {
-        path: '/network',
-        name: 'networkPage',
-        component: RouteView,
-        meta: { title: '接入管理', icon: 'setting' },
-        children: [
-          {
-            path: '/network/certificate-list',
-            name: 'CertificateList',
-            component: () => import('@/views/iot/network/CertificateList'),
-            meta: { title: '证书', keepAlive: true, permission: [ 'group-mgr' ] }
-          }
-        ]
-      },
       // sys
       {
         path: '/sys',

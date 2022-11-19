@@ -7,7 +7,7 @@
           v-model="actionData.configuration.notifyType"
           :class="{'v-error': notifyTypeError}"
           @change="notifyTypeChange">
-          <a-select-option v-for="(item) in notifyTypeConfig" :key="item.id" :value="item.id">
+          <a-select-option v-for="(item) in notifyTypeConfig" :key="item.type" :value="item.type">
             {{ item.name }}
           </a-select-option>
         </a-select>
@@ -19,22 +19,8 @@
           placeholder="选择通知配置"
           v-model="actionData.configuration.notifierId"
           :class="{'v-error': notifierIdError}"
-          @change="notifierIdChange"
         >
           <a-select-option v-for="(item) in messageConfig" :key="item.id" :value="item.id">
-            {{ item.name }}
-          </a-select-option>
-        </a-select>
-      </a-tooltip>
-    </a-col>
-    <a-col :span="6">
-      <a-tooltip title="请选择通知模板">
-        <a-select
-          placeholder="选择通知模板"
-          v-model="actionData.configuration.templateId"
-          :class="{'v-error': templateIdError}"
-        >
-          <a-select-option v-for="(item) in templateConfig" :key="item.id" :value="item.id">
             {{ item.name }}
           </a-select-option>
         </a-select>
@@ -46,7 +32,7 @@
 <script>
 import _ from 'lodash'
 // import encodeQueryParam from '@/utils/encodeParam.js'
-import { configTypes } from '@/views/notice/config/service.js'
+import { configTypes, listAll } from '@/views/notice/api.js'
 export default {
   name: 'NotifierAction',
   props: {
@@ -106,48 +92,18 @@ export default {
       this.findNotifier(value)
       this.actionData.configuration.notifyType = value
       this.clearNotifierId()
-      this.clearTemplate()
     },
     clearNotifierId () {
       this.messageConfig = []
       this.actionData.configuration.notifierId = undefined
     },
-    clearTemplate () {
-      this.actionData.configuration.templateId = undefined
-      this.templateConfig = []
-    },
-    notifierIdChange (value) {
-      const find = _.find(this.messageConfig, p => p.id === value)
-      if (find) {
-        this.findTemplate(find)
-      }
-      this.clearTemplate()
-    },
     findNotifier (value) { // 通知配置
-      const actionData = this.actionData
       const param = {
         type: value
       }
-      this.$http.post(`/notifier/config/_query`, param)
-      .then((response) => {
+      listAll(param).then((response) => {
         if (response.success) {
-          this.messageConfig = (response.result.list)
-          response.result.list.map((item) => {
-            if (item.id === actionData.configuration.notifierId) {
-              this.findTemplate(item)
-            }
-          })
-        }
-      })
-    },
-    findTemplate (value) { // 通知模板
-      const param = {
-        type: value.type,
-        provider: value.provider
-      }
-      this.$http.post(`/notifier/template/_query`, param).then(res => {
-        if (res.success && res.result) {
-          this.templateConfig = (res.result.list)
+          this.messageConfig = (response.result)
         }
       })
     }
