@@ -188,29 +188,33 @@ export default {
         alarmFirst: true
       },
       scene: {},
-      productList: [],
-      deviceIds: []
+      productList: []
     }
   },
   created () {
     this.scene = this.data
     const scene = this.scene
-    const trigger = this.scene.trigger
+    const trigger = scene.trigger
     this.shakeLimit = trigger.shakeLimit
     const productId = scene.productId
+    if (_.isNil(scene.deviceIds)) {
+      scene.deviceIds = []
+    }
+    if (_.isNil(trigger.filters)) {
+      trigger.filters = []
+    }
+    _.forEach(trigger.filters, f => {
+      f.valueType = {}
+    })
     this.dataSource = []
     if (productId) {
       this.getProduct(productId).then(() => {
         this.setDataSourceValue(trigger.filterType)
-        if (_.isNil(trigger.filters)) {
-          trigger.filters = []
-        } else {
-          // 回显触发器filter
-          _.forEach(trigger.filters, f => {
-            const data = _.find(this.dataSource, d => d.id === f.key)
-            f.valueType = (data && (data.valueType || {})) || {}
-          })
-        }
+        // 回显触发器filter
+        _.forEach(trigger.filters, f => {
+          const data = _.find(this.dataSource, d => d.id === f.key)
+          f.valueType = (data && (data.valueType || {})) || {}
+        })
       })
     }
     this.listAllProduct()
