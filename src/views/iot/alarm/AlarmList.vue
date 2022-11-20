@@ -61,7 +61,7 @@
 // import _ from 'lodash'
 // import moment from 'moment'
 import { solveAlarmLog } from './api.js'
-import encodeQueryParam from '@/utils/encodeParam.js'
+// import encodeQueryParam from '@/utils/encodeParam.js'
 export default {
   name: 'AlamrList',
   mixins: [ ],
@@ -89,9 +89,6 @@ export default {
         { title: '操作', width: '120px', align: 'center', scopedSlots: { customRender: 'action' } }
       ],
       alarmLogId: null,
-      searchParam: {
-        terms: {}
-      },
       currentLog: {
         id: null,
         description: null
@@ -100,9 +97,6 @@ export default {
   },
   methods: {
     search () {
-      const searchParam = this.searchParam
-      searchParam.deviceId = this.searchObj.deviceId
-      searchParam.productId = this.searchObj.productId
       this.findAlarmLog()
     },
     resetSearch () {
@@ -142,7 +136,7 @@ export default {
       this.$refs.dialog.open()
     },
     findAlarmLog () {
-      this.$refs.tb.search(encodeQueryParam(this.searchParam))
+      this.$refs.tb.search(this.searchObj)
     },
     submitData () {
       this.$refs.form.validate((valid) => {

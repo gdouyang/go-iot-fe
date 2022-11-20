@@ -10,20 +10,38 @@
     <div :style="{ maxHeight: 750, overflowY: 'auto', overflowX: 'hidden' }">
       <a-form-model :model="scene" :labelCol="{span: 5}" :wrapperCol="{span: 12}" ref="addAlarmForm">
         <a-row>
-          <a-col :span="14">
-            <a-form-model-item
-              label="场景联动名称"
-              prop="name"
-              :rules="[
-                { required: true, message: '场景联动名称不能为空' },
-                { max: 50, message: '不能超过50个字符' }
-              ]"
-            >
-              <a-input
-                v-model="scene.name"
-                placeholder="输入场景联动名称"
-              />
-            </a-form-model-item>
+          <a-col :span="24">
+            <a-col :span="12">
+              <a-form-model-item
+                label="规则名称"
+                prop="name"
+                :rules="[
+                  { required: true, message: '规则名称不能为空' },
+                  { max: 50, message: '不能超过50个字符' }
+                ]"
+              >
+                <a-input
+                  v-model="scene.name"
+                  placeholder="输入规则名称"
+                />
+              </a-form-model-item>
+            </a-col>
+            <a-col :span="12">
+              <a-form-model-item
+                label="类型"
+                prop="type"
+                :rules="[
+                  { required: true, message: '选择类型' }
+                ]"
+              >
+                <a-select
+                  v-model="scene.type"
+                >
+                  <a-select-option value="scene">场景联动</a-select-option>
+                  <a-select-option value="alarm">设备告警</a-select-option>
+                </a-select>
+              </a-form-model-item>
+            </a-col>
           </a-col>
           <a-col :span="12">
             <a-form-model-item
@@ -113,7 +131,7 @@ export default {
   },
   computed: {
     title () {
-      return this.data && this.data.id ? '编辑场景联动' : '新建场景联动'
+      return this.data && this.data.id ? '编辑规则' : '新建规则'
     }
   },
   created () {
