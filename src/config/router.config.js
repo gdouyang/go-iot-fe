@@ -123,7 +123,7 @@ export const asyncRouterMap = [
             path: '/iot/scene-list',
             name: 'SceneList',
             component: () => import('@/views/iot/scene/SceneList'),
-            meta: { title: '场景联动', keepAlive: true, permission: [ 'rule-mgr' ] }
+            meta: { title: '规则引擎', keepAlive: true, permission: [ 'rule-mgr' ] }
           },
           {
             path: '/iot/alarm-list',

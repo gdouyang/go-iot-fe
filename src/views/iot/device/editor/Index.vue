@@ -55,16 +55,6 @@
       <template v-if="ActiveTabKey === 'log'">
         <Log :deviceId="detailData.id" v-if="detailData.id"></Log>
       </template>
-      <template v-if="ActiveTabKey === 'alarm'">
-        <DeviceAlarm
-          target="device"
-          :productId="detailData.productId"
-          :productName="detailData.productName"
-          :targetId="detailData.id"
-          :metaData="detailData.metadata"
-          :name="detailData.name"
-        ></DeviceAlarm>
-      </template>
     </PageHeaderWrapper>
   </a-spin>
 </template>
@@ -76,7 +66,6 @@ import Info from './detail/Info.vue'
 import Status from './detail/Status.vue'
 import Function from './detail/Function.vue'
 import Log from './detail/Log.vue'
-import DeviceAlarm from '@/views/iot/alarm/index.vue'
 
 const statusMap = new Map()
 statusMap.set('online', 'success')
@@ -89,8 +78,7 @@ export default {
     Info,
     Status, // ,
     Function,
-    Log,
-    DeviceAlarm
+    Log
   },
   provide () {
     return {
@@ -106,8 +94,7 @@ export default {
         { key: 'info', tab: '实例信息' },
         { key: 'status', tab: '运行状态' },
         { key: 'function', tab: '设备功能' },
-        { key: 'log', tab: '日志' },
-        { key: 'alarm', tab: '告警设置' }
+        { key: 'log', tab: '日志' }
       ],
       reloadFuncs: new Map()
     }
