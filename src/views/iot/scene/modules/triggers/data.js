@@ -3,11 +3,8 @@ export function newScene () {
     name: '',
     triggerType: '', // device, timer
     cron: '', // type == 'timer'时才有
-    modelId: undefined,
     productId: undefined,
-    productName: undefined,
-    deviceId: undefined,
-    deviceName: undefined,
+    deviceIds: [],
     trigger: {
       filterType: undefined,
       shakeLimit: {
@@ -25,6 +22,7 @@ export function newFilter () {
   return {
     key: undefined,
     operator: undefined,
-    value: undefined
+    value: undefined,
+    logic: undefined
   }
 }

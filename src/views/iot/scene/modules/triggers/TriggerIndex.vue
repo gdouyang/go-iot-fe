@@ -48,10 +48,17 @@
               <a-icon slot="addonAfter" type="api" @click="selectDevice" title="点击选择设备"></a-icon>
             </a-input>
           </a-col>
-          <a-col :span="4" v-if="scene.deviceId">
+          <a-col :span="24">
+            <div class="device-box">
+              <a-tag color="blue" v-for="devId in scene.deviceIds" :key="devId">
+                {{ devId }}
+              </a-tag>
+            </div>
+          </a-col>
+          <a-col :span="4" v-if="scene.productId">
             <a-select
               placeholder="选择类型，如：属性/事件"
-              v-model="scene.filterType"
+              v-model="scene.trigger.filterType"
               @change="triggerTypeChange"
             >
               <a-select-option value="online">上线</a-select-option>
@@ -60,35 +67,24 @@
               <a-select-option value="event" v-if="metaData.events">事件</a-select-option>
             </a-select>
           </a-col>
-          <a-col :span="4" v-if="scene.trigger.filterType === 'properties'">
-            <a-select
-              placeholder="物模型属性"
-              v-model="scene.modelId"
-              @change="modelIdPropertiesChange"
-            >
-              <a-select-option v-for="item in metaData.properties" :key="item.id" :value="item.id">
-                {{ `${item.name}（${item.id}）` }}
-              </a-select-option>
-            </a-select>
-          </a-col>
-          <a-col :span="4" v-else-if="scene.trigger.filterType === 'event'">
-            <a-select
-              placeholder="物模型事件"
-              v-model="scene.modelId"
-              @change="modelIdEventChange"
-            >
-              <a-select-option v-for="item in metaData.events" :key="item.id" :value="item.id">
-                {{ `${item.name}（${item.id}）` }}
-              </a-select-option>
-            </a-select>
-          </a-col>
         </a-col>
         <a-col
           :span="24"
           style="margin-top: 5px;"
           v-for="(item, index) in scene.trigger.filters"
           :key="index">
-          <a-col :span="4">
+          <div v-if="index != 0">
+            <a-col :span="8">
+              <a-select
+                placeholder="逻辑符"
+                v-model="item.logic"
+              >
+                <a-select-option value="and">AND</a-select-option>
+                <a-select-option value="or">OR</a-select-option>
+              </a-select>
+            </a-col>
+          </div>
+          <a-col :span="8">
             <a-select
               placeholder="过滤条件KEY"
               v-model="item.key"
@@ -97,7 +93,7 @@
               <a-select-option v-for="d in dataSource" :value="d.id" :key="d.id">{{ d.id }}</a-select-option>
             </a-select>
           </a-col>
-          <a-col :span="4" >
+          <a-col :span="4" v-if="item.valueType.type !== 'this'">
             <a-select
               placeholder="操作符"
               v-model="item.operator"
@@ -108,10 +104,10 @@
               <a-select-option value="lt">小于(&lt;)</a-select-option>
               <a-select-option value="gte">大于等于(>=)</a-select-option>
               <a-select-option value="lte">小于等于(&lt;=)</a-select-option>
-              <a-select-option value="like">模糊(%)</a-select-option>
+              <!-- <a-select-option value="like">模糊(%)</a-select-option> -->
             </a-select>
           </a-col>
-          <a-col :span="4">
+          <a-col :span="4" v-if="item.valueType.type !== 'this'">
             <a-select
               v-if="item.valueType.type === 'boolean' && !$_.isNil(item.valueType.trueValue) && !$_.isNil(item.valueType.falseValue)"
               placeholder="过滤条件值"
@@ -162,6 +158,7 @@
 <script>
 import _ from 'lodash'
 import { getDetail, getProductList } from '@/views/iot/device/api.js'
+import { get as getProduct } from '@/views/iot/product/api.js'
 import { newFilter } from './data'
 import DeviceSelect from '@/views/iot/device/DeviceSelect.vue'
 
@@ -191,77 +188,48 @@ export default {
         alarmFirst: true
       },
       scene: {},
-      productList: []
+      productList: [],
+      deviceIds: []
     }
   },
   created () {
     this.scene = this.data
-    const metadata = this.metaData
     const scene = this.scene
     const trigger = this.scene.trigger
-    if (metadata) {
-      let data = null
-      if (trigger.filterType === 'event') {
-        data = metadata['events']
-      } else if (trigger.filterType === 'function') {
-        data = metadata['functions']
-      } else {
-        data = metadata[trigger.filterType]
-      }
-      if (data) {
-        this.dataSource = []
-        data.map((item) => {
-          if (item.id === scene.modelId) {
-            this.setDataSourceValue(trigger.filterType, item, scene.modelId)
-          }
-        })
-      }
-      this.shakeLimit = trigger.shakeLimit
-      const deviceId = scene.deviceId
-      if (deviceId) {
-        this.findDevice(deviceId)
-      }
-      if (_.isNil(trigger.filters)) {
-        this.scene.filters = []
-      } else {
-        // 回显触发器filter
-        _.forEach(trigger.filters, f => {
-          const data = _.find(this.dataSource, d => d.id === f.key)
-          f.valueType = (data && (data.valueType || {})) || {}
-        })
-      }
+    this.shakeLimit = trigger.shakeLimit
+    const productId = scene.productId
+    this.dataSource = []
+    if (productId) {
+      this.getProduct(productId).then(() => {
+        this.setDataSourceValue(trigger.filterType)
+        if (_.isNil(trigger.filters)) {
+          trigger.filters = []
+        } else {
+          // 回显触发器filter
+          _.forEach(trigger.filters, f => {
+            const data = _.find(this.dataSource, d => d.id === f.key)
+            f.valueType = (data && (data.valueType || {})) || {}
+          })
+        }
+      })
     }
     this.listAllProduct()
   },
   methods: {
     triggerTypeChange (value) {
-      this.scene.filters = []
-    },
-    modelIdPropertiesChange (value) {
-      const data = _.find(this.metaData.properties, p => p.id === value)
-      if (data) {
-        this.setDataSourceValue('properties', data, value)
-      }
+      this.scene.trigger.filters = []
+      this.setDataSourceValue(value)
       const f = newFilter()
       f.valueType = {}
-      this.scene.filters = [f]
-    },
-    modelIdEventChange (value) {
-      const data = _.find(this.metaData.events, p => p.id === value)
-      if (data) {
-        this.setDataSourceValue('event', data, value)
-      }
-      const f = newFilter()
-      f.valueType = {}
-      this.scene.filters = [f]
+      this.scene.trigger.filters = [f]
     },
     removeFilter (index) {
-      this.scene.filters.splice(index, 1)
+      this.scene.trigger.filters.splice(index, 1)
     },
     addFilter () {
       const f = newFilter()
       f.valueType = {}
-      this.scene.filters.push(f)
+      this.scene.trigger.filters.push(f)
     },
     filterKeyChange (value, item) {
       if (item) {
@@ -274,29 +242,43 @@ export default {
         console.warn('filterKeyChange => item is null')
       }
     },
-    setDataSourceValue (type, data, value) {
+    setDataSourceValue (type) {
       this.dataSource = []
       const dataSource = this.dataSource
-      dataSource.push({ id: value, valueType: data.valueType })
-      if (type === 'function') {
-        if (data.output.type === 'object') {
-          data.valueType.properties.map((p) => {
-            dataSource.push({ id: `${value}.${p.id}`, valueType: p.valueType })
-          })
+      if (type === 'properties' || type === 'event' || type === 'function') {
+        let list = this.metaData.properties
+        if (type === 'event') {
+          list = this.metaData.events
+        } else if (type === 'function') {
+          list = this.metaData.functions
         }
-      } else if (type === 'event') {
-        dataSource.push('this')
-        if (data.valueType.type === 'object') {
-          data.valueType.properties.map((p) => {
-            dataSource.push({ id: `${p.id}`, valueType: p.valueType })
-          })
-        }
-      } else if (type === 'properties') {
-        if (data.valueType.type === 'object') {
-          data.valueType.properties.map((p) => {
-            dataSource.push({ id: `${value}.${p.id}`, valueType: p.valueType })
-          })
-        }
+        _.forEach(list, data => {
+          if (type === 'event') {
+            dataSource.push({ id: `${data.id}`, valueType: { type: 'this' } })
+            if (data.valueType.type === 'object') {
+              data.valueType.properties.map((p) => {
+                dataSource.push({ id: `${data.id}.${p.id}`, valueType: p.valueType })
+              })
+            }
+          } else if (type === 'function') {
+            dataSource.push({ id: `${data.id}`, valueType: { type: 'this' } })
+            if (data.output.type === 'object') {
+              data.output.properties.map((p) => {
+                dataSource.push({ id: `${data.id}.${p.id}`, valueType: p.valueType })
+              })
+            } else {
+              dataSource.push({ id: data.output.id, valueType: data.output.valueType })
+            }
+          } else if (type === 'properties') {
+            if (data.valueType.type === 'object') {
+              data.valueType.properties.map((p) => {
+                dataSource.push({ id: `${data.id}.${p.id}`, valueType: p.valueType })
+              })
+            } else {
+              dataSource.push({ id: data.id, valueType: data.valueType })
+            }
+          }
+        })
       }
     },
     selectDevice () {
@@ -313,13 +295,13 @@ export default {
       })
     },
     productIdChange () {
-      this.scene.deviceId = null
-      this.scene.deviceName = null
+      this.getProduct(this.scene.productId)
+      this.scene.deviceIds = []
     },
-    findDevice (deviceId) {
-      getDetail(deviceId).then((data) => {
-        if (data.success) {
-          const result = data.result
+    getProduct (productId) {
+      return getProduct(productId).then(resp => {
+        if (resp.success) {
+          const result = resp.result
           if (result.metadata) {
             result.metadata = JSON.parse(result.metadata)
           } else {
@@ -329,15 +311,25 @@ export default {
               events: []
             }
           }
-          const device = this.scene
-          device.deviceId = result.id
-          device.deviceName = result.name
-          device.productId = result.productId
-          device.productName = result.productName
           this.metaData = result.metadata
+        }
+      })
+    },
+    findDevice (deviceId) {
+      getDetail(deviceId).then((data) => {
+        if (data.success) {
+          this.scene.deviceIds.push(data.result.id)
         }
       })
     }
   }
 }
 </script>
+<style lang="less" scoped>
+.device-box {
+  border: 1px solid;
+  height: 90px;
+  overflow: auto;
+  padding: 5px;
+}
+</style>
