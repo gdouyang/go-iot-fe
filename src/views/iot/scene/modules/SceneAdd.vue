@@ -154,7 +154,12 @@ export default {
     init () {
       const data = this.scene
       if (data && data.id) {
-        this.actions = _.isEmpty(data.actions) ? [ newEmtpyAction() ] : data.actions
+        const actions = _.map(this.actions, a => {
+          const deepa = _.cloneDeep(a)
+          deepa.configuration = JSON.parse(deepa.configuration)
+          return deepa
+        })
+        this.actions = _.isEmpty(actions) ? [ newEmtpyAction() ] : actions
       } else {
         this.scene = newScene()
         this.actions = [ newEmtpyAction() ]
@@ -204,7 +209,11 @@ export default {
           }
         })
       }
-      data.actions = this.actions
+      data.actions = _.map(this.actions, a => {
+        const deepa = _.cloneDeep(a)
+        deepa.configuration = JSON.stringify(deepa.configuration)
+        return deepa
+      })
       console.log(data)
       let promise = null
       if (data.id) {

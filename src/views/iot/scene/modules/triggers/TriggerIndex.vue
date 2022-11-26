@@ -3,7 +3,7 @@
     <p style="font-size: 16px;">触发条件</p>
     <a-card size="small" :bordered="false" style="background-color: #eee;">
       <a-row :gutter="16">
-        <a-col :span="24">
+        <a-col :span="24" v-if="false">
           <a-switch
             v-model="shakeLimit.enabled"
             checkedChildren="开启防抖"

@@ -25,7 +25,7 @@
           <a-select-option value="object">object(结构体)</a-select-option>
           <a-select-option value="file">file(文件)</a-select-option>
           <a-select-option value="password">password(密码)</a-select-option>
-          <a-select-option value="geoPoint">geoPoint(地理位置)</a-select-option>
+          <!-- <a-select-option value="geoPoint">geoPoint(地理位置)</a-select-option> -->
         </a-select-opt-group>
       </a-select>
     </a-form-model-item>
