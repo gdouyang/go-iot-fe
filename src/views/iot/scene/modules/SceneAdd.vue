@@ -199,7 +199,8 @@ export default {
             key: f.key,
             value: _.toString(f.value),
             operator: f.operator,
-            logic: f.logic
+            logic: f.logic,
+            dataType: f.valueType.type
           }
         })
       }

@@ -100,10 +100,12 @@
             >
               <a-select-option value="eq">等于(=)</a-select-option>
               <a-select-option value="not">不等于(!=)</a-select-option>
-              <a-select-option value="gt">大于(>)</a-select-option>
-              <a-select-option value="lt">小于(&lt;)</a-select-option>
-              <a-select-option value="gte">大于等于(>=)</a-select-option>
-              <a-select-option value="lte">小于等于(&lt;=)</a-select-option>
+              <template v-if="isNumberType(item)">
+                <a-select-option value="gt">大于(>)</a-select-option>
+                <a-select-option value="lt">小于(&lt;)</a-select-option>
+                <a-select-option value="gte">大于等于(>=)</a-select-option>
+                <a-select-option value="lte">小于等于(&lt;=)</a-select-option>
+              </template>
               <!-- <a-select-option value="like">模糊(%)</a-select-option> -->
             </a-select>
           </a-col>
@@ -234,6 +236,9 @@ export default {
       const f = newFilter()
       f.valueType = {}
       this.scene.trigger.filters.push(f)
+    },
+    isNumberType (item) {
+      return ['float', 'double', 'int', 'long'].indexOf(item.valueType.type) !== -1
     },
     filterKeyChange (value, item) {
       if (item) {
