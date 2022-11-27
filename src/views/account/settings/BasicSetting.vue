@@ -95,7 +95,7 @@ export default {
         if (resp.success) {
           const data = resp.result
           this.$nextTick(() => {
-            this.form.setFieldsValue(pick(data, 'username', 'email', 'desc'))
+            this.form.setFieldsValue(pick(data, 'nickname', 'email', 'desc'))
           })
         }
       })
