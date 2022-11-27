@@ -76,7 +76,7 @@
                 <a-upload
                   name="file"
                   :multiple="false"
-                  action="api/upload"
+                  action="api/file/upload"
                   @change="handleChange"
                   :showUploadList="false"
                   :withCredentials="true"
@@ -132,10 +132,11 @@ export default {
       return this.$store.getters.sysConfig
     },
     img () {
-      if (_.startsWith(this.mdl.img, 'api')) {
-        return this.mdl.img
-      }
-      return 'api/' + this.mdl.img
+      // if (_.startsWith(this.mdl.img, 'api')) {
+      //   return this.mdl.img
+      // }
+      // return 'api/' + this.mdl.img
+      return this.mdl.img
     },
     defaultLocation () {
       const l = this.mdl.defaultLocation || {}
@@ -163,17 +164,17 @@ export default {
       if (info.file.status === 'uploading') {
       }
       if (info.file.status === 'done') {
-          this.mdl.img = 'anon/' + info.file.response.result
+          this.mdl.img = info.file.response.result
           this.$message.success('上传成功')
       }
     },
     saveBasic () {
       this.$refs.form.validate((valid) => {
         if (valid) {
-          if (_.startsWith(this.mdl.img, 'api/')) {
-            this.mdl.img = this.mdl.img.replace('api/', '')
-          }
-          this.$http.post('/system/config', this.mdl).then(resp => {
+          // if (_.startsWith(this.mdl.img, 'api/')) {
+          //   this.mdl.img = this.mdl.img.replace('api/', '')
+          // }
+          this.$http.post('/system/config', { id: 'sysconfig', config: this.mdl }).then(resp => {
             if (resp.success) {
               this.$message.success('操作成功')
               store.dispatch('getSysConfig')

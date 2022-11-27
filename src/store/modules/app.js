@@ -105,7 +105,6 @@ const app = {
         sysConfig().then(response => {
           const result = response.result || {}
           if (result.img) {
-            result.img = 'api/' + result.img
             const ele = document.getElementById('title-icon')
             ele && (ele.href = result.img)
           }

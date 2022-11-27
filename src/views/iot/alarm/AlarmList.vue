@@ -81,10 +81,10 @@ export default {
         productId: undefined
       },
       columns: [
+        { title: '告警名称', dataIndex: 'alarmName' },
         { title: '设备ID', dataIndex: 'deviceId' },
         { title: '设备名称', dataIndex: 'deviceName' },
-        { title: '告警名称', dataIndex: 'alarmName' },
-        { title: '告警时间', dataIndex: 'alarmTime', width: '300px', scopedSlots: { customRender: 'createTime' } },
+        { title: '告警时间', dataIndex: 'createTime', scopedSlots: { customRender: 'createTime' } },
         { title: '处理状态', dataIndex: 'state', align: 'center', width: '100px', scopedSlots: { customRender: 'state' } },
         { title: '操作', width: '120px', align: 'center', scopedSlots: { customRender: 'action' } }
       ],
@@ -107,7 +107,7 @@ export default {
     detail (record) {
       let content = null
       try {
-        content = JSON.stringify(record.alarmData, null, 2)
+        content = JSON.stringify(JSON.parse(record.alarmData), null, 2)
       } catch (error) {
         content = record.alarmData
       }
