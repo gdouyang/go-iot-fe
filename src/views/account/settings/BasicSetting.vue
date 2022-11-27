@@ -8,7 +8,7 @@
             :label="$t('account.settings.basic.nickname')"
           >
             <a-input
-              v-decorator="['name', { rules: [{ required: true, message: '请输入昵称' }] }]"
+              v-decorator="['nickname', { rules: [{ required: true, message: '请输入昵称' }] }]"
               :placeholder="$t('account.settings.basic.nickname-message')" />
           </a-form-item>
           <a-form-item
@@ -95,7 +95,7 @@ export default {
         if (resp.success) {
           const data = resp.result
           this.$nextTick(() => {
-            this.form.setFieldsValue(pick(data, 'name', 'email', 'desc'))
+            this.form.setFieldsValue(pick(data, 'username', 'email', 'desc'))
           })
         }
       })

@@ -36,7 +36,7 @@ yarn run lint
 
 其他说明
 ----
-
+- 基于 [antd vue pro](https://preview.pro.antdv.com/account/settings/basic)
 - 项目使用的 [vue-cli3](https://cli.vuejs.org/guide/), 请确保你所使用的 vue-cli 是新版，并且已经学习 cli 官方文档使用教程
 
 - 关闭 Eslint (不推荐) 移除 `package.json` 中 `eslintConfig` 整个节点代码, `vue.config.js` 下的 `lintOnSave` 值改为 `false`

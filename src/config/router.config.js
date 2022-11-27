@@ -13,7 +13,7 @@ export const asyncRouterMap = [
     name: 'index',
     component: BasicLayout,
     meta: { title: 'menu.home' },
-    redirect: '/iot',
+    redirect: '/iot/product-list',
     children: [
       // dashboard
       // {
@@ -31,108 +31,52 @@ export const asyncRouterMap = [
       //     }
       //   ]
       // },
-
-      // account
-      {
-        path: '/account',
-        component: RouteView,
-        redirect: '/account/center',
-        name: 'account',
-        meta: { title: 'menu.account', icon: 'user', keepAlive: true },
-        hidden: true,
-        children: [
-          {
-            path: '/account/settings',
-            name: 'settings',
-            component: () => import('@/views/account/settings/Index'),
-            meta: { title: 'menu.account.settings', hideHeader: true, permission: ['sys'] },
-            redirect: '/account/settings/basic',
-            hideChildrenInMenu: true,
-            children: [
-              {
-                path: '/account/settings/basic',
-                name: 'BasicSettings',
-                component: () => import('@/views/account/settings/BasicSetting'),
-                meta: { title: 'account.settings.menuMap.basic', hidden: true, permission: ['sys'] }
-              },
-              {
-                path: '/account/settings/security',
-                name: 'SecuritySettings',
-                component: () => import('@/views/account/settings/Security'),
-                meta: {
-                  title: 'account.settings.menuMap.security',
-                  hidden: true,
-                  keepAlive: true,
-                  permission: ['sys']
-                }
-              },
-              {
-                path: '/account/settings/custom',
-                name: 'CustomSettings',
-                component: () => import('@/views/account/settings/Custom'),
-                meta: { title: 'account.settings.menuMap.custom', hidden: true, keepAlive: true, permission: ['sys'] }
-              },
-              {
-                path: '/account/settings/binding',
-                name: 'BindingSettings',
-                component: () => import('@/views/account/settings/Binding'),
-                meta: { title: 'account.settings.menuMap.binding', hidden: true, keepAlive: true, permission: ['sys'] }
-              },
-              {
-                path: '/account/settings/notification',
-                name: 'NotificationSettings',
-                component: () => import('@/views/account/settings/Notification'),
-                meta: {
-                  title: 'account.settings.menuMap.notification',
-                  hidden: true,
-                  keepAlive: true,
-                  permission: ['sys']
-                }
-              }
-            ]
-          }
-        ]
-      },
       // iot
       {
-        path: '/iot',
-        name: 'iotPage',
-        component: RouteView,
-        redirect: '/project/group-list',
-        meta: { title: '设备管理', icon: 'setting' },
-        children: [
-          {
-            path: '/iot/product-list',
-            name: 'ProductList',
-            component: () => import('@/views/iot/product/ProductList'),
-            meta: { title: '产品', keepAlive: true, permission: [ 'product-mgr' ] }
-          },
-          {
-            path: '/iot/device-list',
-            name: 'DeviceList',
-            component: () => import('@/views/iot/device/DeviceList'),
-            meta: { title: '设备', keepAlive: true, permission: [ 'device-mgr' ] }
-          },
-          {
-            path: '/iot/location-list',
-            name: 'LocationList',
-            component: () => import('@/views/iot/device/LocationList'),
-            meta: { title: '位置', keepAlive: true, permission: [ 'location-mgr' ] }
-          },
-          {
-            path: '/iot/scene-list',
-            name: 'SceneList',
-            component: () => import('@/views/iot/scene/SceneList'),
-            meta: { title: '规则引擎', keepAlive: true, permission: [ 'rule-mgr' ] }
-          },
-          {
-            path: '/iot/alarm-list',
-            name: 'AlarmList',
-            component: () => import('@/views/iot/alarm/AlarmList'),
-            meta: { title: '设备告警', keepAlive: true, permission: [ 'alarm-mgr' ] }
-          }
-        ]
+        path: '/iot/product-list',
+        name: 'ProductList',
+        component: () => import('@/views/iot/product/ProductList'),
+        meta: { title: '产品管理', keepAlive: true, icon: 'appstore', permission: [ 'product-mgr' ] }
       },
+      {
+        path: '/iot/device-list',
+        name: 'DeviceList',
+        component: () => import('@/views/iot/device/DeviceList'),
+        meta: { title: '设备管理', keepAlive: true, icon: 'cluster', permission: [ 'device-mgr' ] }
+      },
+      {
+        path: '/iot/scene-list',
+        name: 'SceneList',
+        component: () => import('@/views/iot/scene/SceneList'),
+        meta: { title: '规则引擎', keepAlive: true, icon: 'branches', permission: [ 'rule-mgr' ] }
+      },
+      {
+        path: '/iot/alarm-list',
+        name: 'AlarmList',
+        component: () => import('@/views/iot/alarm/AlarmList'),
+        meta: { title: '设备告警', keepAlive: true, icon: 'alert', permission: [ 'alarm-mgr' ] }
+      },
+      {
+        path: '/notice/config-list',
+        name: 'ConfigList',
+        component: () => import('@/views/notice/config/ConfigList.vue'),
+        meta: { title: '通知配置', keepAlive: true, icon: 'notification', permission: [ 'notify-config' ] }
+      },
+      // {
+      //   path: '/iot',
+      //   name: 'iotPage',
+      //   component: RouteView,
+      //   redirect: '/iot/product-list',
+      //   meta: { title: '设备管理', icon: 'setting' },
+      //   children: [
+      //     // {
+      //     //   path: '/iot/location-list',
+      //     //   name: 'LocationList',
+      //     //   component: () => import('@/views/iot/device/LocationList'),
+      //     //   meta: { title: '位置', keepAlive: true, permission: [ 'location-mgr' ] }
+      //     // },
+      //   ]
+      // },
       // sys
       {
         path: '/sys',
@@ -163,12 +107,43 @@ export const asyncRouterMap = [
             name: 'SystemConfig',
             component: () => import('@/views/sys/config/SysConfig'),
             meta: { title: '系统配置', keepAlive: true, permission: [ 'sys-config' ] }
-          },
+          }
+        ]
+      },
+      // account
+      {
+        path: '/account',
+        component: RouteView,
+        redirect: '/account/center',
+        name: 'account',
+        meta: { title: 'menu.account', icon: 'user', keepAlive: true },
+        hidden: true,
+        children: [
           {
-            path: '/notice/config-list',
-            name: 'ConfigList',
-            component: () => import('@/views/notice/config/ConfigList.vue'),
-            meta: { title: '通知配置', keepAlive: true, permission: [ 'notify-config' ] }
+            path: '/account/settings',
+            name: 'settings',
+            component: () => import('@/views/account/settings/Index'),
+            meta: { title: 'menu.account.settings', hideHeader: true },
+            redirect: '/account/settings/basic',
+            hideChildrenInMenu: true,
+            children: [
+              {
+                path: '/account/settings/basic',
+                name: 'BasicSettings',
+                component: () => import('@/views/account/settings/BasicSetting'),
+                meta: { title: 'account.settings.menuMap.basic', hidden: true }
+              },
+              {
+                path: '/account/settings/security',
+                name: 'SecuritySettings',
+                component: () => import('@/views/account/settings/Security'),
+                meta: {
+                  title: 'account.settings.menuMap.security',
+                  hidden: true,
+                  keepAlive: true
+                }
+              }
+            ]
           }
         ]
       }
