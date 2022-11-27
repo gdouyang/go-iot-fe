@@ -154,7 +154,7 @@ export default {
     init () {
       const data = this.scene
       if (data && data.id) {
-        const actions = _.map(this.actions, a => {
+        const actions = _.map(data.actions, a => {
           const deepa = _.cloneDeep(a)
           deepa.configuration = JSON.parse(deepa.configuration)
           return deepa
