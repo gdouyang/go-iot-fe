@@ -22,7 +22,7 @@
       <a-button type="primary" icon="plus" @click="handleAdd">新建</a-button>
     </div>
 
-    <PageTable ref="tb" url="/scene/page" :columns="columns">
+    <PageTable ref="tb" url="/rule/page" :columns="columns">
       <span slot="state" slot-scope="text">
         {{ text }}
       </span>

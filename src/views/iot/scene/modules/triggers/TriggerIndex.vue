@@ -69,6 +69,7 @@
           </a-col>
         </a-col>
         <a-col
+          v-if="scene.trigger.filterType === 'properties' || scene.trigger.filterType === 'event'"
           :span="24"
           style="margin-top: 5px;"
           v-for="(item, index) in scene.trigger.filters"
@@ -146,7 +147,7 @@
             <a @click="removeFilter(index)">删除</a>
           </a-col>
         </a-col>
-        <a-col :span="24">
+        <a-col :span="24" v-if="scene.trigger.filterType === 'properties' || scene.trigger.filterType === 'event'">
           <div>
             <a @click="addFilter">添加</a>
           </div>
