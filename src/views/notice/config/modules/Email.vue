@@ -19,9 +19,15 @@
         { max: 5120, message: '长度不超过5120' }
       ]"
     >
-      <WangEditor
+      <a-textarea
+        :rows="8"
+        placeholder="html"
         v-model="data.template.text"
+        :max-length="60000"
       />
+      <!-- <WangEditor
+        v-model="data.template.text"
+      /> -->
     </a-form-model-item>
   </div>
 </template>

@@ -131,7 +131,7 @@ export default {
           data.config = JSON.stringify(data.config)
           let promise = null
           if (data.id) {
-            promise = updateNotify(data)
+            promise = updateNotify(data.id, data)
           } else {
             promise = addNotify(data)
           }

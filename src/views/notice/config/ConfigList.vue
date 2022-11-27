@@ -27,8 +27,25 @@
         <a @click="handleEdit(record)">编辑</a>
         <a-divider type="vertical" />
         <a @click="remove(record)">删除</a>
-        <a-divider type="vertical" />
-        <a @click="showHistory(record)">通知记录</a>
+        <!-- <a-divider type="vertical" /> -->
+        <!-- <a @click="showHistory(record)">通知记录</a> -->
+        <a-divider type="vertical"/>
+        <span v-if="record.state !== 'stopped'">
+          <a-popconfirm
+            title="确认停止？"
+            @confirm="stop(record)"
+          >
+            <a>停止</a>
+          </a-popconfirm>
+        </span>
+        <span v-else>
+          <a-popconfirm
+            title="确认启动？"
+            @confirm="start(record)"
+          >
+            <a>启动</a>
+          </a-popconfirm>
+        </span>
       </span>
     </PageTable>
 
@@ -40,7 +57,7 @@
 
 <script>
 // import _ from 'lodash'
-import { remove } from '@/views/notice/api.js'
+import { remove, start, stop } from '@/views/notice/api.js'
 import ConfigAdd from './modules/ConfigAdd'
 import NoticeHistory from './modules/NoticeHistory'
 // import encodeQueryParam from '@/utils/encodeParam.js'
@@ -58,24 +75,11 @@ export default {
       },
       // 表头
       columns: [
-        {
-          title: 'ID',
-          dataIndex: 'id'
-        },
-        {
-          title: '名称',
-          dataIndex: 'name'
-        },
-        {
-          dataIndex: 'type',
-          title: '通知类型'
-        },
-        {
-          title: '操作',
-          width: '250px',
-          dataIndex: 'action',
-          scopedSlots: { customRender: 'action' }
-        }
+        { title: 'ID', dataIndex: 'id' },
+        { title: '名称', dataIndex: 'name' },
+        { title: '通知类型', dataIndex: 'type' },
+        { title: '状态', dataIndex: 'state' },
+        { title: '操作', width: '250px', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
       ]
     }
   },
@@ -112,6 +116,22 @@ export default {
               _this.handleOk()
             }
           })
+        }
+      })
+    },
+    start (item) {
+      start(item.id).then(resp => {
+        if (resp.success) {
+           this.$message.success('启动成功')
+           this.search()
+        }
+      })
+    },
+    stop (item) {
+      stop(item.id).then((response) => {
+        if (response.success) {
+          this.$message.success('停止成功')
+          this.search()
         }
       })
     },
