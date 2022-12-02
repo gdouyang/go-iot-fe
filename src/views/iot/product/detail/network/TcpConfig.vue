@@ -8,7 +8,7 @@
       </span>
       <a-descriptions-item label="开启SSL" :span="1">{{ data.configuration.useTLS ? '是' : '否' }}</a-descriptions-item>
       <a-descriptions-item label="解析方式" :span="1">{{ parserType(data.configuration.delimeter.type) }}</a-descriptions-item>
-      <a-descriptions-item label="连接地址" :span="2">{{ accessAddress }}</a-descriptions-item>
+      <a-descriptions-item label="连接地址" :span="2" v-if="data.type === 'TCP_SERVER'">{{ accessAddress }}</a-descriptions-item>
     </a-descriptions>
     <TcpConfigAdd ref="TcpConfigAdd" @success="getData"/>
   </div>

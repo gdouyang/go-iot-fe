@@ -1,6 +1,6 @@
 <template>
   <div style="margin-top: 10px;">
-    <TcpConfig v-if="network.type === 'TCP_SERVER'" :productId="product.id" />
+    <TcpConfig v-if="network.type === 'TCP_SERVER' || network.type === 'TCP_CLIENT'" :productId="product.id" />
     <MqttConfig v-if="network.type === 'MQTT_BROKER'" :productId="product.id" />
     <WebSocketConfig v-if="network.type === 'WEBSOCKET_SERVER'" :productId="product.id" />
     <HttpConfig v-if="network.type === 'HTTP_SERVER'" :productId="product.id" />
