@@ -17,18 +17,24 @@
           <span class="detail-title">
             <span>设备：{{ GetDeviceId }}</span>
           </span>
-          <a-badge :color="GetDeviceStatus === 'success' ? 'green' : 'red'" :text="GetDeviceStatusText" style="margin-left: 10px"/>
+          <a-badge :color="DeviceState === 'online' ? 'green' : 'red'" :text="DeviceState" style="margin-left: 10px"/>
           <a-popconfirm
             title="确认让此设备断开连接？"
             @confirm="disconnectDevice"
-            v-if="GetDeviceStatus === 'success'">
+            v-if="DeviceState === 'online'">
             <a style="font-size: 12px;margin-left: 10px;">断开连接</a>
           </a-popconfirm>
           <a-popconfirm
             title="确认激活此设备？"
             @confirm="changeDeploy"
-            v-if="GetDeviceStatus === 'processing'">
+            v-else-if="DeviceState === 'noActive'">
             <a style="font-size: 12px;margin-left: 10px;">激活设备</a>
+          </a-popconfirm>
+          <a-popconfirm
+            title="确认连接设备？"
+            @confirm="connectDevice"
+            v-else-if="isNetClientType">
+            <a style="font-size: 12px;margin-left: 10px;">连接</a>
           </a-popconfirm>
         </a-row>
       </div>
@@ -61,16 +67,12 @@
 
 <script>
 import { PageHeaderWrapper } from '@ant-design-vue/pro-layout'
-import { getDetail, disconnect, deploy } from '@/views/iot/device/api.js'
+import { getDetail, connect, disconnect, deploy } from '@/views/iot/device/api.js'
 import Info from './detail/Info.vue'
 import Status from './detail/Status.vue'
 import Function from './detail/Function.vue'
 import Log from './detail/Log.vue'
 
-const statusMap = new Map()
-statusMap.set('online', 'success')
-statusMap.set('offline', 'error')
-statusMap.set('notActive', 'processing')
 export default {
   name: 'DeviceDetail',
   components: {
@@ -111,12 +113,12 @@ export default {
     GetDeviceId () {
       return this.$route.query.id
     },
-    GetDeviceStatus () {
-      const status = (this.detailData.state) ? this.detailData.state : ''
-      return statusMap.get(status)
+    DeviceState () {
+      const status = this.detailData.state
+      return status
     },
-    GetDeviceStatusText () {
-      return this.detailData.state
+    isNetClientType () {
+      return this.detailData.networkType === 'TCP_CLIENT' || this.detailData.networkType === 'MQTT_CLIENT'
     }
   },
   methods: {
@@ -170,7 +172,15 @@ export default {
         }
       })
     },
-    toProductPage () {}
+    connectDevice () {
+      const deviceId = this.GetDeviceId
+      connect(deviceId).then(data => {
+        if (data.success) {
+          this.$message.success('连接成功')
+          this.reloadDevice()
+        }
+      })
+    }
   }
 }
 </script>

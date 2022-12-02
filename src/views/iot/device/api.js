@@ -19,6 +19,10 @@ export function getDetail (id) {
   return Vue.prototype.$http.get(`/device/${id}/detail`)
 }
 
+export function connect (deviceId) {
+  return Vue.prototype.$http.put(`/device/${deviceId}/connect`)
+}
+
 export function disconnect (deviceId) {
   return Vue.prototype.$http.put(`/device/${deviceId}/disconnect`)
 }

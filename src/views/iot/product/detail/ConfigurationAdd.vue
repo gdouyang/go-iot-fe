@@ -28,6 +28,7 @@
           >
             <a-select
               v-model="configuration.type"
+              :disabled="configuration.buildin"
             >
               <a-select-option value="string">字符串</a-select-option>
               <a-select-option value="password">密码</a-select-option>
@@ -38,7 +39,7 @@
             <a-input v-model="configuration.value" :maxLength="100" v-else></a-input>
           </a-form-model-item>
           <a-form-model-item label="描述">
-            <a-input v-model="configuration.desc" :maxLength="100"></a-input>
+            <a-input v-model="configuration.desc" :disabled="configuration.buildin" :maxLength="100"></a-input>
           </a-form-model-item>
         </a-col>
       </a-row>

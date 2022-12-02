@@ -53,3 +53,7 @@ export function getNetwork (id) {
 export function updateNetwork (saveData) {
   return Vue.prototype.$http.put(`/product/network`, saveData)
 }
+
+export function runNetwork (productId, state) {
+  return Vue.prototype.$http.post(`product/network/${productId}/run?state=${state}`)
+}

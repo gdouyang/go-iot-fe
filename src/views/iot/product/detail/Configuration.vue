@@ -19,6 +19,7 @@
             <a-button icon="edit" :style="{marginLeft: 20}" type="link" @click="modifyConfig(item)"></a-button>
             <a-popconfirm
               title="确认删除配置？"
+              v-if="!item.buildin"
               @confirm="deleteConfig(item)">
               <a-button icon="delete" :style="{marginLeft: 20}" type="link"></a-button>
             </a-popconfirm>

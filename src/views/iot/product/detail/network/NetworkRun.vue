@@ -1,5 +1,5 @@
 <template>
-  <span>
+  <span v-if="!isNetClientType">
     <a-badge :color="isRuning ? 'green' : 'red'" :text="isRuning ? '运行中' : '停止'" style="margin-left: 10px"/>
     <a-popconfirm
       title="确认启动网络服务？"
@@ -17,6 +17,7 @@
 </template>
 
 <script>
+import { runNetwork } from '@/views/iot/product/api.js'
 export default {
   name: 'NetworkRun',
   props: {
@@ -40,11 +41,14 @@ export default {
   computed: {
     isRuning () {
       return this.network.state === 'runing'
+    },
+    isNetClientType () {
+      return this.network.type === 'TCP_CLIENT' || this.network.type === 'MQTT_CLIENT'
     }
   },
   methods: {
     runNetwork (state) {
-      return this.$http.post(`product/network/${this.productId}/run?state=${state}`).then((resp) => {
+      return runNetwork(this.productId, state).then((resp) => {
         if (resp.success) {
           this.$message.success('操作成功')
           this.$emit('success')
