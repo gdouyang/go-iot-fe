@@ -84,24 +84,15 @@ export default {
         const metadata = JSON.parse(this.device.metadata)
         const properties = _.cloneDeep(metadata.properties)
         this.events = metadata.events
-        const data = resp.result.list
-        const mapdata = _.map(data, item => {
-          return {
-            timeString: item.data.timeString,
-            timestamp: item.data.timestamp,
-            ...item.data.value
-          }
-        })
-        const group = _.groupBy(mapdata, 'property')
-        _.forIn(group, (arr, key) => {
-          const newdata = {
-            list: arr.sort((a, b) => a.timestamp - b.timestamp),
-            property: arr[0].property
-          }
-          const index = properties.findIndex(item => item.id === newdata.property)
-          if (index > -1) {
-              properties[index].list = newdata.list
-          }
+        _.forEach(properties, prop => {
+          const list = []
+          _.forEach(resp.result.list, item => {
+            list.push({
+              timeString: item.collectTime_,
+              value: item[prop.id]
+            })
+          })
+          prop.list = list
         })
         this.properties = properties
       })

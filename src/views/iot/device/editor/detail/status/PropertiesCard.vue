@@ -29,7 +29,6 @@ export default {
               unit: ''
           },
           list: [],
-          formatValue: null,
           value: null,
           visitData: null
         }
@@ -47,7 +46,6 @@ export default {
   data () {
     return {
       data: {
-        formatValue: '',
         visitData: []
       }
     }
@@ -61,11 +59,11 @@ export default {
       if (item && item.list) {
         const length = item.list.length
         const value = item.list[length - 1]
-        const dataType = typeof (value.formatValue)
+        const dataType = typeof (value.value)
         if (dataType === 'object') {
-          item.formatValue = JSON.stringify(value.formatValue) || '/'
+          item.value = JSON.stringify(value.value) || '/'
         } else {
-          item.formatValue = value.formatValue || '/'
+          item.value = value.value || '/'
           item.value = value.value || 0
         }
 
@@ -85,7 +83,7 @@ export default {
       this.data = item
     },
     GetData () {
-      return typeof (this.data.formatValue) === 'object' ? JSON.stringify(this.data.formatValue) : this.data.formatValue || '/'
+      return typeof (this.data.value) === 'object' ? JSON.stringify(this.data.value) : this.data.value || '/'
     }
   }
 }
