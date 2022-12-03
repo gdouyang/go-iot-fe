@@ -1,5 +1,5 @@
 <template>
-  <ChartCard :bordered="false" title="设备状态" :contentHeight="46" :total="state.text">
+  <ChartCard :bordered="false" title="设备状态" :contentHeight="46" :total="state">
     <!-- <a href="#" slot="action">
       <a-icon type="sync" />
     </a> -->
@@ -16,7 +16,7 @@ export default {
   name: 'DeviceState',
   props: {
     state: {
-      type: Object,
+      type: String,
       default: () => ''
     },
     runInfo: {

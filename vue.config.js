@@ -56,7 +56,7 @@ const vueConfig = {
       .use('file-loader')
       .loader('file-loader')
       .options({
-        name: 'assets/[name].[hash:8].[ext]'
+        name: 'static/assets/[name].[hash:8].[ext]'
       })
 
     // if prod is on
@@ -104,7 +104,8 @@ const vueConfig = {
   productionSourceMap: false,
   lintOnSave: undefined,
   // babel-loader no-ignore node_modules/*
-  transpileDependencies: []
+  transpileDependencies: [],
+  assetsDir: 'static'
 }
 
 // preview.pro.loacg.com only do not use in your production;

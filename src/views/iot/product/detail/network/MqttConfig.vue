@@ -7,7 +7,7 @@
         <NetworkRun :network="data" :productId="productId" @success="getData"/>
       </span>
       <a-descriptions-item label="开启SSL" :span="1">{{ data.configuration.useTLS ? '是' : '否' }}</a-descriptions-item>
-      <a-descriptions-item label="连接地址" :span="1">{{ accessAddress }}</a-descriptions-item>
+      <a-descriptions-item label="连接地址" :span="1" v-if="data.type === 'MQTT_BROKER'">{{ accessAddress }}</a-descriptions-item>
     </a-descriptions>
     <MqttConfigAdd ref="MqttConfigAdd" @success="getData"/>
   </div>

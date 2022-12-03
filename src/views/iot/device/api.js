@@ -20,11 +20,11 @@ export function getDetail (id) {
 }
 
 export function connect (deviceId) {
-  return Vue.prototype.$http.put(`/device/${deviceId}/connect`)
+  return Vue.prototype.$http.post(`/device/${deviceId}/connect`)
 }
 
 export function disconnect (deviceId) {
-  return Vue.prototype.$http.put(`/device/${deviceId}/disconnect`)
+  return Vue.prototype.$http.post(`/device/${deviceId}/disconnect`)
 }
 
 export function addDevice (data) {

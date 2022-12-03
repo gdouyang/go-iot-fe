@@ -37,12 +37,6 @@
           </a-form-model-item>
           <a-form-model-item label="值">
             <a-input-password v-model="configuration.value" v-if="configuration.type === 'password'" :maxLength="100"></a-input-password>
-            <a-input-number
-              v-else-if="configuration.type === 'number'"
-              v-model="configuration.value"
-              :precision="0"
-              :min="0"
-              :step="1"/>
             <a-input v-model="configuration.value" :maxLength="100" v-else></a-input>
           </a-form-model-item>
           <a-form-model-item label="描述">

@@ -2,12 +2,15 @@
  * mqtt脚本模板
  */
 const obj = {
-  tpl: `// 设备报文 -> 物模型
-function decode(context) {
+  tpl: `// 设备连接时执行
+function OnConnect(context) {
 }
 
-// 物模型 -> 设备报文
-function encode(context) {
+// 收到消息时执行
+function OnMessage(context) {
+}
+// 命令调用
+function OnInvoke(context) {
 }
 `,
   demoCode: '',
@@ -25,73 +28,22 @@ function encode(context) {
     { caption: 'message.getMessageType()', meta: 'encode', value: 'var messageType = message.getMessageType()' }
   ]
 }
-obj.demoCode = `// 设备报文 -> 物模型
-function decode(context) {
-  var mqttMessage = context.getMessage()
-  var payload = mqttMessage.payloadAsJson();
-  var topic = mqttMessage.getTopic();
-  var deviceId = context.getDevice() != null ? context.getDevice().getDeviceId() : null;
-  if (topic.startsWith("/report-property")) {
-    return {
-      messageType: 'REPORT_PROPERTY',
-      properties: payload.properties,
-      deviceId: deviceId,
-      code: payload.code,
-      headers: payload.headers,
-      messageId: payload.messageId
-    }
-  } else if (topic.startsWith("/report-property")) {
-    return {
-      messageType: 'EVENT',
-      event: 'fire_alarm',
-      deviceId: deviceId,
-      messageId: new Date().getTime(),
-      data: payload
-    }
-  } else if (topic.startsWith("/read-property")) {
-    return payload
-  }
+obj.demoCode = `function OnConnect(context) {
+  console.log("OnConnect: " + context.GetClientId())
+	context.DeviceOnline(context.GetClientId())
 }
-
-// 物模型 -> 设备报文
-function encode(context) {
-  var message = context.getMessage();
-  var messageType = message.getMessageType();
-  if (messageType == 'READ_PROPERTY') {
-    var data = {
-      messageId: message.getMessageId(),
-      deviceId: message.getDeviceId(),
-      properties: message.getProperties()
-    };
-    return {
-      topic: "/read-property",
-      message: data
-    }
-  }
-  if (messageType == 'WRITE_PROPERTY') {
-    var data = {
-      messageId: message.getMessageId(),
-      deviceId: message.getDeviceId(),
-      properties: message.getProperties()
-    };
-    return {
-      topic: "/write-property",
-      message: data
-    }
-  }
-  if (messageType == 'INVOKE_FUNCTION') {
-    var data = {
-      messageId: message.getMessageId(),
-      deviceId: message.getDeviceId(),
-      function: message.getFunctionId(),
-      args: message.getInputs()
-    };
-    return {
-      topic: "/invoke-function",
-      message: data
-    }
-  }
-  return null;
+function OnMessage(context) {
+  console.log("OnMessage: " + context.MsgToString())
+  var data = JSON.parse(context.MsgToString())
+	if (data.name == 'f') {
+		context.ReplyOk()
+		return
+	}
+  context.Save(data)
+}
+function OnInvoke(context) {
+	console.log("OnInvoke: " + JSON.stringify(context.GetMessage().Data))
+	context.GetSession().Publish("test", JSON.stringify(context.GetMessage().Data))
 }
 `
 export default obj

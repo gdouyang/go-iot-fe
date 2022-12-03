@@ -119,7 +119,7 @@ export default {
       var net = this.network
       if (net.type === 'TCP_SERVER' || net.type === 'TCP_CLIENT') {
         return TcpTpl
-      } else if (net.type === 'MQTT_BROKER') {
+      } else if (net.type === 'MQTT_BROKER' || net.type === 'MQTT_CLIENT') {
         return MqttTpl
       } else if (net.type === 'WEBSOCKET_SERVER') {
         return WebSocketTpl
