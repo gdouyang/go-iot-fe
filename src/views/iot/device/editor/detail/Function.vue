@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import _ from 'lodash'
+// import _ from 'lodash'
 import { cmdInvoke } from '@/views/iot/device/api.js'
 import FunctionForm from './functions/FunctionForm.vue'
 export default {
@@ -66,9 +66,9 @@ export default {
       if (ref) {
         params.data = ref[0].getData()
       }
-      _.forIn(params.data, (value, key) => {
-        params.data[key] = _.toString(value)
-      })
+      // _.forIn(params.data, (value, key) => {
+      //   params.data[key] = _.toString(value)
+      // })
       this.spinning = true
       cmdInvoke(deviceId, params).then(resp => {
         if (resp.success) {
