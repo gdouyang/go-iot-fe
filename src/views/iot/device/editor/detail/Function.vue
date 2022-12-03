@@ -1,5 +1,5 @@
 <template>
-  <a-spin :spinning="false">
+  <a-spin :spinning="spinning">
     <a-card :style="{ marginBottom: '20px' }" title="功能调试">
       <a-collapse v-model="activeKey" style="width: 500px;">
         <a-collapse-panel v-for="f in functionsSelectList" :key="f.id" :header="f.name">
@@ -20,6 +20,7 @@
 </template>
 
 <script>
+import _ from 'lodash'
 import { cmdInvoke } from '@/views/iot/device/api.js'
 import FunctionForm from './functions/FunctionForm.vue'
 export default {
@@ -36,7 +37,8 @@ export default {
   data () {
     return {
       functionsSelectList: [],
-      activeKey: []
+      activeKey: [],
+      spinning: false
     }
   },
   mounted () {
@@ -64,13 +66,16 @@ export default {
       if (ref) {
         params.data = ref[0].getData()
       }
+      _.forIn(params.data, (value, key) => {
+        params.data[key] = _.toString(value)
+      })
+      this.spinning = true
       cmdInvoke(deviceId, params).then(resp => {
-        // const tempResult = response.result
         if (resp.success) {
-          // typeof tempResult === 'object' ?
-          //   setFieldsValue({logs: JSON.stringify(tempResult)}) :
-          //   setFieldsValue({logs: tempResult})
+          this.$message.success('操作成功')
         }
+      }).finally(() => {
+        this.spinning = false
       })
     }
   }
