@@ -92,7 +92,7 @@ export default {
       if (has) {
         value = _.get(this.deviceConfig, item.property)
       }
-      if (item.type === 'password') {
+      if (item.type === 'password' && !_.isEmpty(value)) {
         return '••••••'
       }
       return value
