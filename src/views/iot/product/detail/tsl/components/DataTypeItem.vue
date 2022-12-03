@@ -61,7 +61,7 @@
         :data="data[field]"
         field="elementType"
         :showOtherGroup="false"
-        prop="valueType.elementType.type"
+        :prop="field + '.elementType.type'"
         :rules="[{ required: true, message: '请选择' }]"
       />
     </template>
