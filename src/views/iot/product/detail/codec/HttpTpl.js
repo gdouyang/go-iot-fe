@@ -26,6 +26,7 @@ function OnInvoke(context) {
     { caption: 'context.GetQuery()', meta: 'OnMessage', value: 'var value = context.GetQuery("key")' },
     { caption: 'context.GetForm()', meta: 'OnMessage', value: 'var value = context.GetForm("key")' },
     { caption: 'context.SaveProperties()', meta: 'OnMessage', value: 'context.SaveProperties({"key":"value"})' },
+    { caption: 'context.HttpRequest()', meta: 'OnInvoke', value: 'var resp = context.HttpRequest({method:"", url:"", data:{}, header:{}})' },
     // deviceOper
     { caption: 'deviceOper.GetConfig()', meta: 'deviceOper', value: 'var value = deviceOpr.GetConfig("key")' },
     // session
@@ -38,7 +39,8 @@ function OnInvoke(context) {
     { caption: 'context.GetDevice()', meta: 'OnInvoke', value: 'var deviceOper = context.GetDevice()' },
     { caption: 'message.GetClientId()', meta: 'OnInvoke', value: 'var clientId = message.GetClientId()' },
     { caption: 'context.ReplyOk()', meta: 'OnInvoke', value: 'var value = context.ReplyOk()' },
-    { caption: 'context.GetConfig()', meta: 'OnInvoke', value: 'var value = context.ReplyFail("resaon")' }
+    { caption: 'context.GetConfig()', meta: 'OnInvoke', value: 'var value = context.ReplyFail("resaon")' },
+    { caption: 'context.HttpRequest()', meta: 'OnInvoke', value: 'var resp = context.HttpRequest({method:"", url:"", data:{}, header:{}})' }
   ]
 }
 obj.demoCode = `// 检查在线状态
@@ -126,29 +128,13 @@ function OnInvoke(context) {
   } else {
     throw new Error(functionId + '无效功能ID');
   }
-  var replyData = {
-    messageType: 'INVOKE_FUNCTION_REPLY',
-    success: true,
-    output: null,
-    message: null,
-    deviceId: message.DeviceId,
-    functionId: functionId,
-    messageId: messageId
-  }
-  var success = function(resp) {
-    replyData.output = resp;
-    replyData.message = resp;
+  var resp = sendToOneNet(message.DeviceId, {'args': result});
+  if (resp.status == 200) {
     // 发送成功后要处理回复
-    context.reply(replyData)
+    context.ReplyOk()
+  } else {
+    context.ReplyFail(resp.message)
   }
-  var error = function(err) {
-    replyData.success = false;
-    replyData.output = err;
-    replyData.message = err;
-    // 发送成功后要处理回复
-    context.reply(replyData)
-  }
-  sendToOneNet(message.DeviceId, {'args': result}, success, error);
 }
 
 function doAck(context, imei, msgHeader) {
@@ -163,19 +149,15 @@ function doAck(context, imei, msgHeader) {
 }
 
 // 发送指令给移动平台
-function sendToOneNet(context, imei, data, success, error) {
+function sendToOneNet(context, imei, data) {
   // 获取页面上配置的地址与apiKey
-  context.getConfigs(['apiAddress', 'apiKey'], function(map) {
-    var url = map['apiAddress']
-    var apiKey = map['apiKey']
-    context.request({
-      method: 'post',
-      url: url + '/nbiot/execute?imei='+ imei +'&obj_id=3200&obj_inst_id=0&res_id=5505',
-      data: data,
-      headers: {'api-key': apiKey},
-      success: success,
-      error: error
-    })
+  var url= context.GetConfig('apiAddress')
+  var apiKey = context.GetConfig('apiKey')
+  return context.HttpRequest({
+    method: 'post',
+    url: url + '/nbiot/execute?imei='+ imei +'&obj_id=3200&obj_inst_id=0&res_id=5505',
+    data: data,
+    headers: {'api-key': apiKey},
   })
 }
 
