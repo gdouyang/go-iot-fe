@@ -2,32 +2,45 @@
  * tcp脚本模板
  */
 const obj = {
-  tpl: `// 设备报文 -> 物模型
-function decode(context) {
+  tpl: `function OnConnect(context) {
 }
-
-// 物模型 -> 设备报文
-function encode(context) {
+function OnMessage(context) {
+}
+function OnInvoke(context) {
 }
 `,
   demoCode: '',
   codeTip: [
     { caption: 'context', meta: 'common', value: 'context' },
-    { caption: 'context.getSession()', meta: 'decode', value: 'var session = context.getSession()' },
-    { caption: 'session.getOperator()', meta: 'decode', value: 'var deviceOpr = session.getOperator()' },
-    // dev
-    { caption: 'context.getDevice()', meta: 'decode', value: 'var deviceOpr = context.getDevice()' },
-    { caption: 'deviceOpr.getConfig("key")', meta: 'decode', value: 'var value = deviceOpr.getConfig("key")' },
-    // msg
-    { caption: 'context.getMessage()', meta: 'common', value: 'var message = context.getMessage()' },
-    { caption: 'message.payloadAsJson()', meta: 'decode', value: 'message.payloadAsJson()' },
-    { caption: 'message.payloadAsBytes()', meta: 'decode', value: 'message.payloadAsBytes()' }
+    // OnMessage
+    { caption: 'context.GetMessage()', meta: 'OnMessage', value: 'var message = context.GetMessage()' },
+    { caption: 'context.MsgToString()', meta: 'OnMessage', value: 'var str = context.MsgToString()' },
+    { caption: 'context.GetSession()', meta: 'OnMessage', value: 'var session = context.GetSession()' },
+    { caption: 'context.DeviceOnline()', meta: 'OnMessage', value: 'context.DeviceOnline(deviceId)' },
+    { caption: 'context.GetDevice()', meta: 'OnMessage', value: 'var deviceOper = context.GetDevice()' },
+    { caption: 'context.GetDeviceById()', meta: 'OnMessage', value: 'var deviceOper = context.GetDeviceById("id")' },
+    { caption: 'context.GetConfig()', meta: 'OnMessage', value: 'var value = context.GetConfig("key")' },
+    { caption: 'context.ReplyOk()', meta: 'OnMessage', value: 'var value = context.ReplyOk()' },
+    { caption: 'context.GetConfig()', meta: 'OnMessage', value: 'var value = context.ReplyFail("resaon")' },
+    { caption: 'context.SaveProperties()', meta: 'OnMessage', value: 'context.SaveProperties({"key":"value"})' },
+    // deviceOper
+    { caption: 'deviceOper.GetConfig()', meta: 'deviceOper', value: 'var value = deviceOpr.GetConfig("key")' },
+    // session
+    { caption: 'session.Disconnect()', meta: 'session', value: 'session.Disconnect()' },
+    { caption: 'session.Send()', meta: 'session', value: 'session.Send("text")' },
+    { caption: 'session.SendHex()', meta: 'session', value: 'session.SendHex("68657820737472696e67")' },
+    // OnInvoke
+    { caption: 'context.GetMessage()', meta: 'OnInvoke', value: 'var message = context.GetMessage()' },
+    { caption: 'context.GetDevice()', meta: 'OnInvoke', value: 'var deviceOper = context.GetDevice()' },
+    { caption: 'message.GetClientId()', meta: 'OnInvoke', value: 'var clientId = message.GetClientId()' },
+    { caption: 'context.ReplyOk()', meta: 'OnInvoke', value: 'var value = context.ReplyOk()' },
+    { caption: 'context.GetConfig()', meta: 'OnInvoke', value: 'var value = context.ReplyFail("resaon")' }
   ]
 }
 
 obj.demoCode = `// 设备报文 -> 物模型
-function decode(context) {
-  var bytes = context.getMessage().payloadAsBytes();
+function OnMessage(context) {
+  var bytes = context.GetMessage();
   var payload = new Uint8Array(bytes.length);
   for (var i = 0; i < bytes.length; i++) {
     payload[i] = bytes[i] & 0xff;
@@ -35,71 +48,62 @@ function decode(context) {
   var message = null;
   try {
     message = DemoTcpMessage.of1(payload);
-    if (log.isDebugEnabled()) {
-      log.debug("decode tcp message: {}, {}", bytesToHex(payload), JSON.stringify(message));
-    }
+    console.log("decode tcp message: {}, {}", bytesToHex(payload), JSON.stringify(message));
   } catch (e) {
-    log.warn("decode tcp message error:[{}]", bytesToHex(payload), e);
-    log.warn(e)
+    console.log("decode tcp message error:[{}]", bytesToHex(payload), e);
+    console.log(e)
     throw e;
   }
-  var session = context.getSession();
-  if (session.getOperator() == null) {
+  var session = context.GetSession();
+  if (session.GetDevice() == null) {
       //设备没有认证就发送了消息
       if (message.getType() != MessageType.AUTH_REQ) {
-        log.warn("tcp session[{}], unauthorized.", session.getId());
+        console.log("tcp session[{}], unauthorized.", session.getId());
         var unAuthMsg = DemoTcpMessage.of(MessageType.ERROR, ErrorMessage.of(TcpStatus.UN_AUTHORIZED)).getHexData();
         // 发送回复并关闭连接
-        session.sendAsync(context.toByteBuf(unAuthMsg), function (success) { session.close() });
+        session.SendHex(unAuthMsg);
+        session.Disconnect();
         return null;
       }
       // AuthRequest
       var request = message.getData();
       var deviceId = request.deviceId;
-      var operator = context.getDevice(deviceId);
-      if (operator != null && operator.getConfig("tcp_auth_key") == request.getKey()) {
+      var operator = context.GetDeviceById(deviceId);
+      if (operator != null && operator.GetConfig("tcp_auth_key") == request.getKey()) {
         var authSuccess = DemoTcpMessage.of(MessageType.AUTH_RES, AuthResponse.of(deviceId, TcpStatus.SUCCESS)).getHexData();
-        session.sendAsync(context.toByteBuf(authSuccess));
+        session.SendHex(authSuccess);
         //认证通过
-        var onlineMessage = new DeviceOnlineMessage();
-        onlineMessage.setDeviceId(deviceId);
-        onlineMessage.setTimestamp(new Date().getTime());
-        return onlineMessage;
+        context.DeviceOnline(deviceId)
       } else {
         // 设备不存在或者没有配置tcp_auth_key,响应错误信息.
         var authErrorMsg = DemoTcpMessage.of(MessageType.AUTH_RES, AuthResponse.of(deviceId, TcpStatus.ILLEGAL_ARGUMENTS)).getHexData();
-        session.sendAsync(context.toByteBuf(authErrorMsg));
-        return null;
+        session.SendHex(authErrorMsg);
       }
+      return
   }
   //keepalive, ping pong
   if (message.getType() == MessageType.PING) {
     var pongMsg = DemoTcpMessage.of(MessageType.PONG, new Pong()).getHexData();
-    session.sendAsync(context.toByteBuf(pongMsg), function () { session.ping(); });
-    return null;
+    session.SendHex(pongMsg);
+    return;
   }
   if (message.getData() != null && message.getData().toDeviceMessage) {
-    return message.getData().toDeviceMessage()
+    var d = message.getData().toDeviceMessage()
+    if (d..messageType == 'REPORT_PROPERTY') {
+      context.SaveProperties(message.getData().toDeviceMessage())
+    }
   }
 }
 
 // 物模型 -> 设备报文
-function encode(context) {
-  var message = context.getMessage();
-  var messageType = message.getMessageType();
-  if (messageType == 'READ_PROPERTY') {
-    var of = DemoTcpMessage.of(MessageType.READ_PROPERTY, ReadProperty.of(message)).getHexData();
-    return context.toByteBuf(of);
-  }
-  if (messageType == 'WRITE_PROPERTY') {
+function OnInvoke(context) {
+  var message = context.GetMessage();
+  if (message.FunctionId == 'FunctionId') {
     var of = DemoTcpMessage.of(MessageType.WRITE_PROPERTY, WriteProperty.of(message)).getHexData();
-    return context.toByteBuf(of);
+    context.GetSession().SendHex(of)
+    return;
   }
-  if (messageType == 'REPORT_PROPERTY') {
-    var of = DemoTcpMessage.of(MessageType.REPORT_TEMPERATURE, ReportProperty.of(message)).getHexData();
-    return context.toByteBuf(of);
-  }
-  return null;
+  context.ReplyOk()
 }
 
 /********** 工具类 */
@@ -324,21 +328,20 @@ function ReadProperty() {
     return payload;
   }
   this.fromBytes = function (bytes, offset) {
-    var readPropertyMessage = new ReadPropertyMessage();
     var json = bytesToString(bytes);
     var obj = JSON.parse(json);
-
-    readPropertyMessage.deviceId = obj.deviceId;
-    readPropertyMessage.messageId = obj.messageId;
-    readPropertyMessage.code = obj.code;
-    readPropertyMessage.headers = obj.headers;
+    var readPropertyMessage = {
+      "deviceId": obj.deviceId,
+      "messageId": obj.messageId,
+      "code": obj.code,
+      "headers": obj.headers
+    }
     return readPropertyMessage;
   }
 }
 ReadProperty.prototype = parentTcpPayload
 ReadProperty.of = function (readPropertyMessage) {
-  var r = new ReadProperty();
-  r.readPropertyMessage = readPropertyMessage;
+  var r = {"readPropertyMessage": readPropertyMessage};
   return r;
 }
 //
@@ -354,21 +357,22 @@ function WriteProperty() {
     return payload;
   }
   this.fromBytes = function (bytes, offset) {
-    var writePropertyMessage = new WritePropertyMessage();
     var json = bytesToString(bytes);
     var obj = JSON.parse(json);
-
-    writePropertyMessage.deviceId = obj.deviceId;
-    writePropertyMessage.messageId = obj.messageId;
-    readPropertyMessage.code = obj.code;
-    writePropertyMessage.headers = obj.headers;
+    var writePropertyMessage = {
+      "deviceId": obj.deviceId,
+      "messageId": obj.messageId,
+      "code": obj.code,
+      "headers": obj.headers
+    }
     return writePropertyMessage;
   }
 }
 WriteProperty.prototype = parentTcpPayload
 WriteProperty.of = function (writePropertyMessage) {
-  var r = new WriteProperty();
-  r.writePropertyMessage = writePropertyMessage;
+  var r = {
+    "writePropertyMessage": writePropertyMessage
+  };
   return r;
 }
 //
@@ -384,22 +388,22 @@ function ReportProperty() {
     return payload;
   }
   this.fromBytes = function (bytes, offset) {
-    var reportPropertyMessage = new ReportPropertyMessage();
     var json = bytesToString(bytes);
     var obj = JSON.parse(json);
 
-    reportPropertyMessage.deviceId = obj.deviceId;
-    reportPropertyMessage.messageId = obj.messageId;
-    readPropertyMessage.code = obj.code;
-    reportPropertyMessage.headers = obj.headers;
-    reportPropertyMessage.properties = obj.properties;
+    var reportPropertyMessage = {
+      "deviceId": obj.deviceId,
+      "messageId": obj.messageId,
+      "code": obj.code,
+      "headers": obj.headers,
+      "properties": obj.properties
+    };
     return reportPropertyMessage;
   }
 }
 ReportProperty.prototype = parentTcpPayload
 ReportProperty.of = function (reportPropertyMessage) {
-  var r = new ReportProperty();
-  r.reportPropertyMessage = reportPropertyMessage;
+  var r = {"reportPropertyMessage": reportPropertyMessage};
   return r;
 }
 function MessageType (text, payloadSupplier, ordinal) {

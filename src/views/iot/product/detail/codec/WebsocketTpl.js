@@ -2,40 +2,48 @@
  * websocket脚本模板
  */
 const obj = {
-  tpl: `// 设备报文 -> 物模型
-function decode(context) {
-  return {
-
-  }
+  tpl: `function OnConnect(context) {
 }
-
-// 物模型 -> 设备报文
-function encode(context) {
-
+function OnMessage(context) {
+}
+function OnInvoke(context) {
 }
 `,
   demoCode: '',
   codeTip: [
     { caption: 'context', meta: 'common', value: 'context' },
-    { caption: 'context.getSession()', meta: 'decode', value: 'var session = context.getSession()' },
-    { caption: 'session.getOperator()', meta: 'decode', value: 'var deviceOpr = session.getOperator()' },
-    // dev
-    { caption: 'context.getDevice()', meta: 'decode', value: 'var deviceOpr = context.getDevice()' },
-    { caption: 'deviceOpr.getConfig("key")', meta: 'decode', value: 'var value = deviceOpr.getConfig("key")' },
-    // msg
-    { caption: 'context.getMessage()', meta: 'common', value: 'var message = context.getMessage()' },
-    { caption: 'message.payloadAsJson()', meta: 'decode', value: 'message.payloadAsJson()' },
-    { caption: 'message.getWebSocketSession()', meta: 'decode', value: 'var wsSession = message.getWebSocketSession()' },
-    // wsSession
-    { caption: 'wsSession.getUri()', meta: 'decode', value: 'var uri = wsSession.getUri()' },
-    { caption: 'wsSession.textMessage(text)', meta: 'decode', value: 'var wsMsg = wsSession.textMessage(text)' },
-    { caption: 'wsSession.send(wsMsg)', meta: 'decode', value: 'wsSession.send(wsMsg)' },
-    // encode
-    { caption: 'message.getMessageType()', meta: 'encode', value: 'var messageType = message.getMessageType()' }
+    // OnMessage
+    { caption: 'context.GetMessage()', meta: 'OnMessage', value: 'var message = context.GetMessage()' },
+    { caption: 'context.MsgToString()', meta: 'OnMessage', value: 'var str = context.MsgToString()' },
+    { caption: 'context.GetSession()', meta: 'OnMessage', value: 'var session = context.GetSession()' },
+    { caption: 'context.DeviceOnline()', meta: 'OnMessage', value: 'context.DeviceOnline(deviceId)' },
+    { caption: 'context.GetDevice()', meta: 'OnMessage', value: 'var deviceOper = context.GetDevice()' },
+    { caption: 'context.GetConfig()', meta: 'OnMessage', value: 'var value = context.GetConfig("key")' },
+    { caption: 'context.ReplyOk()', meta: 'OnMessage', value: 'var value = context.ReplyOk()' },
+    { caption: 'context.GetConfig()', meta: 'OnMessage', value: 'var value = context.ReplyFail("resaon")' },
+    { caption: 'context.IsTextMessage()', meta: 'OnMessage', value: 'var yes = context.IsTextMessage()' },
+    { caption: 'context.IsBinaryMessage()', meta: 'OnMessage', value: 'var yes = context.IsBinaryMessage()' },
+    { caption: 'context.GetHeader()', meta: 'OnMessage', value: 'var value = context.GetHeader("key")' },
+    { caption: 'context.GetUrl()', meta: 'OnMessage', value: 'var value = context.GetUrl()' },
+    { caption: 'context.GetQuery()', meta: 'OnMessage', value: 'var value = context.GetQuery("key")' },
+    { caption: 'context.GetForm()', meta: 'OnMessage', value: 'var value = context.GetForm("key")' },
+    { caption: 'context.SaveProperties()', meta: 'OnMessage', value: 'context.SaveProperties({"key":"value"})' },
+    // deviceOper
+    { caption: 'deviceOper.GetConfig()', meta: 'deviceOper', value: 'var value = deviceOpr.GetConfig("key")' },
+    // session
+    { caption: 'session.Disconnect()', meta: 'session', value: 'session.Disconnect()' },
+    { caption: 'session.SendText()', meta: 'session', value: 'session.SendText("text")' },
+    { caption: 'session.SendBinary()', meta: 'session', value: 'session.SendBinary("base64 string")' },
+    // OnInvoke
+    { caption: 'context.GetMessage()', meta: 'OnInvoke', value: 'var message = context.GetMessage()' },
+    { caption: 'context.GetDevice()', meta: 'OnInvoke', value: 'var deviceOper = context.GetDevice()' },
+    { caption: 'message.GetClientId()', meta: 'OnInvoke', value: 'var clientId = message.GetClientId()' },
+    { caption: 'context.ReplyOk()', meta: 'OnInvoke', value: 'var value = context.ReplyOk()' },
+    { caption: 'context.GetConfig()', meta: 'OnInvoke', value: 'var value = context.ReplyFail("resaon")' }
   ]
 }
 obj.demoCode = `// 设备报文 -> 物模型
-function decode(context) {
+function OnMessage(context) {
   var wsMessage = context.getMessage();
   var session = wsMessage.getWebSocketSession();
   var payload = wsMessage.payloadAsJson();
@@ -64,7 +72,7 @@ function decode(context) {
 }
 
 // 物模型 -> 设备报文
-function encode(context) {
+function OnInvoke(context) {
   var message = context.getMessage();
   var messageType = message.getMessageType();
   if (messageType == 'READ_PROPERTY') {

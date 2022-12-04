@@ -2,55 +2,49 @@
  * websocket脚本模板
  */
 const obj = {
-  tpl: `// 检查在线状态
-function checkState(context) {
-  // var unknown = 0;
-  // var online = 1;
-  // var noActive = -3;
-  // var offline = -1;
-  // var timeout = -2;
-  context.complete();
+  tpl: `function OnConnect(context) {
 }
-// 设备报文 -> 物模型
-function decode(context) {
-  return {
-
-  }
+function OnMessage(context) {
 }
-
-// 物模型 -> 设备报文
-function encode(context) {
-
+function OnInvoke(context) {
 }
 `,
   demoCode: '',
   codeTip: [
     { caption: 'context', meta: 'common', value: 'context' },
-    { caption: 'context.getSession()', meta: 'decode', value: 'var session = context.getSession()' },
-    { caption: 'session.getOperator()', meta: 'decode', value: 'var deviceOpr = session.getOperator()' },
-    // dev
-    { caption: 'context.getDevice()', meta: 'decode', value: 'var deviceOpr = context.getDevice()' },
-    { caption: 'deviceOpr.getConfig("key")', meta: 'decode', value: 'var value = deviceOpr.getConfig("key")' },
-    // msg
-    { caption: 'context.getMessage()', meta: 'common', value: 'var message = context.getMessage()' },
-    { caption: 'message.payloadAsJson()', meta: 'decode', value: 'message.payloadAsJson()' },
-    { caption: 'message.getWebSocketSession()', meta: 'decode', value: 'var wsSession = message.getWebSocketSession()' },
-    // wsSession
-    { caption: 'wsSession.getUri()', meta: 'decode', value: 'var uri = wsSession.getUri()' },
-    { caption: 'wsSession.textMessage(text)', meta: 'decode', value: 'var wsMsg = wsSession.textMessage(text)' },
-    { caption: 'wsSession.send(wsMsg)', meta: 'decode', value: 'wsSession.send(wsMsg)' },
-    // encode
-    { caption: 'message.getMessageType()', meta: 'encode', value: 'var messageType = message.getMessageType()' }
+    // OnMessage
+    { caption: 'context.GetMessage()', meta: 'OnMessage', value: 'var message = context.GetMessage()' },
+    { caption: 'context.MsgToString()', meta: 'OnMessage', value: 'var str = context.MsgToString()' },
+    { caption: 'context.GetSession()', meta: 'OnMessage', value: 'var session = context.GetSession()' },
+    { caption: 'context.DeviceOnline()', meta: 'OnMessage', value: 'context.DeviceOnline(deviceId)' },
+    { caption: 'context.GetDevice()', meta: 'OnMessage', value: 'var deviceOper = context.GetDevice()' },
+    { caption: 'context.GetConfig()', meta: 'OnMessage', value: 'var value = context.GetConfig("key")' },
+    { caption: 'context.ReplyOk()', meta: 'OnMessage', value: 'var value = context.ReplyOk()' },
+    { caption: 'context.GetConfig()', meta: 'OnMessage', value: 'var value = context.ReplyFail("resaon")' },
+    { caption: 'context.GetHeader()', meta: 'OnMessage', value: 'var value = context.GetHeader("key")' },
+    { caption: 'context.GetUrl()', meta: 'OnMessage', value: 'var value = context.GetUrl()' },
+    { caption: 'context.GetQuery()', meta: 'OnMessage', value: 'var value = context.GetQuery("key")' },
+    { caption: 'context.GetForm()', meta: 'OnMessage', value: 'var value = context.GetForm("key")' },
+    { caption: 'context.SaveProperties()', meta: 'OnMessage', value: 'context.SaveProperties({"key":"value"})' },
+    // deviceOper
+    { caption: 'deviceOper.GetConfig()', meta: 'deviceOper', value: 'var value = deviceOpr.GetConfig("key")' },
+    // session
+    { caption: 'session.Disconnect()', meta: 'session', value: 'session.Disconnect()' },
+    { caption: 'session.Response()', meta: 'session', value: 'session.Response("text")' },
+    { caption: 'session.ResponseJSON()', meta: 'session', value: 'session.ResponseJSON("{}")' },
+    { caption: 'session.ResponseHeader()', meta: 'session', value: 'session.ResponseHeader("key", "value")' },
+    // OnInvoke
+    { caption: 'context.GetMessage()', meta: 'OnInvoke', value: 'var message = context.GetMessage()' },
+    { caption: 'context.GetDevice()', meta: 'OnInvoke', value: 'var deviceOper = context.GetDevice()' },
+    { caption: 'message.GetClientId()', meta: 'OnInvoke', value: 'var clientId = message.GetClientId()' },
+    { caption: 'context.ReplyOk()', meta: 'OnInvoke', value: 'var value = context.ReplyOk()' },
+    { caption: 'context.GetConfig()', meta: 'OnInvoke', value: 'var value = context.ReplyFail("resaon")' }
   ]
 }
 obj.demoCode = `// 检查在线状态
-function checkState(context) {
-  // var unknown = 0;
-  var online = 1;
-  // var noActive = -3;
-  // var offline = -1;
-  // var timeout = -2;
-  context.complete(online);
+function OnStateChecker(context) {
+  // unknown, online, offline;
+  return "online"
 }
 /**
  * 2：设备上下线消息
@@ -65,19 +59,18 @@ var ONLINE = "1";
  */
 var OFFLINE = "0";
 // 设备报文 -> 物模型
-function decode(context) {
-  var httpRequest = context.getMessage();
-  var data = httpRequest.payloadAsJson();
+function OnMessage(context) {
+  var str = context.MsgToString();
+  var data = JSON.parse(str);
   var msg = data.msg;
   var imei = msg.imei;
   var msgType = msg.type;
   // 处理上线消息
   if (ONLINE_OFFLINE == msgType) {
-    var status = msg.getString("status");
+    var status = msg.status;
     if (ONLINE == status) {
-      var message1 = new DeviceOnlineMessage();
-      message1.setDeviceId(imei);
-      return message1;
+      context.DeviceOnline(imei)
+      return;
     } else if (OFFLINE == status) {
       var message1 = new DeviceOfflineMessage();
       message1.setDeviceId(imei);
@@ -91,9 +84,10 @@ function decode(context) {
   var value1 = msgHeader.msgType.value;
   if (MsgType.心跳消息.equals(value1) || MsgType.上行接入请求.equals(value1)) {
     // 灯控器心中、上行接入时需要返回ack不然会断开连接
-    context.getDevice(imei, function() {
+    var devOper = context.GetDeviceById(imei)
+    if (devOper) {
       doAck(context, imei, msgHeader);
-    })
+    }
   }
   // 心跳消息中包含了亮度、电流、电压、功率
   if (MsgType.心跳消息.equals(value1)) {
@@ -101,27 +95,24 @@ function decode(context) {
     var current = entity.getNextIntegerWord(); // 电流 单位mA
     var voltage = entity.getNextIntegerWord(); // 电压 V
     var power = entity.getNextIntegerWord(); // 功率 W
-    var json = {};
-    json.light = light;
-    json.current = current;
-    json.voltage = voltage;
-    json.power = power;
-    return {
-      messageType: 'REPORT_PROPERTY',
-      properties: json,
-      deviceId: imei
+    var json = {
+      deviceId: imei,
+      light: light,
+      current: current,
+      voltage: voltage,
+      power: power
     };
+    context.SaveProperties(json)
   }
 }
 // 物模型 -> 设备报文
-function encode(context) {
-  var message = context.getMessage();
-  var messageType = message.getMessageType();
-  if (messageType != 'INVOKE_FUNCTION') {
+function OnInvoke(context) {
+  var message = context.GetMessage();
+  if (!message.FunctionId) {
     throw new Error('只支持设备功能调用');
   }
-  var functionId = message.getFunctionId();
-  var messageId = message.getMessageId();
+  var functionId = message.FunctionId;
+  var messageId = "1"//message.getMessageId();
   var invoke = new FunctionInvokeUtil();
   var result = null;
   if (functionId == "timing") {
@@ -140,7 +131,7 @@ function encode(context) {
     success: true,
     output: null,
     message: null,
-    deviceId: message.getDeviceId(),
+    deviceId: message.DeviceId,
     functionId: functionId,
     messageId: messageId
   }
@@ -157,7 +148,7 @@ function encode(context) {
     // 发送成功后要处理回复
     context.reply(replyData)
   }
-  sendToOneNet(message.getDeviceId(), {'args': result}, success, error);
+  sendToOneNet(message.DeviceId, {'args': result}, success, error);
 }
 
 function doAck(context, imei, msgHeader) {
