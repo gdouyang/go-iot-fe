@@ -148,9 +148,7 @@ export default {
     },
     plusRouter () {
       this.addObj.configuration.routers.push({
-        id: new Date().getTime(),
-        url: '',
-        protocol: ''
+        url: ''
       })
     }
   }
