@@ -2,12 +2,12 @@ const defaultTcpAddObj = {
   id: null,
   name: '',
   type: 'TCP_SERVER',
-  productId: '',
+  productId: null,
   configuration: {
     useTLS: false,
     certificate: null,
-    host: '0.0.0.0',
-    port: '',
+    host: '',
+    port: null,
     delimeter: {
       type: null, // Delimited, FixLength
       splitFunc: null,
@@ -32,12 +32,12 @@ const defaultMqttAddObj = {
   id: null,
   name: '',
   type: 'MQTT_BROKER',
-  productId: '',
+  productId: null,
   configuration: {
     useTLS: false,
     certificate: null,
-    host: '0.0.0.0',
-    port: ''
+    host: '',
+    port: null
   }
 }
 
@@ -45,13 +45,13 @@ const defaultWebSocketAddObj = {
   id: null,
   name: '',
   type: 'WEBSOCKET_SERVER',
-  productId: '',
+  productId: null,
   configuration: {
     useTLS: false,
     certificate: null,
-    host: '0.0.0.0',
-    port: '',
-    routers: [{ id: 1, url: '', protocol: '' }]
+    host: '',
+    port: null,
+    routers: [{ url: '' }]
   }
 }
 
@@ -59,13 +59,13 @@ const defaultHttpAddObj = {
   id: null,
   name: '',
   type: 'HTTP_SERVER',
-  productId: '',
+  productId: null,
   configuration: {
     useTLS: false,
     certificate: null,
-    host: '0.0.0.0',
-    port: '',
-    routers: [{ id: 1, url: '', protocol: '' }]
+    host: '',
+    port: null,
+    routers: [{ url: '' }]
   }
 }
 

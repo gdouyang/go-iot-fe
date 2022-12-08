@@ -19,12 +19,12 @@ function OnInvoke(context) {
     { caption: 'context.DeviceOnline()', meta: 'OnMessage', value: 'context.DeviceOnline(deviceId)' },
     { caption: 'context.GetDevice()', meta: 'OnMessage', value: 'var deviceOper = context.GetDevice()' },
     { caption: 'context.GetConfig()', meta: 'OnMessage', value: 'var value = context.GetConfig("key")' },
-    { caption: 'context.ReplyOk()', meta: 'OnMessage', value: 'var value = context.ReplyOk()' },
-    { caption: 'context.GetConfig()', meta: 'OnMessage', value: 'var value = context.ReplyFail("resaon")' },
+    { caption: 'context.ReplyOk()', meta: 'OnMessage', value: 'context.ReplyOk()' },
+    { caption: 'context.GetConfig()', meta: 'OnMessage', value: 'context.ReplyFail("resaon")' },
     { caption: 'context.IsTextMessage()', meta: 'OnMessage', value: 'var yes = context.IsTextMessage()' },
     { caption: 'context.IsBinaryMessage()', meta: 'OnMessage', value: 'var yes = context.IsBinaryMessage()' },
     { caption: 'context.GetHeader()', meta: 'OnMessage', value: 'var value = context.GetHeader("key")' },
-    { caption: 'context.GetUrl()', meta: 'OnMessage', value: 'var value = context.GetUrl()' },
+    { caption: 'context.GetUrl()', meta: 'OnMessage', value: 'var url = context.GetUrl()' },
     { caption: 'context.GetQuery()', meta: 'OnMessage', value: 'var value = context.GetQuery("key")' },
     { caption: 'context.GetForm()', meta: 'OnMessage', value: 'var value = context.GetForm("key")' },
     { caption: 'context.SaveProperties()', meta: 'OnMessage', value: 'context.SaveProperties({"key":"value"})' },
@@ -38,8 +38,8 @@ function OnInvoke(context) {
     { caption: 'context.GetMessage()', meta: 'OnInvoke', value: 'var message = context.GetMessage()' },
     { caption: 'context.GetDevice()', meta: 'OnInvoke', value: 'var deviceOper = context.GetDevice()' },
     { caption: 'message.GetClientId()', meta: 'OnInvoke', value: 'var clientId = message.GetClientId()' },
-    { caption: 'context.ReplyOk()', meta: 'OnInvoke', value: 'var value = context.ReplyOk()' },
-    { caption: 'context.GetConfig()', meta: 'OnInvoke', value: 'var value = context.ReplyFail("resaon")' }
+    { caption: 'context.ReplyOk()', meta: 'OnInvoke', value: 'context.ReplyOk()' },
+    { caption: 'context.GetConfig()', meta: 'OnInvoke', value: 'context.ReplyFail("resaon")' }
   ]
 }
 obj.demoCode = `// 设备报文 -> 物模型
