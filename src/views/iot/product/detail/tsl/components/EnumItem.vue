@@ -71,8 +71,8 @@ export default {
     }
   },
   created () {
-    if (_.has(this.data, 'elementType.elements')) {
-      this.arrayEnumData = this.data.elementType.elements
+    if (_.has(this.data, 'elements')) {
+      this.arrayEnumData = this.data.elements
     } else {
       this.arrayEnumData = [{ text: '', value: '', id: 0 }]
     }
@@ -94,7 +94,7 @@ export default {
     },
     setArrayEnumData (datas) {
       this.arrayEnumData = datas
-      this.data.elementType.elements = datas
+      this.data.elements = datas
     },
     plus () {
       this.setArrayEnumData([...this.arrayEnumData, { id: this.arrayEnumData.length + 1 }])

@@ -55,8 +55,7 @@
       <FileItem :data="data[field]" />
     </template>
     <template v-else-if="['array'].indexOf(data[field].type) !== -1">
-      <!-- <ArrayItem :data="data[field]" /> -->
-      <DataTypeItem
+      <DataTypeItemSimple
         label="元素类型"
         :data="data[field]"
         field="elementType"
@@ -79,8 +78,8 @@ import DateItem from './DateItem.vue'
 import EnumItem from './EnumItem.vue'
 import PasswordItem from './PasswordItem.vue'
 import FileItem from './FileItem.vue'
-import ArrayItem from './ArrayItem.vue'
 import ObjectItem from './ObjectItem.vue'
+import DataTypeItemSimple from './DataTypeItemSimple.vue'
 
 export default {
   name: 'DataTypeItem',
@@ -92,8 +91,8 @@ export default {
     EnumItem,
     PasswordItem,
     FileItem,
-    ArrayItem,
-    ObjectItem
+    ObjectItem,
+    DataTypeItemSimple
   },
   props: {
     label: {
@@ -149,7 +148,7 @@ export default {
       } else if (['date'].indexOf(value) !== -1) {
         valueType = { format: null }
       } else if (['enum'].indexOf(value) !== -1) {
-        valueType = { elementType: { elements: null } }
+        valueType = { elements: null }
       } else if (['password'].indexOf(value) !== -1) {
         valueType = { max: null }
       } else if (['file'].indexOf(value) !== -1) {

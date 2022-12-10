@@ -29,11 +29,10 @@
       >
         <a-input v-model="formData.name" placeholder="请输入参数名称"/>
       </a-form-model-item>
-      <data-type-item
+      <DataTypeItemSimple
         label="数据类型"
         :data="formData"
         field="valueType"
-        :showOtherGroup="false"
         prop="valueType.type"
         :rules="[{ required: true, message: '请选择' }]"
       />
@@ -51,12 +50,12 @@
 
 <script>
 // import _ from 'lodash'
-import DataTypeItem1 from '../components/DataTypeItem1.vue'
+import DataTypeItemSimple from '../components/DataTypeItemSimple.vue'
 import { getPropertiesData } from '../components/data.js'
 export default {
   name: 'Paramter',
   components: {
-    'data-type-item': DataTypeItem1
+    DataTypeItemSimple
   },
   props: {
     data: {
