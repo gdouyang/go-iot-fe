@@ -16,14 +16,14 @@
           <a-select-option value="float">float(单精度浮点型)</a-select-option>
           <a-select-option value="double">double(双精度浮点数)</a-select-option>
           <a-select-option value="string">text(字符串)</a-select-option>
-          <a-select-option value="boolean">bool(布尔型)</a-select-option>
+          <a-select-option value="bool">bool(布尔型)</a-select-option>
         </a-select-opt-group>
         <a-select-opt-group label="其他类型" v-if="showOtherGroup">
           <a-select-option value="date">date(时间型)</a-select-option>
           <a-select-option value="enum">enum(枚举)</a-select-option>
-          <a-select-option value="array">array(数组)</a-select-option>
+          <!-- <a-select-option value="array">array(数组)</a-select-option> -->
           <a-select-option value="object">object(结构体)</a-select-option>
-          <a-select-option value="file">file(文件)</a-select-option>
+          <!-- <a-select-option value="file">file(文件)</a-select-option> -->
           <a-select-option value="password">password(密码)</a-select-option>
           <!-- <a-select-option value="geoPoint">geoPoint(地理位置)</a-select-option> -->
         </a-select-opt-group>
@@ -39,7 +39,7 @@
     <template v-else-if="['string'].indexOf(data[field].type) !== -1">
       <StringItem :data="data[field]" />
     </template>
-    <template v-else-if="['boolean'].indexOf(data[field].type) !== -1">
+    <template v-else-if="['bool'].indexOf(data[field].type) !== -1">
       <BooleanItem :data="data[field]" />
     </template>
     <template v-else-if="['date'].indexOf(data[field].type) !== -1">
@@ -143,15 +143,15 @@ export default {
       } else if (['int', 'long'].indexOf(value) !== -1) {
         valueType = { unit: null }
       } else if (['string'].indexOf(value) !== -1) {
-        valueType = { expands: { maxLength: null } }
-      } else if (['boolean'].indexOf(value) !== -1) {
+        valueType = { max: null }
+      } else if (['bool'].indexOf(value) !== -1) {
         valueType = { trueText: null, trueValue: null, falseText: null, falseValue: null }
       } else if (['date'].indexOf(value) !== -1) {
         valueType = { format: null }
       } else if (['enum'].indexOf(value) !== -1) {
         valueType = { elementType: { elements: null } }
       } else if (['password'].indexOf(value) !== -1) {
-        valueType = { expands: { maxLength: null } }
+        valueType = { max: null }
       } else if (['file'].indexOf(value) !== -1) {
         valueType = { fileType: null }
       } else if (['array'].indexOf(value) !== -1) {
