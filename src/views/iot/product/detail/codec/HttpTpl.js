@@ -26,7 +26,8 @@ function OnInvoke(context) {
     { caption: 'context.GetQuery()', meta: 'OnMessage', value: 'var value = context.GetQuery("key")' },
     { caption: 'context.GetForm()', meta: 'OnMessage', value: 'var value = context.GetForm("key")' },
     { caption: 'context.SaveProperties()', meta: 'OnMessage', value: 'context.SaveProperties({"key":"value"})' },
-    { caption: 'context.HttpRequest()', meta: 'OnInvoke', value: 'var resp = context.HttpRequest({method:"", url:"", data:{}, header:{}})' },
+    { caption: 'context.SaveEvents()', meta: 'OnMessage', value: 'context.SaveEvents("eventId", {"key":"value"})' },
+    { caption: 'context.HttpRequest()', meta: 'OnMessage', value: 'var resp = context.HttpRequest({method:"", url:"", data:{}, header:{}})' },
     // deviceOper
     { caption: 'deviceOper.GetConfig()', meta: 'deviceOper', value: 'var value = deviceOpr.GetConfig("key")' },
     // session
