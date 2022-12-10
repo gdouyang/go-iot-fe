@@ -7,7 +7,6 @@ const defaultTcpAddObj = {
     useTLS: false,
     certificate: null,
     host: '',
-    port: null,
     delimeter: {
       type: null, // Delimited, FixLength
       splitFunc: null,
@@ -50,7 +49,6 @@ const defaultWebSocketAddObj = {
     useTLS: false,
     certificate: null,
     host: '',
-    port: null,
     routers: [{ url: '' }]
   }
 }
@@ -64,7 +62,6 @@ const defaultHttpAddObj = {
     useTLS: false,
     certificate: null,
     host: '',
-    port: null,
     routers: [{ url: '' }]
   }
 }
