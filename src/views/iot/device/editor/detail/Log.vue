@@ -124,10 +124,10 @@
       ]
       return {
         SelectOptions: [
-          { id: 'event', name: '事件上报' },
-          { id: 'readProperty', name: '属性读取' },
-          { id: 'writeProperty', name: '属性修改' },
-          { id: 'reportProperty', name: '属性上报' },
+          // { id: 'event', name: '事件上报' },
+          // { id: 'readProperty', name: '属性读取' },
+          // { id: 'writeProperty', name: '属性修改' },
+          // { id: 'reportProperty', name: '属性上报' },
           { id: 'call', name: '调用' },
           { id: 'reply', name: '回复' },
           { id: 'offline', name: '下线' },
