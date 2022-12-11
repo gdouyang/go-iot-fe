@@ -52,8 +52,8 @@
         ref="tb"
         :loading="false"
         :columns="columns"
-        :url="`/device/${deviceId}/logs`"
-        method="get"
+        :url="`/device/propertys/${deviceId}/query`"
+        method="post"
         :resultProcess="tableResultProcess"
         rowKey="id"
       >
@@ -64,7 +64,6 @@
 
 <script>
   import moment from 'moment'
-  import { encodeQueryParamGet } from '@/utils/encodeParam.js'
   export default {
     name: 'DeviceLog',
     props: {
@@ -148,7 +147,7 @@
     methods: {
       tableResultProcess (result) {
         result.pageNum = result.pageIndex + 1
-        result.list = result.data
+        // result.list = result.data
       },
       onSearch () {
         // eslint-disable-next-line no-shadow
@@ -164,16 +163,9 @@
       },
       search (params) {
         this.$refs.tb.search(params, (p) => {
-          p.terms = p.condition
           delete p.condition
-          p.pageIndex = p.pageNum - 1
-          delete p.pageNum
-          p.sorts = {
-            field: 'createTime',
-            order: 'desc'
-          }
-          const t = encodeQueryParamGet(p)
-          return t
+          p.type = 'devicelogs'
+          return p
         })
       },
       resetSearch () {

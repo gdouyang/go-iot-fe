@@ -47,8 +47,8 @@ export function updateLocation (params) {
   return Vue.prototype.$http.post(`/device/location`, params)
 }
 
-export function queryProperty (deviceId) {
-  return Vue.prototype.$http.get(`/device/query-property/${deviceId}`)
+export function queryProperty (deviceId, data) {
+  return Vue.prototype.$http.post(`/device/propertys/${deviceId}/query`, data)
 }
 
 // export function getEvent (deviceId, itemId) {
