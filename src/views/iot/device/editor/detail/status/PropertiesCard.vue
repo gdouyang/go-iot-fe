@@ -56,7 +56,7 @@ export default {
   methods: {
     getValue () {
       const item = _.assign(this.data, this.item)
-      if (item && item.list) {
+      if (item && !_.isEmpty(item.list)) {
         const length = item.list.length
         const value = item.list[length - 1]
         const dataType = typeof (value.value)
