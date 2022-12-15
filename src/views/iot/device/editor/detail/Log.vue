@@ -75,7 +75,7 @@
     data () {
       const columns = [
         {
-          dataIndex: 'type.text',
+          dataIndex: 'type',
           title: '类型'
         },
         {
@@ -146,7 +146,7 @@
     },
     methods: {
       tableResultProcess (result) {
-        result.pageNum = result.pageIndex + 1
+        // result.pageNum = result.pageIndex + 1
         // result.list = result.data
       },
       onSearch () {
