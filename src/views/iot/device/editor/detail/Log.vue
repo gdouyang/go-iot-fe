@@ -151,7 +151,7 @@
       },
       onSearch () {
         // eslint-disable-next-line no-shadow
-        const params = { ...this.searchParams, deviceId: this.deviceId }
+        const params = { ...this.searchParams }
         if (params.createTime$BTW) {
           const formatDate = params.createTime$BTW.map((e) => moment(e).format('YYYY-MM-DD HH:mm:ss'))
           params.createTime$BTW = formatDate.join(',')
@@ -163,18 +163,17 @@
       },
       search (params) {
         this.$refs.tb.search(params, (p) => {
-          delete p.condition
           p.type = 'devicelogs'
+          p.deviceId = this.deviceId
           return p
         })
       },
       resetSearch () {
         this.searchParams = {
-          type$IN: undefined,
-          createTime$BTW: undefined
+          type$IN: null,
+          createTime$BTW: null
         }
-        const params = { deviceId: this.deviceId }
-        this.search(params)
+        this.search(this.searchParams)
       }
     }
   }
