@@ -21,7 +21,7 @@
         v-for="item in properties"
         :key="item.id"
       >
-        <PropertiesCard :item="item" :device="device" />
+        <PropertiesCard :item="item" :device="device" :ref="'propCard' + item.id" />
       </a-col>
       <!-- <a-col
         :xs="24"
@@ -56,6 +56,10 @@ export default {
     device: {
       type: Object,
       default: () => {}
+    },
+    realtimeData: {
+      type: Object,
+      default: () => {}
     }
   },
   inject: ['reloadFuncs'],
@@ -64,6 +68,19 @@ export default {
       properties: [],
       events: [],
       loading: true
+    }
+  },
+  watch: {
+    realtimeData (newVal) {
+      const that = this
+      _.forEach(this.properties, prop => {
+        prop.list.push({
+          timeString: newVal.createTime,
+          value: newVal[prop.id]
+        })
+        prop.value = newVal[prop.id]
+        that.$refs['propCard' + prop.id][0].getValue()
+      })
     }
   },
   mounted () {
@@ -92,7 +109,7 @@ export default {
               value: item[prop.id]
             })
           })
-          prop.list = list
+          prop.list = list.reverse()
         })
         this.properties = properties
       })

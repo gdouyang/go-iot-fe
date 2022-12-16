@@ -53,7 +53,7 @@
         <Info :device="detailData" v-if="detailData.id" @refresh="reloadDevice"></Info>
       </template>
       <template v-if="ActiveTabKey === 'status'">
-        <Status :device="detailData" @refresh="reloadDevice"></Status>
+        <Status :device="detailData" @refresh="reloadDevice" :realtimeData="realtimeData"></Status>
       </template>
       <template v-if="ActiveTabKey === 'function'">
         <Function :device="detailData"></Function>
@@ -98,7 +98,8 @@ export default {
         { key: 'function', tab: '设备功能' },
         { key: 'log', tab: '日志' }
       ],
-      reloadFuncs: new Map()
+      reloadFuncs: new Map(),
+      realtimeData: {}
     }
   },
   created () {
@@ -203,6 +204,8 @@ export default {
           this.detailData.state = 'online'
         } else if (data.type === 'offline') {
           this.detailData.state = 'offline'
+        } else if (data.type === 'prop' || data.type === 'event') {
+          this.realtimeData = data.data
         }
       }
 
