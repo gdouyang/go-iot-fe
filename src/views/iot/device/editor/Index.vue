@@ -101,6 +101,9 @@ export default {
       reloadFuncs: new Map()
     }
   },
+  created () {
+    this.connectWs()
+  },
   mounted () {
     const { id } = this.$route.query
     this.getDeviceDetail(id).then((result) => {
@@ -108,6 +111,11 @@ export default {
         this.detailData = result
       }
     })
+  },
+  destroyed () {
+    if (this.ws) {
+      this.ws.close()
+    }
   },
   computed: {
     GetDeviceId () {
@@ -180,6 +188,28 @@ export default {
           this.reloadDevice()
         }
       })
+    },
+    connectWs () {
+      var ws = this.ws = new WebSocket(`ws://${window.location.host}/api/realtime/${this.GetDeviceId}/*`)
+      ws.onopen = function (evt) {
+        console.log('Connection open ...')
+        // ws.send('Hello WebSockets!')
+      }
+
+      ws.onmessage = (evt) => {
+        console.log('Received Message: ' + evt.data)
+        var data = JSON.parse(evt.data)
+        if (data.type === 'online') {
+          this.detailData.state = 'online'
+        } else if (data.type === 'offline') {
+          this.detailData.state = 'offline'
+        }
+      }
+
+      ws.onclose = (evt) => {
+        console.log('Connection closed.')
+        this.ws = null
+      }
     }
   }
 }
