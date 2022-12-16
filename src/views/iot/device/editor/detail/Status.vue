@@ -88,7 +88,7 @@ export default {
           const list = []
           _.forEach(resp.result.list, item => {
             list.push({
-              timeString: item.collectTime_,
+              timeString: item.createTime,
               value: item[prop.id]
             })
           })
