@@ -131,8 +131,8 @@
           { id: 'call', name: '调用' },
           { id: 'reply', name: '回复' },
           { id: 'offline', name: '下线' },
-          { id: 'online', name: '上线' },
-          { id: 'other', name: '其它' }
+          { id: 'online', name: '上线' }
+          // { id: 'other', name: '其它' }
         ],
         columns,
         searchParams: {

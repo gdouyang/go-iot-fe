@@ -35,6 +35,7 @@ function OnInvoke(context) {
     // session
     { caption: 'session.Disconnect()', meta: 'session', value: 'session.Disconnect()' },
     { caption: 'session.Publish()', meta: 'session', value: 'session.Publish("topic", "payload")' },
+    { caption: 'session.PublishHex()', meta: 'session', value: 'session.PublishHex("topic", "68657820737472696e67")' },
     // OnInvoke
     { caption: 'context.GetMessage()', meta: 'OnInvoke', value: 'var message = context.GetMessage()' },
     { caption: 'context.GetDevice()', meta: 'OnInvoke', value: 'var deviceOper = context.GetDevice()' },
