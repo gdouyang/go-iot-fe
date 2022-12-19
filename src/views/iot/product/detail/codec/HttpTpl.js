@@ -18,9 +18,8 @@ function OnInvoke(context) {
     { caption: 'context.GetSession()', meta: 'OnMessage', value: 'var session = context.GetSession()' },
     { caption: 'context.DeviceOnline()', meta: 'OnMessage', value: 'context.DeviceOnline(deviceId)' },
     { caption: 'context.GetDevice()', meta: 'OnMessage', value: 'var deviceOper = context.GetDevice()' },
+    { caption: 'context.GetDeviceById()', meta: 'OnMessage', value: 'var deviceOper = context.GetDeviceById("id")' },
     { caption: 'context.GetConfig()', meta: 'OnMessage', value: 'var value = context.GetConfig("key")' },
-    { caption: 'context.ReplyOk()', meta: 'OnMessage', value: 'context.ReplyOk()' },
-    { caption: 'context.GetConfig()', meta: 'OnMessage', value: 'context.ReplyFail("resaon")' },
     { caption: 'context.GetHeader()', meta: 'OnMessage', value: 'var value = context.GetHeader("key")' },
     { caption: 'context.GetUrl()', meta: 'OnMessage', value: 'var url = context.GetUrl()' },
     { caption: 'context.GetQuery()', meta: 'OnMessage', value: 'var value = context.GetQuery("key")' },
@@ -28,8 +27,11 @@ function OnInvoke(context) {
     { caption: 'context.SaveProperties()', meta: 'OnMessage', value: 'context.SaveProperties({"key":"value"})' },
     { caption: 'context.SaveEvents()', meta: 'OnMessage', value: 'context.SaveEvents("eventId", {"key":"value"})' },
     { caption: 'context.HttpRequest()', meta: 'OnMessage', value: 'var resp = context.HttpRequest({method:"", url:"", data:{}, header:{}})' },
+    { caption: 'context.ReplyOk()', meta: 'OnMessage', value: 'context.ReplyOk()' },
+    { caption: 'context.GetConfig()', meta: 'OnMessage', value: 'context.ReplyFail("resaon")' },
     // deviceOper
     { caption: 'deviceOper.GetConfig()', meta: 'deviceOper', value: 'var value = deviceOpr.GetConfig("key")' },
+    { caption: 'deviceOper.GetData()()', meta: 'deviceOper', value: 'var map = deviceOpr.GetData()()' },
     // session
     { caption: 'session.Disconnect()', meta: 'session', value: 'session.Disconnect()' },
     { caption: 'session.Response()', meta: 'session', value: 'session.Response("text")' },
