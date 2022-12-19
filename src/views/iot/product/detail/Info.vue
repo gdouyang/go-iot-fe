@@ -7,7 +7,8 @@
           <a-button icon="edit" :style="{marginLeft: 20}" type="link" @click="openBasicInfo">编辑</a-button>
         </span>
         <a-descriptions-item label="产品ID" :span="1">{{ data.id }}</a-descriptions-item>
-        <a-descriptions-item label="说明" :span="3">{{ data.desc }}</a-descriptions-item>
+        <a-descriptions-item label="网络类型" :span="1">{{ data.networkType }}</a-descriptions-item>
+        <a-descriptions-item label="说明" :span="2">{{ data.desc }}</a-descriptions-item>
       </a-descriptions>
 
       <Network
