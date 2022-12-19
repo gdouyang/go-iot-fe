@@ -17,7 +17,7 @@
         </a-tab-pane>
       </a-tabs>
     </a-spin>
-    <TSLDialog ref="TSLDialog" @import="saveAll"/>
+    <TslImportDialog ref="TslImportDialog" @import="saveAll"/>
   </a-card>
 </template>
 
@@ -26,14 +26,14 @@
 import Properties from './tsl/Properties.vue'
 import Functions from './tsl/Functions.vue'
 import Events from './tsl/Events.vue'
-import TSLDialog from './TslDialog.vue'
+import TslImportDialog from './tsl/TslImportDialog.vue'
 export default {
   name: 'TSL',
   components: {
     Properties,
     Functions,
     Events,
-    TSLDialog
+    TslImportDialog
   },
   props: {
     data: {
@@ -79,10 +79,10 @@ export default {
       this.$emit('save', 'all', data, onlySave)
     },
     importTSL () {
-      this.$refs.TSLDialog.open(null, true)
+      this.$refs.TslImportDialog.open(null, true)
     },
     showTSL () {
-      this.$refs.TSLDialog.open(this.data.metadata)
+      this.$refs.TslImportDialog.open(this.data.metadata)
     }
   }
 }

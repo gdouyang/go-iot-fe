@@ -97,6 +97,11 @@ export default {
   created () {
     this.open()
   },
+  computed: {
+    isClientNet () {
+      return this.network.type === 'TCP_CLIENT' || this.network.type === 'MQTT_CLIENT'
+    }
+  },
   methods: {
     open () {
       this.script = ''
@@ -137,7 +142,11 @@ export default {
       this.$http.put(`/product/network`, { productId: this.id, script: this.script })
       .then(data => {
         if (data.success) {
-          this.$message.success('操作成功')
+          if (this.isClientNet) {
+            this.$message.success('操作成功,重新连接后生效')
+          } else {
+            this.$message.success('操作成功,重启网络服务后生效')
+          }
         }
       })
     },

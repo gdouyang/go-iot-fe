@@ -38,7 +38,7 @@ import 'brace/theme/chrome'
 import _ from 'lodash'
 
 export default {
-  name: 'TslDialog',
+  name: 'TslImportDialog',
   components: {
     AceEditor
   },
