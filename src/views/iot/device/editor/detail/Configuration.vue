@@ -3,7 +3,6 @@
     <a-descriptions :style="{marginBottom: 20}" :column="3" size="small">
       <span slot="title">
         配置
-        <a-button icon="edit" type="link" @click="updateVisible = true;">编辑</a-button>
         <a-popconfirm title="确认重新应用该配置？" @confirm="changeDeploy">
           <a-button type="link" style="padding-right: 2px;">应用配置</a-button>
         </a-popconfirm>
@@ -125,7 +124,7 @@ export default {
     configurationReset () {
       updateDevice({
         id: this.deviceId,
-        metaconfig: '{}'
+        metaconfig: {}
       }).then(resp => {
         if (resp.success) {
           this.$message.success('恢复默认配置成功')

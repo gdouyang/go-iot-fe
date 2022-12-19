@@ -52,9 +52,9 @@
         >
           <a-select v-model="addObj.configuration.delimeter.type" @change="parserTypeChange">
             <a-select-option value="DIRECT">不处理</a-select-option>
-            <a-select-option value="delimited">分隔符</a-select-option>
-            <a-select-option value="fixed_length">固定长度</a-select-option>
-            <a-select-option value="script">自定义脚本</a-select-option>
+            <a-select-option value="Delimited">分隔符</a-select-option>
+            <a-select-option value="FixLength">固定长度</a-select-option>
+            <a-select-option value="SplitFunc">自定义脚本</a-select-option>
           </a-select>
         </a-form-model-item>
         <a-form-model-item
