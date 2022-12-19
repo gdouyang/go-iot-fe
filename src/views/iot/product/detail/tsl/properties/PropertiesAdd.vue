@@ -39,7 +39,7 @@
         :rules="[{ required: true, message: '请选择' }]"
       />
       <!-- -->
-      <a-form-model-item
+      <!-- <a-form-model-item
         label="是否只读"
         prop="expands.readOnly"
         :rules="[ { required: true, message: '请选择' } ]"
@@ -48,7 +48,7 @@
           <a-radio value="true">是</a-radio>
           <a-radio value="false">否</a-radio>
         </a-radio-group>
-      </a-form-model-item>
+      </a-form-model-item> -->
       <a-form-model-item label="描述" prop="description">
         <a-textarea v-model="formData.description" :rows="3"/>
       </a-form-model-item>

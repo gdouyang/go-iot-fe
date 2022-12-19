@@ -28,7 +28,7 @@
 
 <script>
 import _ from 'lodash'
-import FunctionsAdd from './functions/Functions-add.vue'
+import FunctionsAdd from './functions/FunctionsAdd.vue'
 export default {
   name: 'Functions',
   components: {
@@ -48,38 +48,26 @@ export default {
     return {
       columns: [
         { title: '功能标识', dataIndex: 'id' },
-        {
-          title: '名称',
-          dataIndex: 'name'
-        },
-        {
-          title: '是否异步',
-          dataIndex: 'async',
-          scopedSlots: { customRender: 'async' }
-        },
-        {
-          title: '说明',
-          dataIndex: 'description',
-          width: '30%',
-          ellipsis: true
-        },
-        {
-          title: '操作',
-          scopedSlots: { customRender: 'action' }
-        }
+        { title: '名称', dataIndex: 'name' },
+        { title: '是否异步', dataIndex: 'async', scopedSlots: { customRender: 'async' } },
+        { title: '说明', dataIndex: 'description', width: '30%', ellipsis: true },
+        { title: '操作', scopedSlots: { customRender: 'action' } }
       ],
       visible: false,
-      current: {}
+      current: {},
+      isEdit: false
     }
   },
   mounted () {
   },
   methods: {
     add () {
+      this.isEdit = false
       this.current = {}
       this.visible = true
     },
     edit (item) {
+      this.isEdit = true
       this.current = _.cloneDeep(item)
       this.visible = true
     },
@@ -91,6 +79,10 @@ export default {
       const data = this.data
       const i = data.findIndex((j) => j.id === item.id)
       if (i > -1) {
+        if (!this.isEdit) {
+          this.$message.error('功能标识已存在，请修改')
+          return
+        }
         // data[i] = item;
         this.$set(data, i, item)
       } else {

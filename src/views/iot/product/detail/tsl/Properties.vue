@@ -29,7 +29,7 @@
 
 <script>
 import _ from 'lodash'
-import PropertiesAdd from './properties/Properties-add.vue'
+import PropertiesAdd from './properties/PropertiesAdd.vue'
 export default {
   name: 'Properties',
   components: {
@@ -49,43 +49,27 @@ export default {
     return {
       columns: [
         { title: '属性标识', dataIndex: 'id' },
-        {
-          title: '属性名称',
-          dataIndex: 'name'
-        },
-        {
-          title: '数据类型',
-          dataIndex: 'valueType',
-          scopedSlots: { customRender: 'valueType' }
-        },
-        {
-          title: '是否只读',
-          dataIndex: 'expands.readOnly',
-          scopedSlots: { customRender: 'readOnly' }
-        },
-        {
-          title: '说明',
-          dataIndex: 'description',
-          width: '30%',
-          ellipsis: true
-        },
-        {
-          title: '操作',
-          scopedSlots: { customRender: 'action' }
-        }
+        { title: '属性名称', dataIndex: 'name' },
+        { title: '数据类型', dataIndex: 'valueType', scopedSlots: { customRender: 'valueType' } },
+        // { title: '是否只读', dataIndex: 'expands.readOnly', scopedSlots: { customRender: 'readOnly' } },
+        { title: '说明', dataIndex: 'description', width: '30%', ellipsis: true },
+        { title: '操作', scopedSlots: { customRender: 'action' } }
       ],
       visible: false,
-      current: {}
+      current: {},
+      isEdit: false
     }
   },
   mounted () {
   },
   methods: {
     add () {
+      this.isEdit = false
       this.current = {}
       this.visible = true
     },
     edit (item) {
+      this.isEdit = true
       this.current = _.cloneDeep(item)
       this.visible = true
     },
@@ -97,6 +81,10 @@ export default {
       const data = this.data
       const i = data.findIndex((j) => j.id === item.id)
       if (i > -1) {
+        if (!this.isEdit) {
+          this.$message.error('属性标识已存在，请修改')
+          return
+        }
         // data[i] = item;
         this.$set(data, i, item)
       } else {
