@@ -168,10 +168,9 @@ export default {
       modifyTsl(data.id, data).then((re) => {
         if (re.success) {
           this.$message.success('保存成功，如需生效请重新应用配置')
-          // if (!onlySave) {
-          //   this.deploy(data)
-          // }
         }
+      }).finally(() => {
+        this.reloadDevice()
       })
     },
     toProductPage () {}

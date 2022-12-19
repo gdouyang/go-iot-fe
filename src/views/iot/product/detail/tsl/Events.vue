@@ -8,7 +8,11 @@
         <span slot="action" slot-scope="text, record">
           <a @click="edit(record)">修改</a>
           <a-divider type="vertical" />
-          <a @click="remove(record)">删除</a>
+          <a-popconfirm
+            title="确认删除？"
+            @confirm="remove(record)">
+            <a>删除</a>
+          </a-popconfirm>
         </span>
       </a-table>
     </a-card>
