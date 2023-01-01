@@ -7,6 +7,14 @@ export function undeploy (id) {
   return Vue.prototype.$http.post(`device/${id}/undeploy`)
 }
 
+export function batchDeploy (ids) {
+  return Vue.prototype.$http.post(`device/batch/_deploy`, ids)
+}
+
+export function batchUndeploy (ids) {
+  return Vue.prototype.$http.post(`device/batch/_undeploy`, ids)
+}
+
 export function remove (id) {
   return Vue.prototype.$http.delete(`device/${id}`)
 }

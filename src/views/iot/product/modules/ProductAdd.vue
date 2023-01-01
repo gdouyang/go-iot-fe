@@ -16,7 +16,7 @@
           prop="id"
           :rules="[
             {required: true, message: '请输入产品ID'},
-            {max: 64, message: '产品ID不超过64个字符'},
+            {max: 32, message: '产品ID不超过32个字符'},
             {pattern: new RegExp(/^[0-9a-zA-Z_\-]+$/, 'g'), message: '产品ID只能由数字、字母、下划线、中划线组成'}
           ]"
         >

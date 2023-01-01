@@ -26,11 +26,11 @@
         </div>
         <div class="table-operator">
           <a-button type="primary" icon="plus" @click="add">新建</a-button>
-          <!-- <a-button icon="upload" @click="showImport">
-            批量导入设备
-          </a-button> -->
+          <a-button icon="upload" @click="showImport">批量导入设备</a-button>
+          <a-button icon="link" @click="batchDeploy">批量激活</a-button>
+          <a-button icon="disconnect" @click="batchUndeploy">批量停用</a-button>
         </div>
-        <PageTable ref="tb" url="device/page" :columns="columns" rowKey="id">
+        <PageTable ref="tb" url="device/page" :columns="columns" rowKey="id" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }">
           <span slot="state" slot-scope="text, record">
             <a-badge status="success" :text="record.state" v-if="record.state == 'online'" />
             <a-badge status="default" :text="record.state" v-else-if="record.state == 'offline'" />
@@ -65,7 +65,7 @@
 
 <script>
 import _ from 'lodash'
-import { remove, undeploy, deploy } from '@/views/iot/device/api.js'
+import { remove, undeploy, deploy, batchDeploy, batchUndeploy } from '@/views/iot/device/api.js'
 import DeviceAdd from './modules/DeviceAdd.vue'
 import DeviceImport from './modules/DeviceImport.vue'
 import DeviceDetail from './editor/Index.vue'
@@ -92,7 +92,9 @@ export default {
         { title: '创建时间', dataIndex: 'createTime', scopedSlots: { customRender: 'createTime' } },
         { title: '操作', dataIndex: 'action', minWidth: 110, scopedSlots: { customRender: 'action' } }
       ],
-      GetDetailStatus: false
+      GetDetailStatus: false,
+      selectedRowKeys: [],
+      selectedRows: []
     }
   },
   created () {
@@ -112,6 +114,10 @@ export default {
     resetSearch () {
       this.searchObj = _.cloneDeep(defautSearchObj)
       this.search()
+    },
+    onSelectChange (selectedRowKeys, selectedRows) {
+      this.selectedRowKeys = selectedRowKeys
+      this.selectedRows = selectedRows
     },
     add () {
       this.$refs.DeviceAdd.add()
@@ -160,6 +166,42 @@ export default {
     },
     showImport () {
       this.$refs.DeviceImport.open()
+    },
+    batchDeploy () {
+      if (_.isEmpty(this.selectedRowKeys)) {
+        this.$message.error('请选择数据')
+        return
+      }
+      this.$confirm({
+        title: '确认',
+        content: '确定要批量激活吗？',
+        onOk: () => {
+          batchDeploy(this.selectedRowKeys).then(data => {
+            if (data.success) {
+              this.$message.success('操作成功')
+              this.search()
+            }
+          })
+        }
+      })
+    },
+    batchUndeploy () {
+      if (_.isEmpty(this.selectedRowKeys)) {
+        this.$message.error('请选择数据')
+        return
+      }
+      this.$confirm({
+        title: '确认',
+        content: '确定要批量停用吗？',
+        onOk: () => {
+          batchUndeploy(this.selectedRowKeys).then(data => {
+            if (data.success) {
+              this.$message.success('操作成功')
+              this.search()
+            }
+          })
+        }
+      })
     }
   }
 }
