@@ -53,6 +53,7 @@
             <a-select-option value="WEBSOCKET_SERVER">WEBSOCKET_SERVER</a-select-option>
             <a-select-option value="MQTT_CLIENT">MQTT_CLIENT</a-select-option>
             <a-select-option value="TCP_CLIENT">TCP_CLIENT</a-select-option>
+            <a-select-option value="MODBUS">MODBUS</a-select-option>
           </a-select>
         </a-form-model-item>
         <a-form-model-item label="说明" prop="desc">
