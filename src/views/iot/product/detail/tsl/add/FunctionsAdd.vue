@@ -172,6 +172,7 @@ export default {
           if (!this.formData.output.type) {
             this.formData.output = {}
           }
+          this.formData.expands.interval = _.toString(this.formData.expands.interval)
           this.$emit('save', this.formData)
         }
       })
