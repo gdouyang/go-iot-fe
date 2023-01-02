@@ -41,6 +41,7 @@
 </template>
 
 <script>
+import { getNetwork, updateNetwork } from '@/views/iot/product/api.js'
 import AceEditor from 'vue2-ace-editor'
 // 语法提示工具
 import 'brace/ext/language_tools' // language extension prerequsite...
@@ -53,6 +54,7 @@ import TcpTpl from './codec/TcpTpl.js'
 import MqttTpl from './codec/MqttTpl.js'
 import WebSocketTpl from './codec/WebsocketTpl.js'
 import HttpTpl from './codec/HttpTpl.js'
+import Modbus from './codec/Modbus.js'
 
 export default {
   name: 'Codec1',
@@ -99,13 +101,13 @@ export default {
   },
   computed: {
     isClientNet () {
-      return this.network.type === 'TCP_CLIENT' || this.network.type === 'MQTT_CLIENT'
+      return this.network.type === 'TCP_CLIENT' || this.network.type === 'MQTT_CLIENT' || this.network.type === 'MODBUS'
     }
   },
   methods: {
     open () {
       this.script = ''
-      this.$http.get(`/product/network/${this.id}`)
+      getNetwork(this.id)
       .then(data => {
         if (data.success) {
           this.network = data.result
@@ -130,6 +132,8 @@ export default {
         return WebSocketTpl
       } else if (net.type === 'HTTP_SERVER') {
         return HttpTpl
+      } else if (net.type === 'MODBUS') {
+        return Modbus
       } else {
         return { tpl: '' }
       }
@@ -139,7 +143,7 @@ export default {
       if (!this.script) {
         this.$message.error('请填写物模型')
       }
-      this.$http.put(`/product/network`, { productId: this.id, script: this.script })
+      updateNetwork({ productId: this.id, script: this.script })
       .then(data => {
         if (data.success) {
           if (this.isClientNet) {

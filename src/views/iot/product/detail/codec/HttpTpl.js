@@ -77,9 +77,8 @@ function OnMessage(context) {
       context.DeviceOnline(imei)
       return;
     } else if (OFFLINE == status) {
-      var message1 = new DeviceOfflineMessage();
-      message1.setDeviceId(imei);
-      return message1;
+      // context.DeviceOnline(imei)
+      return;
     }
   }
 
