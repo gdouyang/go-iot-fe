@@ -42,6 +42,20 @@
           </a-radio-group>
         </a-form-model-item>
         <a-form-model-item
+          label="采集间隔"
+          prop="expands.interval"
+          v-if="product.networkType === 'MODBUS'"
+        >
+          <a-input-number
+            v-model="formData.expands.interval"
+            :precision="0"
+            :min="0"
+            :max="65535"
+            :step="1"
+            placeholder="采集间隔(秒)"
+            style="width:100%"/>
+        </a-form-model-item>
+        <a-form-model-item
           label="输入参数"
         >
           <a-list bordered :dataSource="inputs" v-if="inputs.length > 0">
@@ -112,6 +126,10 @@ export default {
     Paramter
   },
   props: {
+    product: {
+      type: Object,
+      default: () => {}
+    },
     data: {
       type: Object,
       default: () => {}
