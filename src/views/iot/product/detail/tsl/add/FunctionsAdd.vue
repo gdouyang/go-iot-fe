@@ -42,7 +42,7 @@
           </a-radio-group>
         </a-form-model-item>
         <a-form-model-item
-          label="采集间隔"
+          label="采集间隔(秒)"
           prop="expands.interval"
           v-if="product.networkType === 'MODBUS'"
         >
