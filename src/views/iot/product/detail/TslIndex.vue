@@ -7,10 +7,10 @@
           <a-button @click="showTSL">物模型</a-button>
         </template>
         <a-tab-pane key="1" tab="属性定义">
-          <Properties :data="propertyData" :unitsData="unitsData" @save="saveProperties"/>
+          <Properties :product="product" :data="propertyData" :unitsData="unitsData" @save="saveProperties"/>
         </a-tab-pane>
         <a-tab-pane key="2" tab="功能定义">
-          <Functions :data="functionsData" :unitsData="unitsData" @save="saveFunctions"/>
+          <Functions :product="product" :data="functionsData" :unitsData="unitsData" @save="saveFunctions"/>
         </a-tab-pane>
         <a-tab-pane key="3" tab="事件定义">
           <Events :data="eventsData" :unitsData="unitsData" @save="saveEvents"/>
@@ -36,7 +36,7 @@ export default {
     TslImportDialog
   },
   props: {
-    data: {
+    product: {
       type: Object,
       default: () => {}
     },
@@ -82,7 +82,7 @@ export default {
       this.$refs.TslImportDialog.open(null, true)
     },
     showTSL () {
-      this.$refs.TslImportDialog.open(this.data.metadata)
+      this.$refs.TslImportDialog.open(this.product.metadata)
     }
   }
 }

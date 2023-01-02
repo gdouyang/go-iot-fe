@@ -13,7 +13,7 @@
         prop="id"
         :rules="[
           { required: true, message: '请输入参数标识' },
-          { max: 64, message: '参数标识不超过64个字符' },
+          { max: 32, message: '参数标识不超过32个字符' },
           { pattern: new RegExp(/^[0-9a-zA-Z_\-]+$/, 'g'), message: '参数标识只能由数字、字母、下划线、中划线组成' }
         ]"
       >

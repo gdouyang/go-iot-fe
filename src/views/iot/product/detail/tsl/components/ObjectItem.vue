@@ -42,7 +42,7 @@
 
 <script>
 // import _ from 'lodash'
-import Paramter from '../paramter/index.vue'
+import Paramter from '../add/Paramter.vue'
 import { getPropertiesData } from './data.js'
 export default {
   name: 'ObjectItem',

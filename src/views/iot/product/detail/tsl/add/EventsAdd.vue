@@ -15,7 +15,7 @@
           prop="id"
           :rules="[
             { required: true, message: '请输入事件标识' },
-            { max: 64, message: '事件标识不超过64个字符' },
+            { max: 32, message: '事件标识不超过32个字符' },
             { pattern: new RegExp(/^[0-9a-zA-Z_\-]+$/, 'g'), message: '事件标识只能由数字、字母、下划线、中划线组成' }
           ]"
         >
@@ -71,7 +71,7 @@
 <script>
 import _ from 'lodash'
 import DataTypeItem from '../components/DataTypeItem.vue'
-import Paramter from '../paramter/index.vue'
+import Paramter from '../add/Paramter.vue'
 
 import { getEventsData } from '../components/data.js'
 const defaultFormData = getEventsData()

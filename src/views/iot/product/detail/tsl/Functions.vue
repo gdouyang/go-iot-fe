@@ -18,6 +18,7 @@
     </a-card>
     <FunctionsAdd
       v-if="visible"
+      :product="product"
       :data="current"
       :unitsData="unitsData"
       @save="saveData"
@@ -28,13 +29,17 @@
 
 <script>
 import _ from 'lodash'
-import FunctionsAdd from './functions/FunctionsAdd.vue'
+import FunctionsAdd from './add/FunctionsAdd.vue'
 export default {
   name: 'Functions',
   components: {
     FunctionsAdd
   },
   props: {
+    product: {
+      type: Object,
+      default: () => {}
+    },
     data: {
       type: Array,
       default: () => []

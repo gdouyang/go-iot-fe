@@ -28,7 +28,7 @@
 
 <script>
 import _ from 'lodash'
-import EventsAdd from './event/EventsAdd.vue'
+import EventsAdd from './add/EventsAdd.vue'
 export default {
   name: 'Events',
   components: {

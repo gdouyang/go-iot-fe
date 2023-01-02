@@ -19,6 +19,7 @@
     </a-card>
     <PropertiesAdd
       v-if="visible"
+      :product="product"
       :data="current"
       :unitsData="unitsData"
       @save="savePropertiesData"
@@ -29,13 +30,17 @@
 
 <script>
 import _ from 'lodash'
-import PropertiesAdd from './properties/PropertiesAdd.vue'
+import PropertiesAdd from './add/PropertiesAdd.vue'
 export default {
   name: 'Properties',
   components: {
     PropertiesAdd
   },
   props: {
+    product: {
+      type: Object,
+      default: () => {}
+    },
     data: {
       type: Array,
       default: () => []

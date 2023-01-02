@@ -42,7 +42,7 @@
           </a-tab-pane>
           <a-tab-pane key="tsl" tab="物模型">
             <TSL
-              :data="detailData"
+              :product="detailData"
               :propertyData="properties"
               :functionsData="functions"
               :eventsData="events"
