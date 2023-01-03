@@ -164,8 +164,8 @@ export default {
         metadata = { events: item.events, properties: item.properties, functions: item.functions, tags: item.tags }
       }
       const basicInfo = this.detailData
-      const data = { id: basicInfo.id, metadata: JSON.stringify(metadata) }
-      modifyTsl(data.id, data).then((re) => {
+      const data = { metadata: JSON.stringify(metadata) }
+      modifyTsl(basicInfo.id, data).then((re) => {
         if (re.success) {
           this.$message.success('保存成功，如需生效请重新应用配置')
         }

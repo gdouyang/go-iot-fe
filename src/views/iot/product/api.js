@@ -35,7 +35,11 @@ export function getMetaconfig (id) {
 }
 
 export function modifyTsl (id, data) {
-  return Vue.prototype.$http.put(`/product/${id}/modify-tsl`, data)
+  return Vue.prototype.$http.put(`/product/${id}/tsl`, data)
+}
+
+export function updateScript (id, data) {
+  return Vue.prototype.$http.put(`/product/${id}/script`, data)
 }
 
 export function addProduct (data) {

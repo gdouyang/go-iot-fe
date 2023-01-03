@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import { getNetwork, updateNetwork } from '@/views/iot/product/api.js'
+import { getNetwork, updateScript } from '@/views/iot/product/api.js'
 import AceEditor from 'vue2-ace-editor'
 // 语法提示工具
 import 'brace/ext/language_tools' // language extension prerequsite...
@@ -106,12 +106,11 @@ export default {
   },
   methods: {
     open () {
-      this.script = ''
+      this.script = this.product.script
       getNetwork(this.id)
       .then(data => {
         if (data.success) {
           this.network = data.result
-          this.script = this.network.script || ''
           this.codeTip = this.getTpl().codeTip
           this.$nextTick(() => {
             const editor = this.$refs.AceEditor.editor
@@ -143,7 +142,7 @@ export default {
       if (!this.script) {
         this.$message.error('请填写物模型')
       }
-      updateNetwork({ productId: this.id, script: this.script })
+      updateScript(this.id, { script: this.script })
       .then(data => {
         if (data.success) {
           if (this.isClientNet) {
