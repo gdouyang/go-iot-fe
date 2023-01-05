@@ -127,7 +127,7 @@ export default {
       return status
     },
     isNetClientType () {
-      return this.detailData.networkType === 'TCP_CLIENT' || this.detailData.networkType === 'MQTT_CLIENT'
+      return this.detailData.networkType === 'TCP_CLIENT' || this.detailData.networkType === 'MQTT_CLIENT' || this.detailData.networkType === 'MODBUS'
     }
   },
   methods: {
