@@ -49,10 +49,7 @@ function OnInvoke(context) {
     { caption: 'context.GetConfig()', meta: 'OnInvoke', value: 'context.ReplyFail("resaon")' }
   ]
 }
-obj.demoCode = `// 设备报文 -> 物模型
-function OnMessage(context) {
-}
-
+obj.demoCode = `
 // 物模型 -> 设备报文
 function OnInvoke(context) {
 }
