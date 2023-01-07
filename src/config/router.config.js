@@ -62,6 +62,12 @@ export const asyncRouterMap = [
         component: () => import('@/views/notice/config/ConfigList.vue'),
         meta: { title: '通知配置', keepAlive: true, icon: 'notification', permission: [ 'notify-config' ] }
       },
+      {
+        path: '/doc',
+        name: 'Doc',
+        component: () => import('@/views/doc/Doc.vue'),
+        meta: { title: '文档', keepAlive: true, icon: 'notification' }
+      },
       // {
       //   path: '/iot',
       //   name: 'iotPage',

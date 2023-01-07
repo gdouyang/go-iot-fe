@@ -1,47 +1,32 @@
-/**
- * tcp脚本模板
- */
-const obj = {
-  tpl: `function OnConnect(context) {
-}
-function OnMessage(context) {
-}
-function OnInvoke(context) {
-}
-`,
-  demoCode: '',
-  codeTip: [
-    { caption: 'context', meta: 'common', value: 'context' },
-    // OnMessage
-    { caption: 'context.GetMessage()', meta: 'OnMessage', value: 'var message = context.GetMessage()' },
-    { caption: 'context.MsgToString()', meta: 'OnMessage', value: 'var str = context.MsgToString()' },
-    { caption: 'context.MsgToHexStr()', meta: 'OnMessage', value: 'var hexstr = context.MsgToHexStr()' },
-    { caption: 'context.GetSession()', meta: 'OnMessage', value: 'var session = context.GetSession()' },
-    { caption: 'context.DeviceOnline()', meta: 'OnMessage', value: 'context.DeviceOnline(deviceId)' },
-    { caption: 'context.GetDevice()', meta: 'OnMessage', value: 'var deviceOper = context.GetDevice()' },
-    { caption: 'context.GetDeviceById()', meta: 'OnMessage', value: 'var deviceOper = context.GetDeviceById("id")' },
-    { caption: 'context.GetConfig()', meta: 'OnMessage', value: 'var value = context.GetConfig("key")' },
-    { caption: 'context.SaveProperties()', meta: 'OnMessage', value: 'context.SaveProperties({"key":"value"})' },
-    { caption: 'context.SaveEvents()', meta: 'OnMessage', value: 'context.SaveEvents("eventId", {"key":"value"})' },
-    { caption: 'context.ReplyOk()', meta: 'OnMessage', value: 'context.ReplyOk()' },
-    { caption: 'context.ReplyFail()', meta: 'OnMessage', value: 'context.ReplyFail("resaon")' },
-    // deviceOper
-    { caption: 'deviceOper.GetConfig()', meta: 'deviceOper', value: 'var value = deviceOpr.GetConfig("key")' },
-    { caption: 'deviceOper.GetData()()', meta: 'deviceOper', value: 'var map = deviceOpr.GetData()()' },
-    // session
-    { caption: 'session.Disconnect()', meta: 'session', value: 'session.Disconnect()' },
-    { caption: 'session.Send()', meta: 'session', value: 'session.Send("text")' },
-    { caption: 'session.SendHex()', meta: 'session', value: 'session.SendHex("68657820737472696e67")' },
-    // OnInvoke
-    { caption: 'context.GetMessage()', meta: 'OnInvoke', value: 'var message = context.GetMessage()' },
-    { caption: 'context.GetDevice()', meta: 'OnInvoke', value: 'var deviceOper = context.GetDevice()' },
-    { caption: 'message.GetClientId()', meta: 'OnInvoke', value: 'var clientId = message.GetClientId()' },
-    { caption: 'context.ReplyOk()', meta: 'OnInvoke', value: 'context.ReplyOk()' },
-    { caption: 'context.ReplyFail()', meta: 'OnInvoke', value: 'context.ReplyFail("resaon")' }
-  ]
-}
+### tcp协议
 
-obj.demoCode = `// 设备报文 -> 物模型
+### OnMessage
+- GetMessage 获取消息原始数据
+- MsgToString 将原始数据转换成字符串
+- MsgToHexStr 将原始数据转换成16进制字段串
+- GetSession 获取设备会话
+- DeviceOnline 将设备上线
+- GetDevice 获取设备
+- GetDeviceById 通过设备id获取设备
+- GetConfig 获取设备配置项
+- SaveProperties 保存属性
+- SaveEvents 保存事件
+- ReplyOk 服务下发执行成功
+- ReplyFail 服务下发执行失败
+
+### Session
+- Disconnect 断开连接
+- Send 发送文本数据
+- SendHex 将16进制文本数据转换成byte发送
+
+### OnInvoke
+- GetMessage 获取
+- GetDevice 获取设备
+- ReplyOk 服务下发执行成功
+- ReplyFail 服务下发执行失败
+
+```
+// 设备报文 -> 物模型
 function OnMessage(context) {
   var bytes = context.GetMessage();
   var payload = new Uint8Array(bytes.length);
@@ -585,5 +570,4 @@ function bytesToHex(bytes) {
   }
   return str
 }
-`
-export default obj
+```
