@@ -18,18 +18,22 @@ function OnInvoke(context) {
     // OnConnect
     { caption: 'context.GetClientId()', meta: 'OnConnect', value: 'var clientId = context.GetClientId()' },
     { caption: 'context.GetUserName()', meta: 'OnConnect', value: 'var username = context.GetUserName()' },
+    { caption: 'context.GetPassword()', meta: 'OnConnect', value: 'var pwd = context.GetPassword()' },
     { caption: 'context.DeviceOnline()', meta: 'OnConnect', value: 'context.DeviceOnline(deviceId)' },
     { caption: 'context.AuthFail()', meta: 'OnConnect', value: 'context.AuthFail()' },
     // OnMessage
     { caption: 'context.GetMessage()', meta: 'OnMessage', value: 'var message = context.GetMessage()' },
     { caption: 'context.GetSession()', meta: 'OnMessage', value: 'var session = context.GetSession()' },
     { caption: 'context.DeviceOnline()', meta: 'OnMessage', value: 'context.DeviceOnline(deviceId)' },
+    { caption: 'context.MsgToString()', meta: 'OnMessage', value: 'var str = context.MsgToString()' },
+    { caption: 'context.MsgToHexStr()', meta: 'OnMessage', value: 'var hexStr = context.MsgToHexStr()' },
+
     { caption: 'context.GetDevice()', meta: 'OnMessage', value: 'var deviceOper = context.GetDevice()' },
     { caption: 'context.GetDeviceById()', meta: 'OnMessage', value: 'var deviceOper = context.GetDeviceById("id")' },
     { caption: 'context.GetConfig()', meta: 'OnMessage', value: 'var value = context.GetConfig("key")' },
     { caption: 'context.Topic()', meta: 'OnMessage', value: 'var topic = context.Topic()' },
     { caption: 'context.ReplyOk()', meta: 'OnMessage', value: 'context.ReplyOk()' },
-    { caption: 'context.GetConfig()', meta: 'OnMessage', value: 'context.ReplyFail("resaon")' },
+    { caption: 'context.ReplyFail()', meta: 'OnMessage', value: 'context.ReplyFail("resaon")' },
     { caption: 'context.SaveProperties()', meta: 'OnMessage', value: 'context.SaveProperties({"key":"value"})' },
     { caption: 'context.SaveEvents()', meta: 'OnMessage', value: 'context.SaveEvents("eventId", {"key":"value"})' },
     // deviceOper
@@ -44,7 +48,7 @@ function OnInvoke(context) {
     { caption: 'context.GetDevice()', meta: 'OnInvoke', value: 'var deviceOper = context.GetDevice()' },
     { caption: 'message.GetClientId()', meta: 'OnInvoke', value: 'var clientId = message.GetClientId()' },
     { caption: 'context.ReplyOk()', meta: 'OnInvoke', value: 'context.ReplyOk()' },
-    { caption: 'context.GetConfig()', meta: 'OnInvoke', value: 'context.ReplyFail("resaon")' }
+    { caption: 'context.ReplyFail()', meta: 'OnInvoke', value: 'context.ReplyFail("resaon")' }
   ]
 }
 obj.demoCode = `function OnConnect(context) {
