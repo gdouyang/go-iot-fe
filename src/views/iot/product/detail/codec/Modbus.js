@@ -15,7 +15,7 @@ function OnInvoke(context) {
     // OnMessage
     // { caption: 'context.GetMessage()', meta: 'OnMessage', value: 'var message = context.GetMessage()' },
     // { caption: 'context.MsgToString()', meta: 'OnMessage', value: 'var str = context.MsgToString()' },
-    // { caption: 'context.HexMsg()', meta: 'OnMessage', value: 'var hexStr = context.HexMsg()' },
+    // { caption: 'context.MsgToHexStr()', meta: 'OnMessage', value: 'var hexStr = context.MsgToHexStr()' },
     // { caption: 'context.GetSession()', meta: 'OnMessage', value: 'var session = context.GetSession()' },
     // { caption: 'context.DeviceOnline()', meta: 'OnMessage', value: 'context.DeviceOnline(deviceId)' },
     // { caption: 'context.GetDevice()', meta: 'OnMessage', value: 'var deviceOper = context.GetDevice()' },
@@ -36,7 +36,7 @@ function OnInvoke(context) {
 
     { caption: 'resp.GetMessage()', meta: 'resp', value: 'var message = resp.GetMessage()' },
     { caption: 'resp.MsgToString()', meta: 'resp', value: 'var str = resp.MsgToString()' },
-    { caption: 'resp.HexMsg()', meta: 'resp', value: 'var hexStr = resp.HexMsg()' },
+    { caption: 'resp.MsgToHexStr()', meta: 'resp', value: 'var hexStr = resp.MsgToHexStr()' },
 
     { caption: 'session.WriteCoils()', meta: 'session', value: 'session.WriteCoils(startingAddress, length, hexStr)' },
     { caption: 'session.WriteHoldingRegisters()', meta: 'session', value: 'session.WriteHoldingRegisters(startingAddress, length, hexStr)' },
