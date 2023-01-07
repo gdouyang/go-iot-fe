@@ -1,6 +1,6 @@
-### tcp协议
-
-### OnMessage
+## TCP_SERVER网络
+### OnConnect函数
+### OnMessage函数
 - GetMessage 获取消息原始数据
 - MsgToString 将原始数据转换成字符串
 - MsgToHexStr 将原始数据转换成16进制字段串
@@ -14,17 +14,18 @@
 - ReplyOk 服务下发执行成功
 - ReplyFail 服务下发执行失败
 
-### Session
-- Disconnect 断开连接
-- Send 发送文本数据
-- SendHex 将16进制文本数据转换成byte发送
-
-### OnInvoke
+### OnInvoke函数
 - GetMessage 获取
 - GetDevice 获取设备
 - ReplyOk 服务下发执行成功
 - ReplyFail 服务下发执行失败
 
+### Session对象
+- Disconnect 断开连接
+- Send 发送文本数据
+- SendHex 将16进制文本数据转换成byte发送
+
+### 样例
 ```
 // 设备报文 -> 物模型
 function OnMessage(context) {

@@ -17,11 +17,11 @@ export default {
     },
     data () {
       return {
-        initialValue: '### test'
+        initialValue: ''
       }
     },
     mounted () {
-      request.get('/static/tcp.md').then(resp => {
+      request.get('/static/TCP_SERVER.md').then(resp => {
         this.initialValue = resp.data
       })
     }
