@@ -1,29 +1,62 @@
-## TCP_SERVER网络
-### OnConnect函数
+## tcp服务端接入说明
+### OnConnect
+- context参数说明
+
+| 方法 | 说明 | 参数 | 返回值 |
+| --- | --- | ---- | ---- |
+| GetMessage | 获取消息原始数据 | - | byte数组 |
+| MsgToString | 将原始数据转换成字符串 | - | 文本 |
+| MsgToHexStr | 将原始数据转换成16进制字符串 | - | 16进制字符串 |
+| DeviceOnline | 将设备上线 | 设备id | - |
+| GetSession | 获取Session | - | Session |
+
 ### OnMessage函数
-- GetMessage 获取消息原始数据
-- MsgToString 将原始数据转换成字符串
-- MsgToHexStr 将原始数据转换成16进制字段串
-- GetSession 获取设备会话
-- DeviceOnline 将设备上线
-- GetDevice 获取设备
-- GetDeviceById 通过设备id获取设备
-- GetConfig 获取设备配置项
-- SaveProperties 保存属性
-- SaveEvents 保存事件
-- ReplyOk 服务下发执行成功
-- ReplyFail 服务下发执行失败
+- context参数说明
+
+| 方法 | 说明 | 参数 | 返回值 |
+| --- | --- | ---- | ---- |
+| GetMessage | 获取消息原始数据 | - | byte数组 |
+| MsgToString | 将原始数据转换成字符串 | - | 文本 |
+| MsgToHexStr | 将原始数据转换成16进制字符串 | - | 16进制字符串 |
+| DeviceOnline | 将设备上线 | 设备id | - |
+| GetSession | 获取Session | - | Session |
+| GetDevice | 获取设备 | - | Device |
+| GetDeviceById | 通过设备id获取设备 | - | Device |
+| GetConfig | 获取设备配置项 | (key: string) | string |
+| SaveProperties | 保存属性 | (data: object) | - |
+| SaveEvents | 保存事件 | (eventId: string, data: object) | - |
+| ReplyOk | 服务下发执行成功 | - | - |
+| ReplyFail | 服务下发执行失败 | (str: string) | - |
 
 ### OnInvoke函数
-- GetMessage 获取
-- GetDevice 获取设备
-- ReplyOk 服务下发执行成功
-- ReplyFail 服务下发执行失败
+- context参数说明
+
+| 方法 | 说明 | 参数 | 返回值 |
+| --- | --- | ---- | ---- |
+| GetMessage | 获取下发消息 | - | FuncInvoke |
+| DeviceOnline | 将设备上线 | (deviceId: string) | - |
+| GetSession | 获取Session | - | Session |
+| GetDevice | 获取设备 | - | Device |
+| GetDeviceById | 通过设备id获取设备 | (deviceId: string) | Device |
+| GetConfig | 获取设备配置项 | (key: string) | string |
+| SaveProperties | 保存属性 | (data: object) | - |
+| SaveEvents | 保存事件 | (eventId: string, data: object) | - |
+| ReplyOk | 服务下发执行成功 | - | - |
+| ReplyFail | 服务下发执行失败 | (str: string) | - |
+
+- FuncInvoke
+
+| 方法 | 说明 | 参数 | 返回值 |
+| --- | --- | ---- | ---- |
+| Data | 下发数据 | - | object |
 
 ### Session对象
-- Disconnect 断开连接
-- Send 发送文本数据
-- SendHex 将16进制文本数据转换成byte发送
+
+| 方法 | 说明 | 参数 | 返回值 |
+| --- | --- | ---- | ---- |
+| Disconnect | 断开连接 | - | - |
+| Send | 发送文本数据 | (data: string) | - |
+| SendHex | 将16进制文本数据转换成byte发送 | (data: string) | - |
 
 ### 样例
 ```

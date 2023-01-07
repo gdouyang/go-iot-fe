@@ -37,6 +37,10 @@ function OnInvoke(context) {
     { caption: 'resp.GetMessage()', meta: 'resp', value: 'var message = resp.GetMessage()' },
     { caption: 'resp.MsgToString()', meta: 'resp', value: 'var str = resp.MsgToString()' },
     { caption: 'resp.MsgToHexStr()', meta: 'resp', value: 'var hexStr = resp.MsgToHexStr()' },
+    { caption: 'resp.MsgToUint16()', meta: 'resp', value: 'var num = resp.MsgToUint16()' },
+    { caption: 'resp.MsgToUint32()', meta: 'resp', value: 'var num = resp.MsgToUint32()' },
+    { caption: 'resp.MsgToUint64()', meta: 'resp', value: 'var num = resp.MsgToUint64()' },
+    { caption: 'resp.MsgToBool()', meta: 'resp', value: 'var boo = resp.MsgToBool()' },
 
     { caption: 'session.WriteCoils()', meta: 'session', value: 'session.WriteCoils(startingAddress, length, hexStr)' },
     { caption: 'session.WriteHoldingRegisters()', meta: 'session', value: 'session.WriteHoldingRegisters(startingAddress, length, hexStr)' },

@@ -1,52 +1,60 @@
-/**
- * websocket脚本模板
- */
-const obj = {
-  tpl: `function OnConnect(context) {
-}
-function OnMessage(context) {
-}
-function OnInvoke(context) {
-}
-`,
-  demoCode: '',
-  codeTip: [
-    { caption: 'context', meta: 'common', value: 'context' },
-    // OnMessage
-    { caption: 'context.GetMessage()', meta: 'OnMessage', value: 'var message = context.GetMessage()' },
-    { caption: 'context.MsgToString()', meta: 'OnMessage', value: 'var str = context.MsgToString()' },
-    { caption: 'context.GetSession()', meta: 'OnMessage', value: 'var session = context.GetSession()' },
-    { caption: 'context.DeviceOnline()', meta: 'OnMessage', value: 'context.DeviceOnline(deviceId)' },
-    { caption: 'context.GetDevice()', meta: 'OnMessage', value: 'var deviceOper = context.GetDevice()' },
-    { caption: 'context.GetDeviceById()', meta: 'OnMessage', value: 'var deviceOper = context.GetDeviceById("id")' },
-    { caption: 'context.GetConfig()', meta: 'OnMessage', value: 'var value = context.GetConfig("key")' },
-    { caption: 'context.GetHeader()', meta: 'OnMessage', value: 'var value = context.GetHeader("key")' },
-    { caption: 'context.GetUrl()', meta: 'OnMessage', value: 'var url = context.GetUrl()' },
-    { caption: 'context.GetQuery()', meta: 'OnMessage', value: 'var value = context.GetQuery("key")' },
-    { caption: 'context.GetForm()', meta: 'OnMessage', value: 'var value = context.GetForm("key")' },
-    { caption: 'context.SaveProperties()', meta: 'OnMessage', value: 'context.SaveProperties({"key":"value"})' },
-    { caption: 'context.SaveEvents()', meta: 'OnMessage', value: 'context.SaveEvents("eventId", {"key":"value"})' },
-    { caption: 'context.HttpRequest()', meta: 'OnMessage', value: 'var resp = context.HttpRequest({method:"", url:"", data:{}, header:{}})' },
-    { caption: 'context.ReplyOk()', meta: 'OnMessage', value: 'context.ReplyOk()' },
-    { caption: 'context.ReplyFail()', meta: 'OnMessage', value: 'context.ReplyFail("resaon")' },
-    // deviceOper
-    { caption: 'deviceOper.GetConfig()', meta: 'deviceOper', value: 'var value = deviceOpr.GetConfig("key")' },
-    { caption: 'deviceOper.GetData()()', meta: 'deviceOper', value: 'var map = deviceOpr.GetData()()' },
-    // session
-    { caption: 'session.Disconnect()', meta: 'session', value: 'session.Disconnect()' },
-    { caption: 'session.Response()', meta: 'session', value: 'session.Response("text")' },
-    { caption: 'session.ResponseJSON()', meta: 'session', value: 'session.ResponseJSON("{}")' },
-    { caption: 'session.ResponseHeader()', meta: 'session', value: 'session.ResponseHeader("key", "value")' },
-    // OnInvoke
-    { caption: 'context.GetMessage()', meta: 'OnInvoke', value: 'var message = context.GetMessage()' },
-    { caption: 'context.GetDevice()', meta: 'OnInvoke', value: 'var deviceOper = context.GetDevice()' },
-    { caption: 'message.GetClientId()', meta: 'OnInvoke', value: 'var clientId = message.GetClientId()' },
-    { caption: 'context.ReplyOk()', meta: 'OnInvoke', value: 'context.ReplyOk()' },
-    { caption: 'context.ReplyFail()', meta: 'OnInvoke', value: 'context.ReplyFail("resaon")' },
-    { caption: 'context.HttpRequest()', meta: 'OnInvoke', value: 'var resp = context.HttpRequest({method:"", url:"", data:{}, header:{}})' }
-  ]
-}
-obj.demoCode = `// 检查在线状态
+### OnStateChecker
+- GetDevice 获取设备
+- HttpRequest 发送http请求
+
+### OnMessage函数
+- context参数说明
+
+| 方法 | 说明 | 参数 | 返回值 |
+| --- | --- | ---- | ---- |
+| GetMessage | 获取消息原始数据 | - | byte数组 |
+| MsgToString | 将原始数据转换成字符串 | - | 文本 |
+| MsgToHexStr | 将原始数据转换成16进制字符串 | - | 16进制字符串 |
+| DeviceOnline | 将设备上线 | 设备id | - |
+| GetSession | 获取Session | - | Session |
+| GetDevice | 获取设备 | - | Device |
+| GetDeviceById | 通过设备id获取设备 | - | Device |
+| GetConfig | 获取设备配置项 | (key: string) | string |
+| SaveProperties | 保存属性 | (data: object) | - |
+| SaveEvents | 保存事件 | (eventId: string, data: object) | - |
+| ReplyOk | 服务下发执行成功 | - | - |
+| ReplyFail | 服务下发执行失败 | (str: string) | - |
+| IsTextMessage | 是否为文本消息 | - | boolean |
+| IsBinaryMessage | 是否为字节消息 | - | boolean |
+| GetHeader | 获取http请求头 | (key: string) | string |
+| GetUrl | 获取http url | - | string |
+| GetQuery | 获取http query | (key: string) | string |
+| GetForm | 获取http表单 | (key: string) | string |
+| HttpRequest | 发送http请求 | {} | string |
+
+### OnInvoke函数
+- context参数说明
+
+| 方法 | 说明 | 参数 | 返回值 |
+| --- | --- | ---- | ---- |
+| GetMessage | 获取下发消息 | - | FuncInvoke |
+| GetDevice | 获取设备 | - | Device |
+| ReplyOk | 服务下发执行成功 | - | - |
+| ReplyFail | 服务下发执行失败 | (str: string) | - |
+| HttpRequest | 发送http请求 | {} | string |
+
+- FuncInvoke
+
+| 方法 | 说明 | 参数 | 返回值 |
+| --- | --- | ---- | ---- |
+| Data | 下发数据 | - | object |
+
+### Session对象
+
+| 方法 | 说明 | 参数 | 返回值 |
+| --- | --- | ---- | ---- |
+| Response | 发送文本数据 | (data: string) | - |
+| ResponseJSON | 发送json数据 | (data: string) | - |
+| ResponseHeader | 设置http响应头 | (key: string, value: string) | - |
+
+### 样例
+```
+// 检查在线状态
 function OnStateChecker(context) {
   // unknown, online, offline;
   return "online"
@@ -338,5 +346,4 @@ MsgType.校时 = new MsgType(1013, "校时", "F503", "F5030600");
 MsgType.接入应答 = new MsgType(1014, "接入应答", "F603", "0600");
 MsgType.获取策略请求 = new MsgType(1015, "获取策略请求", "F703", "");
 MsgType.下行升级报文 = new MsgType(1100, "下行升级报文", "4C04", "");
-`
-export default obj
+```

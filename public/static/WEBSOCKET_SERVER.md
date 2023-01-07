@@ -1,13 +1,5 @@
-### OnConnect函数
-- context参数说明
-
-| 方法 | 说明 | 参数 | 返回值 |
-| --- | --- | ---- | ---- |
-| GetClientId | 获取mqtt clientId | - | string |
-| GetUserName | 获取mqtt 用户名 | - | 用户名 |
-| GetPassword | 获取mqtt 密码 | - | 密码 |
-| DeviceOnline | 将设备上线 | 设备id | - |
-| AuthFail | 认证失败 | - | - |
+### OnConnect
+- context参数与OnMessage相同
 
 ### OnMessage函数
 - context参数说明
@@ -26,7 +18,12 @@
 | SaveEvents | 保存事件 | (eventId: string, data: object) | - |
 | ReplyOk | 服务下发执行成功 | - | - |
 | ReplyFail | 服务下发执行失败 | (str: string) | - |
-| Topic | 获取消息Topic | - | string |
+| IsTextMessage | 是否为文本消息 | - | boolean |
+| IsBinaryMessage | 是否为字节消息 | - | boolean |
+| GetHeader | 获取http请求头 | (key: string) | string |
+| GetUrl | 获取http url | - | string |
+| GetQuery | 获取http query | (key: string) | string |
+| GetForm | 获取http表单 | (key: string) | string |
 
 ### OnInvoke函数
 - context参数说明
@@ -55,26 +52,31 @@
 | 方法 | 说明 | 参数 | 返回值 |
 | --- | --- | ---- | ---- |
 | Disconnect | 断开连接 | - | - |
-| Publish | 发送文本数据 | (data: string) | - |
-| PublishHex | 将16进制文本数据转换成byte发送 | (data: string) | - |
+| SendText | 发送文本数据 | (data: string) | - |
+| SendBinary | 将16进制文本数据转换成byte发送 | (data: string) | - |
 
 ### 样例
 ```
-function OnConnect(context) {
-  console.log("OnConnect: " + context.GetClientId())
-	context.DeviceOnline(context.GetClientId())
-}
+// 设备报文 -> 物模型
 function OnMessage(context) {
-  console.log("OnMessage: " + context.MsgToString())
-  var data = JSON.parse(context.MsgToString())
-	if (data.name == 'f') {
-		context.ReplyOk()
-		return
-	}
-  context.SaveProperties(data)
+  var session = context.GetSession();
+  var payload = JSON.parse(context.MsgToString());
+  var topic = session.GetUrl();
+  // 根据路径来判断是什么类型
+  if (topic.startsWith("/report-property")) {
+    context.SaveProperties(payload)
+  } else if (topic.startsWith("/fault_alarm")) {
+    context.SaveEvents('fire_alarm', payload)
+  } else {
+    // 如果都不匹配则给客户端返回404
+    session.SendText('{"status":404, "message": "uri ['+ topic +']not support"}')
+  }
+
 }
+
+// 物模型 -> 设备报文
 function OnInvoke(context) {
-	console.log("OnInvoke: " + JSON.stringify(context.GetMessage().Data))
-	context.GetSession().Publish("test", JSON.stringify(context.GetMessage().Data))
+  var message = context.getMessage();
+  context.GetSession().SendText(JSON.stringify(message.Data))
 }
 ```
