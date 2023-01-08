@@ -1,5 +1,22 @@
 ### OnConnect
-- context参数与OnMessage相同
+- context参数说明
+
+| 方法 | 说明 | 参数 | 返回值 |
+| --- | --- | ---- | ---- |
+| DeviceOnline | 将设备上线 | 设备id | - |
+| GetSession | 获取Session | - | Session |
+| GetDeviceById | 通过设备id获取设备 | - | Device |
+| GetHeader | 获取http请求头 | (key: string) | string |
+| GetUrl | 获取http url | - | string |
+| GetQuery | 获取http query | (key: string) | string |
+| GetForm | 获取http表单 | (key: string) | string |
+
+```
+function OnConnect(context) {
+  var session = context.GetSession()
+  session.SendText('success')
+}
+```
 
 ### OnMessage函数
 - context参数说明
@@ -25,6 +42,18 @@
 | GetQuery | 获取http query | (key: string) | string |
 | GetForm | 获取http表单 | (key: string) | string |
 
+```
+function OnMessage(context) {
+  var msg = context.MsgToString()
+  var obj = JSON.parse(msg)
+  if (obj.type == 'prop') {
+    context.SaveProperties(obj)
+  } else if (obj.type == 'event') {
+    context.SaveEvents(obj.eventId, obj)
+  }
+}
+```
+
 ### OnInvoke函数
 - context参数说明
 
@@ -46,6 +75,13 @@
 | 方法 | 说明 | 参数 | 返回值 |
 | --- | --- | ---- | ---- |
 | Data | 下发数据 | - | object |
+
+```
+function OnInvoke(context) {
+  var msg = context.GetMessage().Data
+  context.GetSession().SendText(JSON.stringify(msg))
+}
+```
 
 ### Session对象
 

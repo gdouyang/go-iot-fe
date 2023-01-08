@@ -97,8 +97,8 @@ function OnInvoke(context) {
 | 方法 | 说明 | 参数 | 返回值 |
 | --- | --- | ---- | ---- |
 | Disconnect | 断开连接 | - | - |
-| Publish | 发送文本数据 | (data: string) | - |
-| PublishHex | 将16进制文本数据转换成byte发送 | (data: string) | - |
+| Publish | 发送文本数据 | (topic: string, data: string) | - |
+| PublishHex | 将16进制文本数据转换成byte发送 | (topic: string, data: string) | - |
 
 ### 样例
 ```

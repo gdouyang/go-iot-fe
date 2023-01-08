@@ -1,5 +1,19 @@
 ### OnConnect函数
-- context参数说明与OnMessage一致
+- context参数说明
+
+| 方法 | 说明 | 参数 | 返回值 |
+| --- | --- | ---- | ---- |
+| GetSession | 获取Session | - | Session |
+| GetDevice | 获取设备 | - | Device |
+| GetConfig | 获取设备配置项 | (key: string) | string |
+
+```
+// 当连接到Broker时可以在这里发送心跳报文或者别的
+function OnConnect(context) {
+  var session = context.GetSession()
+  session.Publish('topic', 'xxx')
+}
+```
 
 ### OnMessage函数
 - context参数说明
@@ -12,7 +26,6 @@
 | DeviceOnline | 将设备上线 | 设备id | - |
 | GetSession | 获取Session | - | Session |
 | GetDevice | 获取设备 | - | Device |
-| GetDeviceById | 通过设备id获取设备 | - | Device |
 | GetConfig | 获取设备配置项 | (key: string) | string |
 | SaveProperties | 保存属性 | (data: object) | - |
 | SaveEvents | 保存事件 | (eventId: string, data: object) | - |
@@ -74,8 +87,8 @@ function OnInvoke(context) {
 | 方法 | 说明 | 参数 | 返回值 |
 | --- | --- | ---- | ---- |
 | Disconnect | 断开连接 | - | - |
-| Publish | 发送文本数据 | (data: string) | - |
-| PublishHex | 将16进制文本数据转换成byte发送 | (data: string) | - |
+| Publish | 发送文本数据 | (topic: string, data: string) | - |
+| PublishHex | 将16进制文本数据转换成byte发送 | (topic: string, data: string) | - |
 
 ### 样例
 ```

@@ -142,7 +142,7 @@ function OnMessage(context) {
   }
   if (message.getData() != null && message.getData().toDeviceMessage) {
     var d = message.getData().toDeviceMessage()
-    if (d..messageType == 'REPORT_PROPERTY') {
+    if (d.messageType == 'REPORT_PROPERTY') {
       context.SaveProperties(message.getData().toDeviceMessage())
     }
   }

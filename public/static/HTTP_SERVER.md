@@ -8,6 +8,19 @@
 
 - 返回值 online, offline, unknown
 
+```
+function OnStateChecker(context) {
+  var resp = context.HttpRequest({
+    url: 'www.domain.com?deviceId='+context.GetDevice().GetId(),
+    method: 'get'
+  })
+  if (resp.data == 'online') {
+    return 'online'
+  }
+  return 'offline'
+}
+```
+
 #### HttpConfig
 
 | 属性 | 说明 | 类型 |
