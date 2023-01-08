@@ -3,11 +3,16 @@
 
 | 方法 | 说明 | 参数 | 返回值 |
 | --- | --- | ---- | ---- |
-| GetMessage | 获取消息原始数据 | - | byte数组 |
-| MsgToString | 将原始数据转换成字符串 | - | 文本 |
-| MsgToHexStr | 将原始数据转换成16进制字符串 | - | 16进制字符串 |
 | DeviceOnline | 将设备上线 | 设备id | - |
 | GetSession | 获取Session | - | Session |
+
+```
+// 当客户端连接到Server时可以在这里发送心跳报文或者认证报文
+function OnConnect(context) {
+  var session = context.GetSession()
+  session.Send('xxx')
+}
+```
 
 ### OnMessage函数
 - context参数说明
@@ -26,6 +31,23 @@
 | SaveEvents | 保存事件 | (eventId: string, data: object) | - |
 | ReplyOk | 服务下发执行成功 | - | - |
 | ReplyFail | 服务下发执行失败 | (str: string) | - |
+
+```
+// 当客户端向Server推送数据时，执行OnMessage函数
+function OnMessage(context) {
+  console.log("OnMessage: " + context.MsgToString())
+  var data = JSON.parse(context.MsgToString())
+	if (data.type == 'reply') {
+		context.ReplyOk()
+		return
+	}
+  if (data.type == 'prop') {
+    context.SaveProperties(data)
+  } else if (data.type == 'event') {
+    context.SaveEvents(data.eventId, data)
+  }
+}
+```
 
 ### OnInvoke函数
 - context参数说明
@@ -48,6 +70,16 @@
 | 方法 | 说明 | 参数 | 返回值 |
 | --- | --- | ---- | ---- |
 | Data | 下发数据 | - | object |
+
+```
+function OnInvoke(context) {
+  var data = JSON.stringify(context.GetMessage().Data)
+	console.log("OnInvoke: " + data)
+  var session = context.GetSession()
+  // 向客户端发送文本信息
+	session.Send(data)
+}
+```
 
 ### Session对象
 

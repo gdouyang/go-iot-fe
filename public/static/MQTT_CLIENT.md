@@ -20,6 +20,23 @@
 | ReplyFail | 服务下发执行失败 | (str: string) | - |
 | Topic | 获取消息Topic | - | string |
 
+```
+// 当Broker向客户端推送数据时，执行OnMessage函数
+function OnMessage(context) {
+  console.log("OnMessage: " + context.MsgToString())
+  var data = JSON.parse(context.MsgToString())
+	if (data.name == 'reply') {
+		context.ReplyOk()
+		return
+	}
+  var topic = context.Topic()
+  if (topic == '/prop') {
+    context.SaveProperties(data)
+  } else if (topic == '/event') {
+    context.SaveEvents(data.eventId, data)
+  }
+}
+```
 ### OnInvoke函数
 - context参数说明
 
@@ -42,6 +59,16 @@
 | --- | --- | ---- | ---- |
 | Data | 下发数据 | - | object |
 
+```
+function OnInvoke(context) {
+  var data = JSON.stringify(context.GetMessage().Data)
+	console.log("OnInvoke: " + data)
+  var session = context.GetSession()
+  // 向Broker发送文本信息
+	session.Publish("/invoke", data)
+}
+```
+
 ### Session对象
 
 | 方法 | 说明 | 参数 | 返回值 |
@@ -52,21 +79,25 @@
 
 ### 样例
 ```
-function OnConnect(context) {
-  console.log("OnConnect: " + context.GetClientId())
-	context.DeviceOnline(context.GetClientId())
-}
 function OnMessage(context) {
   console.log("OnMessage: " + context.MsgToString())
   var data = JSON.parse(context.MsgToString())
-	if (data.name == 'f') {
+	if (data.name == 'reply') {
 		context.ReplyOk()
 		return
 	}
-  context.SaveProperties(data)
+  var topic = context.Topic()
+  if (topic == '/prop') {
+    context.SaveProperties(data)
+  } else if (topic == '/event') {
+    context.SaveEvents(data.eventId, data)
+  }
 }
 function OnInvoke(context) {
-	console.log("OnInvoke: " + JSON.stringify(context.GetMessage().Data))
-	context.GetSession().Publish("test", JSON.stringify(context.GetMessage().Data))
+  var data = JSON.stringify(context.GetMessage().Data)
+	console.log("OnInvoke: " + data)
+  var session = context.GetSession()
+  // 向Broker发送文本信息
+	session.Publish("/invoke", data)
 }
 ```
