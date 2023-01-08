@@ -1,6 +1,30 @@
 ### OnStateChecker
-- GetDevice 获取设备
-- HttpRequest 发送http请求
+- context参数说明
+
+| 方法 | 说明 | 参数 | 返回值 |
+| --- | --- | ---- | ---- |
+| GetDevice | 获取设备 | - | Device |
+| HttpRequest | 发送http请求 | HttpConfig | HttpResp |
+
+- 返回值 online, offline, unknown
+
+#### HttpConfig
+
+| 属性 | 说明 | 类型 |
+| --- | --- | ---- |
+| url | 请求路径 | string |
+| method | http方法 | string(get,post) |
+| header | http头 | object |
+| data | http数据 | object或string |
+
+#### HttpResp
+
+| 属性 | 说明 | 类型 |
+| --- | --- | ---- |
+| status | 响应码 | int |
+| message | 响应消息 | string |
+| header | 响应头 | object |
+| data | 响应数据 | string |
 
 ### OnMessage函数
 - context参数说明
@@ -25,7 +49,7 @@
 | GetUrl | 获取http url | - | string |
 | GetQuery | 获取http query | (key: string) | string |
 | GetForm | 获取http表单 | (key: string) | string |
-| HttpRequest | 发送http请求 | {} | string |
+| HttpRequest | 发送http请求 | HttpConfig | HttpResp |
 
 ### OnInvoke函数
 - context参数说明
@@ -36,7 +60,7 @@
 | GetDevice | 获取设备 | - | Device |
 | ReplyOk | 服务下发执行成功 | - | - |
 | ReplyFail | 服务下发执行失败 | (str: string) | - |
-| HttpRequest | 发送http请求 | {} | string |
+| HttpRequest | 发送http请求 | HttpConfig | HttpResp |
 
 - FuncInvoke
 

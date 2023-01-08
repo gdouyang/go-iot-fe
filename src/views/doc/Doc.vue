@@ -15,13 +15,19 @@ export default {
     components: {
       MarkdownPreview
     },
+    props: {
+      type: {
+        type: String,
+        default: () => 'TCP_SERVER'
+      }
+    },
     data () {
       return {
         initialValue: ''
       }
     },
     mounted () {
-      request.get('/static/TCP_SERVER.md').then(resp => {
+      request.get(`/static/${this.type}.md`).then(resp => {
         this.initialValue = resp.data
       })
     }

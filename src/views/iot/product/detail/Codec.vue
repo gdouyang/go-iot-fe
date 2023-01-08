@@ -22,21 +22,16 @@
       </a-button>
     </div>
 
-    <Dialog
-      ref="DemoCodeModal"
-      :width="600"
-      :showOk="false"
-      cancelText="关闭"
+    <a-drawer
+      title="说明"
+      placement="right"
+      width="750"
+      @close="openDrawer = false"
+      :visible="openDrawer"
+      v-if="openDrawer"
     >
-      <AceEditor
-        v-model="demoCode"
-        lang="javascript"
-        theme="chrome"
-        width="550"
-        height="450"
-        :options="demoAceOptions"
-      />
-    </Dialog>
+      <Doc :type="network.type"/>
+    </a-drawer>
   </div>
 </template>
 
@@ -48,6 +43,7 @@ import 'brace/ext/language_tools' // language extension prerequsite...
 import 'brace/ext/searchbox' // language extension prerequsite...
 import 'brace/mode/javascript'
 import 'brace/theme/chrome'
+import Doc from '@/views/doc/Doc.vue'
 // import 'brace/snippets/javascript'
 // import _ from 'lodash'
 import TcpTpl from './codec/TcpTpl.js'
@@ -69,7 +65,8 @@ export default {
     }
   },
   components: {
-    AceEditor
+    AceEditor,
+    Doc
   },
   data () {
     return {
@@ -85,15 +82,8 @@ export default {
         readOnly: true
       },
       editor: null,
-      demoCode: '',
-      demoAceOptions: {
-        showLineNumbers: true,
-        tabSize: 2,
-        wrapEnabled: true,
-        showPrintMargin: true,
-        readOnly: true
-      },
-      network: {}
+      network: {},
+      openDrawer: false
     }
   },
   created () {
@@ -154,8 +144,7 @@ export default {
       })
     },
     showDemo () {
-      this.demoCode = this.getTpl().demoCode
-      this.$refs.DemoCodeModal.open({ title: '样例' })
+      this.openDrawer = true
     },
     init (editor) {
       // editor.on('change', this.change)
