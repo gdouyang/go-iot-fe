@@ -6,8 +6,8 @@
 | AddHandler | 添加报文处理器 | function | - |
 | AppendResult | 追加结果 | data | - |
 | Complete | 完成解析 | - | - |
-| Fixed | 读取固定长度 | size: number | - |
-| Delimited | 读取分隔符 | word: string | - |
+| Fixed | 按固定长度读取数据 | size: number | - |
+| Delimited | 按分隔符读取数据 | word: string | - |
 
 - 样例1
 > 数据格式为`aasss 2023-01-18 22:15:25_\n`, 解析后的数据为`aasss 2023-01-18 22:15:25_`
