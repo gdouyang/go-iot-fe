@@ -41,7 +41,7 @@
 | MsgToBool | 消息转成布尔类型 | - | string |
 
 ### 样例
-```
+```javascript
 // 物模型 -> 设备报文
 function OnInvoke(context) {
   var message = context.getMessage();

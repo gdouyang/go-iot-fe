@@ -11,7 +11,7 @@
 | GetQuery | 获取http query | (key: string) | string |
 | GetForm | 获取http表单 | (key: string) | string |
 
-```
+```javascript
 function OnConnect(context) {
   var session = context.GetSession()
   session.SendText('success')
@@ -42,7 +42,7 @@ function OnConnect(context) {
 | GetQuery | 获取http query | (key: string) | string |
 | GetForm | 获取http表单 | (key: string) | string |
 
-```
+```javascript
 function OnMessage(context) {
   var msg = context.MsgToString()
   var obj = JSON.parse(msg)
@@ -76,7 +76,7 @@ function OnMessage(context) {
 | --- | --- | ---- | ---- |
 | Data | 下发数据 | - | object |
 
-```
+```javascript
 function OnInvoke(context) {
   var msg = context.GetMessage().Data
   context.GetSession().SendText(JSON.stringify(msg))
@@ -92,7 +92,7 @@ function OnInvoke(context) {
 | SendBinary | 将16进制文本数据转换成byte发送 | (data: string) | - |
 
 ### 样例
-```
+```javascript
 // 设备报文 -> 物模型
 function OnMessage(context) {
   var session = context.GetSession();

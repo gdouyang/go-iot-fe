@@ -78,6 +78,7 @@
           prop="configuration.delimeter.size"
           v-if="addObj.configuration.delimeter.type === 'SplitFunc'"
         >
+          <a href="javascript:void(0)" @click="showDemo">查看样例</a>
           <AceEditor
             ref="AceEditor"
             v-model="addObj.configuration.delimeter.splitFunc"
@@ -86,10 +87,21 @@
             width="400"
             height="250"
             :options="aceOptions"
+            @init="init"
           />
         </a-form-model-item>
       </a-form-model>
     </Dialog>
+    <a-drawer
+      title="说明"
+      placement="right"
+      width="750"
+      @close="openDrawer = false"
+      :visible="openDrawer"
+      v-if="openDrawer"
+    >
+      <Doc :type="'SplitFunc'"/>
+    </a-drawer>
   </div>
 </template>
 
@@ -97,6 +109,7 @@
 import AceEditor from 'vue2-ace-editor'
 import 'brace/mode/javascript'
 import 'brace/theme/chrome'
+import Doc from '@/views/doc/Doc.vue'
 // import moment from 'moment'
 import _ from 'lodash'
 import { defaultTcpAddObj } from './entity.js'
@@ -108,7 +121,8 @@ export default {
   },
   mixins: [ Base ],
   components: {
-    AceEditor
+    AceEditor,
+    Doc
   },
   data () {
     return {
@@ -131,7 +145,8 @@ export default {
         wrapEnabled: true,
         showPrintMargin: true,
         readOnly: false
-      }
+      },
+      openDrawer: false
     }
   },
   created () {
@@ -190,6 +205,35 @@ export default {
       } else if (value === 'SplitFunc') {
         c.delimited = undefined
         c.length = undefined
+        c.splitFunc = `function splitFunc(parser) {
+
+}`
+      }
+    },
+    showDemo () {
+      this.openDrawer = true
+    },
+    init (editor) {
+      // 加入自定义语法提示
+      const that = this
+      editor.completers = [{
+        getCompletions: function (editor, session, pos, prefix, callback) {
+          that.setCompletions(editor, session, pos, prefix, callback)
+        }
+      }]
+      this.editor = editor
+    },
+    setCompletions (editor, session, pos, prefix, callback) {
+      if (prefix.length === 0) {
+        return callback(null, [])
+      } else {
+        return callback(null, [
+          { caption: 'parser.AddHandler()', value: 'parser.AddHandler(function(data){\n\n})' },
+          { caption: 'parser.AppendResult()', value: 'parser.AppendResult(data)' },
+          { caption: 'parser.Complete()', value: 'parser.Complete()' },
+          { caption: 'parser.Fixed()', value: 'parser.Fixed(21)' },
+          { caption: 'parser.Delimited()', value: 'parser.Delimited("\\n")' }
+        ])
       }
     }
   }

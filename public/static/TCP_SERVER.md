@@ -6,7 +6,7 @@
 | DeviceOnline | 将设备上线 | 设备id | - |
 | GetSession | 获取Session | - | Session |
 
-```
+```javascript
 // 当客户端连接到Server时可以在这里发送心跳报文或者认证报文
 function OnConnect(context) {
   var session = context.GetSession()
@@ -32,7 +32,7 @@ function OnConnect(context) {
 | ReplyOk | 服务下发执行成功 | - | - |
 | ReplyFail | 服务下发执行失败 | (str: string) | - |
 
-```
+```javascript
 // 当客户端向Server推送数据时，执行OnMessage函数
 function OnMessage(context) {
   console.log("OnMessage: " + context.MsgToString())
@@ -71,7 +71,7 @@ function OnMessage(context) {
 | --- | --- | ---- | ---- |
 | Data | 下发数据 | - | object |
 
-```
+```javascript
 function OnInvoke(context) {
   var data = JSON.stringify(context.GetMessage().Data)
 	console.log("OnInvoke: " + data)
@@ -90,7 +90,7 @@ function OnInvoke(context) {
 | SendHex | 将16进制文本数据转换成byte发送 | (data: string) | - |
 
 ### 样例
-```
+```javascript
 // 设备报文 -> 物模型
 function OnMessage(context) {
   var bytes = context.GetMessage();

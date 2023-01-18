@@ -90,7 +90,7 @@ function OnStateChecker(context) {
 | ResponseHeader | 设置http响应头 | (key: string, value: string) | - |
 
 ### 样例
-```
+```javascript
 // 检查在线状态
 function OnStateChecker(context) {
   // unknown, online, offline;

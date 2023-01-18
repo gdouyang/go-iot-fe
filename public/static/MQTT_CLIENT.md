@@ -33,7 +33,7 @@ function OnConnect(context) {
 | ReplyFail | 服务下发执行失败 | (str: string) | - |
 | Topic | 获取消息Topic | - | string |
 
-```
+```javascript
 // 当Broker向客户端推送数据时，执行OnMessage函数
 function OnMessage(context) {
   console.log("OnMessage: " + context.MsgToString())
@@ -72,7 +72,7 @@ function OnMessage(context) {
 | --- | --- | ---- | ---- |
 | Data | 下发数据 | - | object |
 
-```
+```javascript
 function OnInvoke(context) {
   var data = JSON.stringify(context.GetMessage().Data)
 	console.log("OnInvoke: " + data)
@@ -91,7 +91,7 @@ function OnInvoke(context) {
 | PublishHex | 将16进制文本数据转换成byte发送 | (topic: string, data: string) | - |
 
 ### 样例
-```
+```javascript
 function OnMessage(context) {
   console.log("OnMessage: " + context.MsgToString())
   var data = JSON.parse(context.MsgToString())

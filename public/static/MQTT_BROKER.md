@@ -10,7 +10,7 @@
 | DeviceOnline | 将设备上线 | 设备id | - |
 | AuthFail | 认证失败 | - | - |
 
-```
+```javascript
 // 系统默认会根据用户名和密码来认证，如果不满足可写OnConnect来自行判断
 // 当mqtt客户端连接到Broker时可以在这里判断用户名和密码是否正确
 function OnConnect(context) {
@@ -42,7 +42,7 @@ function OnConnect(context) {
 | ReplyFail | 服务下发执行失败 | (str: string) | - |
 | Topic | 获取消息Topic | - | string |
 
-```
+```javascript
 // 当客户端向Broker推送数据时，执行OnMessage函数
 function OnMessage(context) {
   console.log("OnMessage: " + context.MsgToString())
@@ -82,7 +82,7 @@ function OnMessage(context) {
 | --- | --- | ---- | ---- |
 | Data | 下发数据 | - | object |
 
-```
+```javascript
 function OnInvoke(context) {
   var data = JSON.stringify(context.GetMessage().Data)
 	console.log("OnInvoke: " + data)
@@ -101,7 +101,7 @@ function OnInvoke(context) {
 | PublishHex | 将16进制文本数据转换成byte发送 | (topic: string, data: string) | - |
 
 ### 样例
-```
+```javascript
 function OnMessage(context) {
   console.log("OnMessage: " + context.MsgToString())
   var data = JSON.parse(context.MsgToString())
