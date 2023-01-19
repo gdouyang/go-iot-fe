@@ -168,13 +168,13 @@ export default {
       this.$refs.DeviceImport.open()
     },
     batchDeploy () {
+      let msg = '确定要批量激活吗？'
       if (_.isEmpty(this.selectedRowKeys)) {
-        this.$message.error('请选择数据')
-        return
+        msg = '确定要全部激活吗？'
       }
       this.$confirm({
         title: '确认',
-        content: '确定要批量激活吗？',
+        content: msg,
         onOk: () => {
           batchDeploy(this.selectedRowKeys).then(data => {
             if (data.success) {
