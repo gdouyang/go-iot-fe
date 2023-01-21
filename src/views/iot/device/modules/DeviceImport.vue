@@ -76,7 +76,7 @@ export default {
       addObj: _.cloneDeep(defaultAddObj),
       productList: [],
       importLoading: false,
-      isFinish: true,
+      isFinish: false,
       count: 0,
       errMessage: null
     }
@@ -126,7 +126,7 @@ export default {
         const res = JSON.parse(e.data)
         if (res.success) {
           const temp = res.result.num
-          this.count += temp
+          this.count = temp
           if (res.result.finish) {
             this.isFinish = true
             source.close()
