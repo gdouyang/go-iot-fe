@@ -60,6 +60,19 @@
     <DeviceAdd ref="DeviceAdd" @success="search()" />
     <DeviceImport ref="DeviceImport" @success="search()" />
     <DeviceDetail ref="DeviceDetail" v-if="GetDetailStatus" @back="back" />
+    <Dialog
+      ref="processModal"
+      :showOk="false"
+      @close="processModalClose"
+      :width="500"
+      title="进度"
+      cancelText="关闭"
+    >
+      <a-badge status="success" text="已完成" v-if="isFinish"/>
+      <a-badge status="processing" text="进行中" v-else/>
+      <span style="margin-left: 15px;">总数量:{{ count }}</span>
+      <p style="color: red;">{{ errMessage }}</p>
+    </Dialog>
   </div>
 </template>
 
@@ -94,7 +107,10 @@ export default {
       ],
       GetDetailStatus: false,
       selectedRowKeys: [],
-      selectedRows: []
+      selectedRows: [],
+      isFinish: false,
+      count: 0,
+      errMessage: ''
     }
   },
   created () {
@@ -176,10 +192,11 @@ export default {
         title: '确认',
         content: msg,
         onOk: () => {
-          batchDeploy(this.selectedRowKeys).then(data => {
-            if (data.success) {
-              this.$message.success('操作成功')
-              this.search()
+          batchDeploy(this.selectedRowKeys).then(resp => {
+            if (resp.success) {
+              this.showProcessResult(resp.result)
+            } else {
+              this.$message.success(resp.message)
             }
           })
         }
@@ -202,6 +219,34 @@ export default {
           })
         }
       })
+    },
+    showProcessResult (token) {
+      this.$refs.processModal.open()
+      var source = new EventSource(`api/device/import-result/${token}`)
+      source.onmessage = (e) => {
+        const res = JSON.parse(e.data)
+        if (res.success) {
+          const temp = res.result.num
+          this.count = temp
+          if (res.result.finish) {
+            this.isFinish = true
+            source.close()
+            this.$message.success('操作成功')
+          }
+        } else {
+          this.errMessage = res.message
+        }
+      }
+      source.onerror = () => {
+        source.close()
+      }
+      source.onopen = function (event) {
+      }
+    },
+    processModalClose () {
+      this.isFinish = false
+      this.count = 0
+      this.errMessage = null
     }
   }
 }
