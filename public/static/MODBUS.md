@@ -44,9 +44,14 @@
 ```javascript
 // 物模型 -> 设备报文
 function OnInvoke(context) {
-  var message = context.getMessage();
-  var response = context.GetSession().ReadDiscreteInputs(1, 4)
-  console.log(response.MsgToUint16())
-  context.
+  var message = context.GetMessage();
+  var session = context.GetSession();
+  var resp = session.ReadHoldingRegisters(4003, 1);
+  var dv = new DataView(new ArrayBuffer(2));
+  var data = resp.GetMessage();
+  dv.setUint8(0, data[0]);
+  dv.setUint8(1, data[1]);
+  var temp = dv.getInt16(0);
+  console.log(temp);
 }
 ```

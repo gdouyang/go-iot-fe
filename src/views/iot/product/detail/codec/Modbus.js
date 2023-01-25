@@ -46,6 +46,7 @@ function OnInvoke(context) {
     { caption: 'session.WriteHoldingRegisters()', meta: 'session', value: 'session.WriteHoldingRegisters(startingAddress, length, hexStr)' },
     // OnInvoke
     { caption: 'context.GetMessage()', meta: 'OnInvoke', value: 'var message = context.GetMessage()' },
+    { caption: 'context.GetSession()', meta: 'OnInvoke', value: 'var session = context.GetSession()' },
     { caption: 'context.GetDevice()', meta: 'OnInvoke', value: 'var deviceOper = context.GetDevice()' },
     { caption: 'context.SaveProperties()', meta: 'OnInvoke', value: 'context.SaveProperties({"key":"value"})' },
     { caption: 'context.SaveEvents()', meta: 'OnInvoke', value: 'context.SaveEvents("eventId", {"key":"value"})' },
