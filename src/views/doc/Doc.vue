@@ -1,6 +1,6 @@
 <template>
   <div class="markdown">
-    <MarkdownPreview :initialValue="initialValue"/>
+    <MarkdownPreview :initialValue="initialValue" :markedOptions="markedOptions"/>
   </div>
 </template>
 
@@ -23,7 +23,10 @@ export default {
     },
     data () {
       return {
-        initialValue: ''
+        initialValue: '',
+        markedOptions: {
+          baseUrl: 'static/'
+        }
       }
     },
     mounted () {

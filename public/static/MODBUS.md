@@ -41,6 +41,7 @@
 | MsgToBool | 消息转成布尔类型 | - | string |
 
 ### 样例
+- 编解码
 ```javascript
 // 物模型 -> 设备报文
 function OnInvoke(context) {
@@ -53,5 +54,56 @@ function OnInvoke(context) {
   dv.setUint8(1, data[1]);
   var temp = dv.getInt16(0);
   console.log(temp);
+  context.SaveProperties({"Temperature": temp / 10})
 }
 ```
+- 物模型
+```json
+{
+  "events": [],
+  "properties": [
+    {
+      "id": "Temperature",
+      "name": "Temperature",
+      "expands": {
+        "readOnly": null
+      },
+      "description": "Temperature x 10 (np. 10,5 st.C to 105)",
+      "valueType": {
+        "scale": 2,
+        "unit": null,
+        "type": "float"
+      }
+    }
+  ],
+  "functions": [
+    {
+      "id": "getTemp",
+      "name": "定时获取温度",
+      "expands": {
+        "readOnly": null,
+        "interval": "1"
+      },
+      "description": null,
+      "output": {},
+      "inputs": [],
+      "async": true
+    }
+  ],
+  "tags": []
+}
+```
+
+#### 配置ModbusPal
+> https://sourceforge.net/p/modbuspal/discussion/899955/thread/72cf35ee/cd1f/attachment/ModbusPal.jar
+
+- 添加模拟设备
+![modbus_addmockdevice](img/modbus_addmockdevice.png)
+- 添加寄存器
+![modbus_addregister](img/modbus_addregister.png)
+- 自动生成值
+![modbus_addvaluegen](img/modbus_addvaluegen.png)
+- 绑定值生成器
+![modbus_bindvaluegen](img/modbus_bindvaluegen.png)
+- 启动
+![modbus_run](img/modbus_run.png)
