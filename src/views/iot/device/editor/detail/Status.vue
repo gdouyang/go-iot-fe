@@ -78,6 +78,14 @@ export default {
           timeString: newVal.createTime,
           value: newVal[prop.id]
         })
+
+        if (_.size(prop.list) > 20) {
+          var list = []
+          for (var i = prop.list.length - 20; i < prop.list.length; i++) {
+            list.push(prop.list[i])
+          }
+          prop.list = list
+        }
         prop.value = newVal[prop.id]
         that.$refs['propCard' + prop.id][0].getValue()
       })
