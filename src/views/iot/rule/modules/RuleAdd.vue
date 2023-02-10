@@ -106,7 +106,7 @@
 <script>
 import { addScene, updateScene } from '../api.js'
 import { newScene } from './triggers/data.js'
-import { newEmtpyAction } from '@/views/iot/scene/modules/actions/data.js'
+import { newEmtpyAction } from '@/views/iot/rule/modules/actions/data.js'
 import Trigger from './triggers/TriggerIndex.vue'
 import Action from './actions/index.vue'
 import _ from 'lodash'

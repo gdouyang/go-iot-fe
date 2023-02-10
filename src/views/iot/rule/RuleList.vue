@@ -54,13 +54,13 @@
       </span>
     </PageTable>
 
-    <SceneAdd
+    <RuleAdd
       ref="modal"
       v-if="openModal"
       :data="currentData"
       @success="handleOk"
       @close="openModal = false"
-    ></SceneAdd>
+    ></RuleAdd>
 
   </a-card>
 </template>
@@ -68,12 +68,12 @@
 <script>
 import _ from 'lodash'
 import { get, remove, start, stop } from './api.js'
-import SceneAdd from './modules/SceneAdd.vue'
+import RuleAdd from './modules/RuleAdd.vue'
 
 export default {
   name: 'SceneList',
   components: {
-    SceneAdd
+    RuleAdd
   },
   data () {
     return {

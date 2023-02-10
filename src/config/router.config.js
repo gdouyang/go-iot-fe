@@ -45,9 +45,9 @@ export const asyncRouterMap = [
         meta: { title: '设备管理', keepAlive: true, icon: 'cluster', permission: [ 'device-mgr' ] }
       },
       {
-        path: '/iot/scene-list',
-        name: 'SceneList',
-        component: () => import('@/views/iot/scene/SceneList'),
+        path: '/iot/rule-list',
+        name: 'RuleList',
+        component: () => import('@/views/iot/rule/RuleList'),
         meta: { title: '规则引擎', keepAlive: true, icon: 'branches', permission: [ 'rule-mgr' ] }
       },
       {
