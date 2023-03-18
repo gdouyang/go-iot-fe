@@ -1,8 +1,13 @@
 import Vue from 'vue'
+// 分页查询
+export function page (param) {
+  return Vue.prototype.$http.post(`device/page`, param)
+}
+// 激活
 export function deploy (id) {
   return Vue.prototype.$http.post(`device/${id}/deploy`)
 }
-
+// 停用
 export function undeploy (id) {
   return Vue.prototype.$http.post(`device/${id}/undeploy`)
 }

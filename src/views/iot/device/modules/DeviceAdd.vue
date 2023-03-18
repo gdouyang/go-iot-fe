@@ -39,6 +39,26 @@
           <a-select-option v-for="p in productList" :key="p.id" :value="p.id">{{ p.name }}</a-select-option>
         </a-select>
       </a-form-model-item>
+      <a-form-model-item
+        label="设备类型"
+        prop="deviceType"
+        :rules="[{ required: true, message: '设备类型不能为空', trigger: 'blur' }]"
+      >
+        <a-select v-model="addObj.deviceType" :disabled="isEdit">
+          <a-select-option value="device">设备</a-select-option>
+          <a-select-option value="gateway">网关</a-select-option>
+          <a-select-option value="subdevice">子设备</a-select-option>
+        </a-select>
+      </a-form-model-item>
+      <a-form-model-item
+        label="网关"
+        prop="parentId"
+        v-if="addObj.deviceType == 'subdevice'"
+        :rules="[{ required: true, message: '网关不能为空', trigger: 'blur' }]"
+      >
+        <a-select v-model="addObj.parentId" :disabled="isEdit">
+        </a-select>
+      </a-form-model-item>
       <a-form-model-item label="说明" prop="desc">
         <a-input
           type="textarea"
@@ -53,12 +73,14 @@
 
 <script>
 import _ from 'lodash'
-import { get, getProductList, addDevice, updateDevice } from '@/views/iot/device/api.js'
+import { page, get, getProductList, addDevice, updateDevice } from '@/views/iot/device/api.js'
 const defaultAddObj = {
   id: null,
   name: '',
-  productId: undefined,
-  productName: undefined,
+  productId: null,
+  productName: null,
+  deviceType: 'device',
+  parentId: null,
   desc: ''
 }
 export default {
@@ -74,13 +96,18 @@ export default {
       },
       addObj: _.cloneDeep(defaultAddObj),
       isEdit: false,
-      productList: []
+      productList: [],
+      gatewayList: []
     }
   },
-  created () {},
+  created () {
+  },
   methods: {
     add () {
       this.isEdit = false
+      page({ pageNum: 1, pageSize: 400, condition: { deviceType: 'gateway' } }).then(res => {
+        this.gatewayList = res.result
+      })
       this.listAllProduct().then(() => {
         this.$refs.addModal.open({ title: '新增设备' })
       })
