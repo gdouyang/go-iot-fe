@@ -6,7 +6,6 @@
     <a-form-model
       ref="addFormRef"
       :model="addObj"
-      style="width: 90%"
       :labelCol="labelCol"
       :wrapperCol="wrapperCol"
     >
@@ -38,19 +37,20 @@
           :key="item.name"
           :label="item.title"
         >
-          <template v-if="['int','string','number','password'].indexOf(item.type) !== -1">
-            <a-input-password
-              v-if=" item.type === 'password'"
-              v-model="addObj.config[item.name]"/>
-            <a-input
-              v-else
-              :placeholder="item.desc"
-              v-model="addObj.config[item.name]"></a-input>
-          </template>
+          <a-input-password
+            v-if=" item.type === 'password'"
+            v-model="addObj.config[item.name]"/>
+          <a-input
+            v-else
+            :placeholder="item.desc"
+            v-model="addObj.config[item.name]"></a-input>
         </a-form-model-item>
       </template>
       <template v-if="addObj.type === 'email'">
         <Email :data="addObj" ref="email"/>
+      </template>
+      <template v-if="addObj.type === 'dingtalk'">
+        <Dingtalk :data="addObj" ref="dingtalk"/>
       </template>
     </a-form-model>
   </Dialog>
@@ -60,6 +60,7 @@
 import _ from 'lodash'
 import { get, addNotify, updateNotify, configTypes } from '@/views/notice/api.js'
 import Email from './Email.vue'
+import Dingtalk from './Dingtalk.vue'
 
 const defaultAddObj = {
   id: null,
@@ -71,7 +72,8 @@ const defaultAddObj = {
 export default {
   name: 'ConfigAdd',
   components: {
-    Email
+    Email,
+    Dingtalk
   },
   data () {
     return {
@@ -127,6 +129,9 @@ export default {
           const data = _.cloneDeep(this.addObj)
           if (data.type === 'email') {
             data.template = this.$refs.email.getTemplate()
+          }
+          if (data.type === 'dingtalk') {
+            data.template = this.$refs.dingtalk.getTemplate()
           }
           data.config = JSON.stringify(data.config)
           let promise = null
