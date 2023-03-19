@@ -62,7 +62,7 @@ import ConfigAdd from './modules/ConfigAdd'
 import NoticeHistory from './modules/NoticeHistory'
 // import encodeQueryParam from '@/utils/encodeParam.js'
 export default {
-  name: 'ProjectList',
+  name: 'NotifyConfigList',
   components: {
     ConfigAdd,
     NoticeHistory

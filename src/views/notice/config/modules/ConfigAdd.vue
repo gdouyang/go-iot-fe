@@ -36,6 +36,10 @@
           v-for="item in metadata"
           :key="item.name"
           :label="item.title"
+          :prop="'config.' + item.name"
+          :rules="[
+            { required: item.required === 'true', message: '请输入' + item.name }
+          ]"
         >
           <a-input-password
             v-if=" item.type === 'password'"

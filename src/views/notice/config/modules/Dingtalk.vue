@@ -47,7 +47,10 @@ export default {
   },
   created () {
     let str = this.data.template
-    if (_.isEmpty(str)) {
+    if (_.isObject(str)) {
+      str = JSON.stringify(str)
+    }
+    if (_.isNil(str) || _.isEmpty(str)) {
       str = '{"title":"", "text":""}'
     }
     const template = JSON.parse(str)
