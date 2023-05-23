@@ -91,7 +91,7 @@ function OnStateChecker(context) {
 | ResponseJSON | 发送json数据 | (data: string) | - |
 | ResponseHeader | 设置http响应头 | (key: string, value: string) | - |
 
-### 样例
+### 一个复杂的样例
 ```javascript
 // 检查在线状态
 function OnStateChecker(context) {

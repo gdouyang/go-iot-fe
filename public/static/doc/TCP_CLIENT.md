@@ -1,4 +1,6 @@
 ### OnConnect
+> 当连接是会调用OnConnect函数，在OnConnect函数中可以进行一些前置处理
+
 - context参数说明
 
 | 方法 | 说明 | 参数 | 返回值 |
@@ -15,6 +17,8 @@ function OnConnect(context) {
 ```
 
 ### OnMessage函数
+> 当有消息接收时会调用OnMessage函数
+
 - context参数说明
 
 | 方法 | 说明 | 参数 | 返回值 |
@@ -50,6 +54,7 @@ function OnMessage(context) {
 ```
 
 ### OnInvoke函数
+> 当有进行命令下发调用OnInvoke函数
 - context参数说明
 
 | 方法 | 说明 | 参数 | 返回值 |
