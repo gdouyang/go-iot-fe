@@ -15,6 +15,7 @@ import themePluginConfig from '../config/themePluginConfig'
 import { STable, DictSelect, iDialog } from './components'
 import _ from 'lodash'
 import moment from 'moment'
+import Doc from '@/views/doc/Doc.vue'
 
 // mock
 // WARNING: `mockjs` NOT SUPPORT `IE` PLEASE DO NOT USE IN `production` ENV.
@@ -39,6 +40,7 @@ Vue.component('s-table', STable)
 Vue.component('PageTable', STable)
 Vue.component('Dialog', iDialog)
 Vue.component('dict-select', DictSelect)
+Vue.component('Doc', Doc)
 
 window.umi_plugin_ant_themeVar = themePluginConfig.theme
 

@@ -1,5 +1,6 @@
 
 ### OnInvoke函数
+> 当有进行命令下发调用OnInvoke函数
 
 | 方法 | 说明 | 参数 | 返回值 |
 | --- | --- | ---- | ---- |
@@ -42,6 +43,7 @@
 
 ### 样例
 - 编解码
+
 ```javascript
 // 物模型 -> 设备报文
 function OnInvoke(context) {
@@ -54,10 +56,11 @@ function OnInvoke(context) {
   dv.setUint8(1, data[1]);
   var temp = dv.getInt16(0);
   console.log(temp);
-  context.SaveProperties({"Temperature": temp / 10})
+  context.SaveProperties({"Temperature": temp / 10});
 }
 ```
 - 物模型
+
 ```json
 {
   "events": [],

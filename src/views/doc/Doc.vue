@@ -18,7 +18,7 @@ export default {
     props: {
       type: {
         type: String,
-        default: () => 'TCP_SERVER'
+        default: () => ''
       }
     },
     data () {
@@ -30,9 +30,14 @@ export default {
       }
     },
     mounted () {
-      request.get(`/static/${this.type}.md`).then(resp => {
+      request.get(`/static/doc/${this.type}.md`).then(resp => {
         this.initialValue = resp.data
       })
     }
 }
 </script>
+<style lang="less" scoped>
+.markdown :deep(.markdown-preview) {
+  padding-top: 0px !important;
+}
+</style>

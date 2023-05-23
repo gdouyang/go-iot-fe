@@ -1,4 +1,5 @@
 ### OnStateChecker
+> OnStateChecker的作用是获取在线状态，由于http协议是无状态的，状态需要实时查询
 - context参数说明
 
 | 方法 | 说明 | 参数 | 返回值 |
@@ -8,7 +9,7 @@
 
 - 返回值 online, offline, unknown
 
-```
+```javascript
 function OnStateChecker(context) {
   var resp = context.HttpRequest({
     url: 'www.domain.com?deviceId='+context.GetDevice().GetId(),
@@ -40,6 +41,7 @@ function OnStateChecker(context) {
 | data | 响应数据 | string |
 
 ### OnMessage函数
+> 当有消息接收时会调用OnMessage函数
 - context参数说明
 
 | 方法 | 说明 | 参数 | 返回值 |

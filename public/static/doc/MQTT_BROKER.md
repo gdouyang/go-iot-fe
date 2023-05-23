@@ -1,4 +1,5 @@
 ### OnConnect函数
+> 当有客户端连接是会调用OnConnect函数，在OnConnect函数中可以对客户端进行账号密码的校验，默认情况下客户端的clientId将是设备id，当设置username与password时将校验是否与配置中的一致
 - context参数说明
 
 | 方法 | 说明 | 参数 | 返回值 |
@@ -24,6 +25,7 @@ function OnConnect(context) {
 }
 ```
 ### OnMessage函数
+> 当有消息接收时会调用OnMessage函数
 - context参数说明
 
 | 方法 | 说明 | 参数 | 返回值 |
@@ -61,6 +63,7 @@ function OnMessage(context) {
 ```
 
 ### OnInvoke函数
+> 当有进行命令下发调用OnInvoke函数
 - context参数说明
 
 | 方法 | 说明 | 参数 | 返回值 |

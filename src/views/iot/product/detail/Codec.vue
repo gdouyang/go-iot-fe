@@ -23,7 +23,7 @@
     </div>
 
     <a-drawer
-      title="说明"
+      :title="`脚本说明(${network.type})`"
       placement="right"
       width="750"
       @close="openDrawer = false"
@@ -43,7 +43,6 @@ import 'brace/ext/language_tools' // language extension prerequsite...
 import 'brace/ext/searchbox' // language extension prerequsite...
 import 'brace/mode/javascript'
 import 'brace/theme/chrome'
-import Doc from '@/views/doc/Doc.vue'
 // import 'brace/snippets/javascript'
 // import _ from 'lodash'
 import TcpTpl from './codec/TcpTpl.js'
@@ -65,8 +64,7 @@ export default {
     }
   },
   components: {
-    AceEditor,
-    Doc
+    AceEditor
   },
   data () {
     return {

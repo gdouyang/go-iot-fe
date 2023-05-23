@@ -109,7 +109,6 @@
 import AceEditor from 'vue2-ace-editor'
 import 'brace/mode/javascript'
 import 'brace/theme/chrome'
-import Doc from '@/views/doc/Doc.vue'
 // import moment from 'moment'
 import _ from 'lodash'
 import { defaultTcpAddObj } from './entity.js'
@@ -121,8 +120,7 @@ export default {
   },
   mixins: [ Base ],
   components: {
-    AceEditor,
-    Doc
+    AceEditor
   },
   data () {
     return {
