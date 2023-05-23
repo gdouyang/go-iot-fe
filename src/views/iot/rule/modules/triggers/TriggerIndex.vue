@@ -50,7 +50,7 @@
           </a-col>
           <a-col :span="24">
             <div class="device-box">
-              <a-tag color="blue" v-for="devId in scene.deviceIds" :key="devId">
+              <a-tag color="blue" v-for="devId in scene.deviceIds" :key="devId" closable @close="removeDevice(devId)">
                 {{ devId }}
               </a-tag>
             </div>
@@ -154,7 +154,7 @@
         </a-col>
       </a-row>
     </a-card>
-    <DeviceSelect @select="select" :productId="scene.productId" ref="DeviceSelect"/>
+    <DeviceSelect @select="doSelectDevice" :productId="scene.productId" ref="DeviceSelect"/>
   </div>
 </template>
 
@@ -291,12 +291,6 @@ export default {
         })
       }
     },
-    selectDevice () {
-      this.$refs.DeviceSelect.open()
-    },
-    select (item) {
-      this.findDevice(item.id)
-    },
     listAllProduct () {
       return getProductList().then((resp) => {
         if (resp.success) {
@@ -325,21 +319,29 @@ export default {
         }
       })
     },
-    findDevice (deviceId) {
+    selectDevice () {
+      this.$refs.DeviceSelect.open()
+    },
+    doSelectDevice (item) {
+      const deviceId = item.id
       getDetail(deviceId).then((data) => {
-        if (data.success) {
+        if (data.success && !_.find(this.scene.deviceIds, id => id === deviceId)) {
           this.scene.deviceIds.push(data.result.id)
         }
       })
+    },
+    removeDevice (deviceId) {
+      this.scene.deviceIds = _.filter(this.scene.deviceIds, id => id !== deviceId)
     }
   }
 }
 </script>
 <style lang="less" scoped>
 .device-box {
-  border: 1px solid;
+  border: 1px solid #d9d9d9;
   height: 90px;
   overflow: auto;
   padding: 5px;
+  margin: 8px 0px;
 }
 </style>
