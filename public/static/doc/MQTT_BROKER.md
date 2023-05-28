@@ -104,6 +104,27 @@ function OnInvoke(context) {
 | PublishHex | 将16进制文本数据转换成byte发送 | (topic: string, data: string) | - |
 
 ### 样例
+```json
+{
+  "events": [],
+  "properties": [
+    {
+      "id": "temperature",
+      "name": "温度",
+      "expands": {
+        "readOnly": null
+      },
+      "description": null,
+      "valueType": {
+        "scale": 2,
+        "unit": null,
+        "type": "float"
+      }
+    }
+  ],
+  "functions": []
+}
+```
 ```javascript
 function OnMessage(context) {
   console.log("OnMessage: " + context.MsgToString())

@@ -92,8 +92,7 @@ function OnInvoke(context) {
       "inputs": [],
       "async": true
     }
-  ],
-  "tags": []
+  ]
 }
 ```
 

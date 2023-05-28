@@ -76,7 +76,7 @@ import { get, addProduct, updateProduct } from '@/views/iot/product/api.js'
 const defaultAddObj = {
   id: null,
   name: '',
-  metadata: { events: [], properties: [], functions: [], tags: [] },
+  metadata: { events: [], properties: [], functions: [] },
   desc: '',
   networkType: ''
 }

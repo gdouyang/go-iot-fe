@@ -227,6 +227,9 @@ export default {
             pageSize: (pagination && pagination.pageSize) || this.localPagination.pageSize
           }) || false
           // 为防止删除数据后导致页面当前页面数据长度为 0 ,自动翻页到上一页
+          if (r.list == null) {
+            r.list = []
+          }
           if (r.list.length === 0 && this.showPagination && this.localPagination.current > 1) {
             this.localPagination.current--
             this.loadData()

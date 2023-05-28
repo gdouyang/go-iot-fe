@@ -86,7 +86,6 @@ export default {
       properties: [],
       functions: [],
       events: [],
-      tags: [],
       units: []
     }
   },
@@ -150,18 +149,15 @@ export default {
       const events = this.events
       const properties = this.properties
       const functions = this.functions
-      const tags = this.tags
-      let metadata = { events, properties, functions, tags }
+      let metadata = { events, properties, functions }
       if (type === 'event') {
-        metadata = { events: item, properties, functions, tags }
+        metadata = { events: item, properties, functions }
       } else if (type === 'properties') {
-        metadata = { events, properties: item, functions, tags }
+        metadata = { events, properties: item, functions }
       } else if (type === 'function') {
-        metadata = { events, properties, functions: item, tags }
-      } else if (type === 'tags') {
-        metadata = { events, properties, functions, tags: item }
+        metadata = { events, properties, functions: item }
       } else if (type === 'all') {
-        metadata = { events: item.events, properties: item.properties, functions: item.functions, tags: item.tags }
+        metadata = { events: item.events, properties: item.properties, functions: item.functions }
       }
       const basicInfo = this.detailData
       const data = { metadata: JSON.stringify(metadata) }
