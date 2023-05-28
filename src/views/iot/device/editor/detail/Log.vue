@@ -9,8 +9,9 @@
                 <a-select mode="multiple" v-model="searchParams.type$IN">
                   <a-select-option
                     v-for="(item, index) in SelectOptions"
-                    :value="item.id"
-                    :key="'SelectOptions'+index">{{ item.name }}
+                    :key="index"
+                    :value="item.id">
+                    {{ item.name }}
                   </a-select-option>
                 </a-select>
               </a-form-item>
@@ -79,10 +80,8 @@
           title: '类型'
         },
         {
-          dataIndex: 'timestamp',
-          title: '时间',
-          defaultSortOrder: 'descend',
-          customRender: text => moment(text).format('YYYY-MM-DD HH:mm:ss')
+          dataIndex: 'createTime',
+          title: '时间'
         },
         {
           dataIndex: 'content',
