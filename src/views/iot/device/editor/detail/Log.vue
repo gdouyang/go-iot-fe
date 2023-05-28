@@ -169,7 +169,7 @@
       },
       resetSearch () {
         this.searchParams = {
-          type$IN: null,
+          type$IN: [],
           createTime$BTW: null
         }
         this.search(this.searchParams)
