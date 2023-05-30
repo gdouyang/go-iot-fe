@@ -6,7 +6,7 @@
           <a-row :gutter="{ md: 8, lg: 4, xl: 48 }">
             <a-col :md="8" :sm="24">
               <a-form-item label="日志类型">
-                <a-select mode="multiple" v-model="searchParams.type$IN">
+                <a-select mode="multiple" v-model="searchParams.type">
                   <a-select-option
                     v-for="(item, index) in SelectOptions"
                     :key="index"
@@ -19,11 +19,11 @@
             <a-col :md="10" :sm="24">
               <a-form-item label="日期">
                 <a-range-picker
-                  v-model="searchParams.createTime$BTW"
+                  v-model="searchParams.createTime"
                   :show-time="{ format: 'HH:mm' }"
                   :format="'YYYY-MM-DD HH:mm'"
                   :placeholder="['开始时间', '结束时间']"
-                  @change="(date) => searchParams.createTime$BTW = date"
+                  @change="(date) => searchParams.createTime = date"
                 />
               </a-form-item>
             </a-col>
@@ -64,6 +64,7 @@
 </template>
 
 <script>
+  import _ from 'lodash'
   import moment from 'moment'
   export default {
     name: 'DeviceLog',
@@ -135,8 +136,8 @@
         ],
         columns,
         searchParams: {
-          type$IN: [],
-          createTime$BTW: []
+          type: [],
+          createTime: []
         }
       }
     },
@@ -150,13 +151,13 @@
       },
       onSearch () {
         // eslint-disable-next-line no-shadow
-        const params = { ...this.searchParams }
-        if (params.createTime$BTW) {
-          const formatDate = params.createTime$BTW.map((e) => moment(e).format('YYYY-MM-DD HH:mm:ss'))
-          params.createTime$BTW = formatDate.join(',')
+        const params = []
+        if (!_.isEmpty(this.searchParams.createTime)) {
+          const formatDate = this.searchParams.createTime.map((e) => moment(e).format('YYYY-MM-DD HH:mm:ss'))
+          params.push({ key: 'createTime', oper: 'BTW', value: formatDate.join(',') })
         }
-        if (params.type$IN) {
-          params.type$IN = params.type$IN.join(',')
+        if (!_.isEmpty(this.searchParams.type)) {
+          params.push({ key: 'type', oper: 'IN', value: this.searchParams.type })
         }
         this.search(params)
       },
@@ -169,8 +170,8 @@
       },
       resetSearch () {
         this.searchParams = {
-          type$IN: [],
-          createTime$BTW: null
+          type: [],
+          createTime: null
         }
         this.search(this.searchParams)
       }
