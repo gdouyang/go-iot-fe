@@ -1,4 +1,6 @@
 import Vue from 'vue'
+
+export const tableUrl = 'product/page'
 /**
  * deploy product
  * @param {*} id

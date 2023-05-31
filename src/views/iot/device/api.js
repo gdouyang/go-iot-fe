@@ -1,4 +1,7 @@
 import Vue from 'vue'
+
+export const pageUrl = 'device/page'
+
 // 分页查询
 export function page (param) {
   return Vue.prototype.$http.post(`device/page`, param)
@@ -62,6 +65,10 @@ export function updateLocation (params) {
 
 export function queryProperty (deviceId, data) {
   return Vue.prototype.$http.post(`/device/propertys/${deviceId}/query`, data)
+}
+
+export function getDeviceLogsUrl (deviceId) {
+  return `/device/propertys/${deviceId}/query`
 }
 
 // export function getEvent (deviceId, itemId) {

@@ -67,32 +67,12 @@ export default {
       queryParam: {},
       // 表头
       columns: [
-        {
-          title: 'ID',
-          dataIndex: 'id'
-        },
-        {
-          title: '账号',
-          dataIndex: 'username'
-        },
-        {
-          title: '名称',
-          dataIndex: 'nickname'
-        },
-        {
-          title: '状态',
-          dataIndex: 'enableFlag',
-          scopedSlots: { customRender: 'enableFlag' }
-        },
-        {
-          title: '创建时间',
-          dataIndex: 'createTime'
-        }, {
-          title: '操作',
-          width: '150px',
-          dataIndex: 'action',
-          scopedSlots: { customRender: 'action' }
-        }
+        { title: 'ID', dataIndex: 'id' },
+        { title: '账号', dataIndex: 'username' },
+        { title: '名称', dataIndex: 'nickname' },
+        { title: '状态', dataIndex: 'enableFlag', scopedSlots: { customRender: 'enableFlag' } },
+        { title: '创建时间', dataIndex: 'createTime' },
+        { title: '操作', width: '150px', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
       ]
     }
   },

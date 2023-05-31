@@ -30,7 +30,7 @@
           <a-button icon="link" @click="batchDeploy">批量激活</a-button>
           <a-button icon="disconnect" @click="batchUndeploy">批量停用</a-button>
         </div>
-        <PageTable ref="tb" url="device/page" :columns="columns" rowKey="id" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }">
+        <PageTable ref="tb" :url="tableUrl" :columns="columns" rowKey="id" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }">
           <span slot="state" slot-scope="text, record">
             <a-badge status="success" :text="record.state" v-if="record.state == 'online'" />
             <a-badge status="default" :text="record.state" v-else-if="record.state == 'offline'" />
@@ -78,7 +78,7 @@
 
 <script>
 import _ from 'lodash'
-import { remove, undeploy, deploy, batchDeploy, batchUndeploy } from '@/views/iot/device/api.js'
+import { pageUrl, remove, undeploy, deploy, batchDeploy, batchUndeploy } from '@/views/iot/device/api.js'
 import DeviceAdd from './modules/DeviceAdd.vue'
 import DeviceImport from './modules/DeviceImport.vue'
 import DeviceDetail from './editor/Index.vue'
@@ -95,6 +95,7 @@ export default {
   },
   data () {
     return {
+      tableUrl: pageUrl,
       searchObj: _.cloneDeep(defautSearchObj),
       columns: [
         { title: '设备ID', dataIndex: 'id' },

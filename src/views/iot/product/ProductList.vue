@@ -22,7 +22,7 @@
         <div class="table-operator">
           <a-button type="primary" icon="plus" @click="add">新建</a-button>
         </div>
-        <PageTable ref="tb" url="product/page" :columns="columns" rowKey="id">
+        <PageTable ref="tb" :url="tableUrl" :columns="columns" rowKey="id">
           <span slot="deviceType" slot-scope="text">
             {{ text.text }}
           </span>
@@ -50,7 +50,7 @@
 <script>
 import _ from 'lodash'
 // import moment from 'moment'
-import { deploy, undeploy, remove } from '@/views/iot/product/api.js'
+import { tableUrl, deploy, undeploy, remove } from '@/views/iot/product/api.js'
 import ProductAdd from './modules/ProductAdd.vue'
 import Detail from './DetailIndex.vue'
 
@@ -65,6 +65,7 @@ export default {
   },
   data () {
     return {
+      tableUrl: tableUrl,
       searchObj: _.cloneDeep(defautSearchObj),
       columns: [
         { title: '产品ID', dataIndex: 'id' },
