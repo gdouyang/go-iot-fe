@@ -91,7 +91,11 @@ export default {
   },
   methods: {
     search () {
-      this.$refs.tb.search(this.searchObj)
+      const condition = []
+      if (this.searchObj.name) {
+        condition.push({ key: 'name', value: this.searchObj.name, oper: 'LIKE' })
+      }
+      this.$refs.tb.search(condition)
     },
     resetSearch () {
       this.searchObj = _.cloneDeep(defautSearchObj)

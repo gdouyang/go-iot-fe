@@ -105,7 +105,7 @@ export default {
   methods: {
     add () {
       this.isEdit = false
-      page({ pageNum: 1, pageSize: 400, condition: { deviceType: 'gateway' } }).then(res => {
+      page({ pageNum: 1, pageSize: 400, condition: [{ key: 'deviceType', value: 'gateway' }] }).then(res => {
         this.gatewayList = res.result
       })
       this.listAllProduct().then(() => {

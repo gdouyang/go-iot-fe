@@ -85,12 +85,7 @@ export default {
         { title: '名称', dataIndex: 'name' },
         { title: '创建时间', dataIndex: 'createTime', minWidth: 110 },
         { title: '状态', dataIndex: 'state', scopedSlots: { customRender: 'state' } },
-        {
-          title: '操作',
-          minWidth: 110,
-          dataIndex: 'action',
-          scopedSlots: { customRender: 'action' }
-        }
+        { title: '操作', minWidth: 110, dataIndex: 'action', scopedSlots: { customRender: 'action' } }
       ],
       openModal: false,
       currentData: {}
@@ -101,7 +96,11 @@ export default {
   },
   methods: {
     search () {
-      this.$refs.tb.search(this.queryParam)
+      const condition = []
+      if (this.queryParam.name) {
+        condition.push({ key: 'name', value: this.queryParam.name, oper: 'LIKE' })
+      }
+      this.$refs.tb.search(condition)
     },
     resetSearch () {
       this.queryParam = {}

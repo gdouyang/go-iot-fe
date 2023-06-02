@@ -86,8 +86,14 @@ export default {
   },
   methods: {
     search () {
-      this.queryParam.isTenant = this.showTanent
-      this.$refs.table.search(this.queryParam)
+      const condition = []
+      if (this.queryParam.username) {
+        condition.push({ key: 'username', value: this.queryParam.username, oper: 'LIKE' })
+      }
+      if (this.queryParam.nickname) {
+        condition.push({ key: 'nickname', value: this.queryParam.nickname, oper: 'LIKE' })
+      }
+      this.$refs.table.search(condition)
     },
     resetSearch () {
       this.queryParam = {}

@@ -88,7 +88,11 @@ export default {
   },
   methods: {
     search () {
-      this.$refs.tb.search(this.queryParam)
+      const condition = []
+      if (this.queryParam.name) {
+        condition.push({ key: 'name', value: this.queryParam.username, oper: 'LIKE' })
+      }
+      this.$refs.tb.search(condition)
     },
     resetSearch () {
       this.queryParam = {}

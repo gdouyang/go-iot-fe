@@ -97,7 +97,14 @@ export default {
   },
   methods: {
     search () {
-      this.findAlarmLog()
+      const condition = []
+      if (this.searchObj.deviceId) {
+        condition.push({ key: 'deviceId', value: this.searchObj.deviceId, oper: 'LIKE' })
+      }
+      if (this.searchObj.productId) {
+        condition.push({ key: 'productId', value: this.searchObj.productId, oper: 'LIKE' })
+      }
+      this.$refs.tb.search(condition)
     },
     resetSearch () {
       this.searchObj.deviceId = undefined
@@ -135,9 +142,6 @@ export default {
       this.currentLog.description = null
       this.$refs.dialog.open()
     },
-    findAlarmLog () {
-      this.$refs.tb.search(this.searchObj)
-    },
     submitData () {
       this.$refs.form.validate((valid) => {
         if (valid) {
@@ -145,7 +149,7 @@ export default {
           solveAlarmLog(id, this.currentLog).then((response) => {
             if (response.success) {
               this.$message.success('保存成功')
-              this.findAlarmLog()
+              this.search()
               this.$refs.dialog.close()
             }
           })

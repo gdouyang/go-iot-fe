@@ -63,10 +63,14 @@ export default {
   },
   methods: {
     search () {
+      const condition = []
       if (this.queryParam.port) {
-        this.queryParam.port = parseInt(this.queryParam.port)
+        condition.push({ key: 'port', value: this.queryParam.port })
       }
-      this.$refs.table.search(this.queryParam)
+      if (this.queryParam.name) {
+        condition.push({ key: 'name', value: this.queryParam.name, oper: 'LIKE' })
+      }
+      this.$refs.table.search(condition)
     },
     resetSearch () {
       this.queryParam = {}

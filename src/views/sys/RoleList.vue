@@ -66,7 +66,11 @@ export default {
   },
   methods: {
     search () {
-      this.$refs.table.search(this.queryParam)
+      const condition = []
+      if (this.queryParam.name) {
+        condition.push({ key: 'name', value: this.queryParam.name, oper: 'LIKE' })
+      }
+      this.$refs.table.search(condition)
     },
     resetSearch () {
       this.queryParam = {}
