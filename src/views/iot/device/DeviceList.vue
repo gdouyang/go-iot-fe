@@ -5,17 +5,26 @@
         <div class="table-page-search-wrapper">
           <a-form layout="inline">
             <a-row :gutter="48">
-              <a-col :md="8" :sm="24">
+              <a-col :md="6" :sm="24">
                 <a-form-item label="设备ID">
                   <a-input v-model="searchObj.id" placeholder="请输入"/>
                 </a-form-item>
               </a-col>
-              <a-col :md="8" :sm="24">
+              <a-col :md="6" :sm="24">
                 <a-form-item label="名称">
                   <a-input v-model="searchObj.name" placeholder="请输入"/>
                 </a-form-item>
               </a-col>
-              <a-col :md="8" :sm="24">
+              <a-col :md="6" :sm="24">
+                <a-form-item label="状态">
+                  <a-select v-model="searchObj.state">
+                    <a-select-option value="noActive">未激活</a-select-option>
+                    <a-select-option value="offline">离线</a-select-option>
+                    <a-select-option value="online">在线</a-select-option>
+                  </a-select>
+                </a-form-item>
+              </a-col>
+              <a-col :md="6" :sm="24">
                 <span class="table-page-search-submitButtons">
                   <a-button type="primary" @click="search">查询</a-button>
                   <a-button style="margin-left: 8px" @click="resetSearch">重置</a-button>
@@ -90,8 +99,6 @@ import DeviceImport from './modules/DeviceImport.vue'
 import DeviceDetail from './editor/Index.vue'
 
 const defautSearchObj = {
-  username: '',
-  name: ''
 }
 export default {
   components: {
@@ -138,6 +145,9 @@ export default {
       }
       if (this.searchObj.name) {
         condition.push({ key: 'name', value: this.searchObj.name, oper: 'LIKE' })
+      }
+      if (this.searchObj.state) {
+        condition.push({ key: 'state', value: this.searchObj.state })
       }
       this.$refs.tb.search(condition)
     },

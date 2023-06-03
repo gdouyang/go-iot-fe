@@ -5,12 +5,25 @@
         <div class="table-page-search-wrapper">
           <a-form layout="inline">
             <a-row :gutter="48">
-              <a-col :md="8" :sm="24">
+              <a-col :md="6" :sm="24">
+                <a-form-item label="产品ID">
+                  <a-input v-model="searchObj.id" placeholder="请输入"/>
+                </a-form-item>
+              </a-col>
+              <a-col :md="6" :sm="24">
                 <a-form-item label="名称">
                   <a-input v-model="searchObj.name" placeholder="请输入"/>
                 </a-form-item>
               </a-col>
-              <a-col :md="8" :sm="24">
+              <a-col :md="6" :sm="24">
+                <a-form-item label="状态">
+                  <a-select v-model="searchObj.state">
+                    <a-select-option value="true">发布</a-select-option>
+                    <a-select-option value="false">停用</a-select-option>
+                  </a-select>
+                </a-form-item>
+              </a-col>
+              <a-col :md="6" :sm="24">
                 <span class="table-page-search-submitButtons">
                   <a-button type="primary" @click="search">查询</a-button>
                   <a-button style="margin-left: 8px" @click="resetSearch">重置</a-button>
@@ -78,7 +91,8 @@ export default {
         { title: '名称', dataIndex: 'name' },
         { title: '状态', dataIndex: 'state', scopedSlots: { customRender: 'state' } },
         // { title: '设备类型', dataIndex: 'deviceType', scopedSlots: { customRender: 'deviceType' } },
-        // { title: '创建时间', customRender: text => moment(text).format('YYYY-MM-DD HH:mm:ss') },
+        { title: '创建时间', dataIndex: 'createTime' },
+        { title: '说明', dataIndex: 'desc' },
         // { title: '修改时间', dataIndex: 'modifyTime' },
         { title: '操作', dataIndex: 'action', minWidth: 110, scopedSlots: { customRender: 'action' } }
       ],
@@ -98,8 +112,14 @@ export default {
   methods: {
     search () {
       const condition = []
+      if (this.searchObj.id) {
+        condition.push({ key: 'id', value: this.searchObj.id, oper: 'LIKE' })
+      }
       if (this.searchObj.name) {
         condition.push({ key: 'name', value: this.searchObj.name, oper: 'LIKE' })
+      }
+      if (this.searchObj.state) {
+        condition.push({ key: 'state', value: this.searchObj.state })
       }
       this.$refs.tb.search(condition)
     },
