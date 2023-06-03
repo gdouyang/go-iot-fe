@@ -124,7 +124,19 @@ export default {
     this.localPagination = ['auto', true].includes(this.showPagination) && Object.assign({}, this.localPagination, {
       current: localPageNum,
       pageSize: this.pageSize,
-      showSizeChanger: this.showSizeChanger
+      showSizeChanger: this.showSizeChanger,
+      showTotal: function (total, range) {
+        // [${range[0]}-${range[1]}]
+        return `页码: ${this.stateCurrent} 总数: ${total}`
+      },
+      itemRender: (current, type, originalElement) => {
+        if (type === 'prev') {
+          return <a>上一页</a>
+        } else if (type === 'next') {
+          return <a>下一页</a>
+        }
+        return originalElement
+      }
     }) || false
     this.needTotalList = this.initTotalList(this.columns)
     if (this.data) {
@@ -149,6 +161,11 @@ export default {
         pageNum: this.localPagination.current,
         pageSize: this.localPagination.pageSize,
         condition: params
+      }
+      if (parameter.pageNum === 1) {
+        parameter.searchAfter = null
+      } else if (this.searchAfter) {
+        parameter.searchAfter = this.searchAfter
       }
       if (paramCallback) {
         this.search_paramCallback = paramCallback
@@ -178,6 +195,14 @@ export default {
       if (this.url) {
         if (pagination) {
           if (pagination.current) {
+            if (pagination.current < this.localPagination.current) {
+              this.searchAfterList = this.$_.dropRight(this.searchAfterList, pagination.current)
+              this.searchAfter = this.$_.last(this.searchAfterList)
+            }
+            if (pagination.current === 1) {
+              this.searchAfterList = []
+              this.searchAfter = null
+            }
             this.localPagination.current = pagination.current
             this.$emit('update:pageNum', pagination.current)
           }
@@ -220,6 +245,13 @@ export default {
               r = newR
             }
           }
+          if (!this.searchAfterList) {
+            this.searchAfterList = []
+          }
+          if (r.searchAfter && !this.$_.isEmpty(r.searchAfter)) {
+            this.searchAfterList.push(r.searchAfter)
+            this.searchAfter = r.searchAfter
+          }
           this.localPagination = this.showPagination && Object.assign({}, this.localPagination, {
             current: r.pageNum, // 返回结果中的当前分页数
             total: r.totalCount, // 返回结果中的总记录数
@@ -238,13 +270,13 @@ export default {
 
           // 这里用于判断接口是否有返回 r.totalCount 且 this.showPagination = true 且 pageNum 和 pageSize 存在 且 totalCount 小于等于 pageNum * pageSize 的大小
           // 当情况满足时，表示数据不满足分页大小，关闭 table 分页功能
-          try {
-            if ((['auto', true].includes(this.showPagination) && r.totalCount <= (r.pageNum * this.localPagination.pageSize))) {
-              this.localPagination.hideOnSinglePage = true
-            }
-          } catch (e) {
-            this.localPagination = false
-          }
+          // try {
+          //   if ((['auto', true].includes(this.showPagination) && r.totalCount <= (r.pageNum * this.localPagination.pageSize))) {
+          //     this.localPagination.hideOnSinglePage = true
+          //   }
+          // } catch (e) {
+          //   this.localPagination = false
+          // }
           this.localDataSource = r.list // 返回结果中的数组数据
           this.localLoading = false
         })
