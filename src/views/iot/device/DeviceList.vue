@@ -48,7 +48,13 @@
             <a size="small" @click="edit(record)">修改</a>
             <a-divider type="vertical" />
             <a size="small" @click="deploy(record.id)" v-if="record.state === 'noActive'">激活</a>
-            <a size="small" @click="unDeploy(record.id)" v-else>停用</a>
+            <a-popconfirm
+              v-else
+              title="确认停用？"
+              @confirm="unDeploy(record.id)"
+            >
+              <a>停用</a>
+            </a-popconfirm>
             <template v-if="record.state === 'noActive'">
               <a-divider type="vertical" />
               <a size="small" @click="remove(record)">删除</a>

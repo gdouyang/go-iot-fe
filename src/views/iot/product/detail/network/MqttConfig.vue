@@ -26,6 +26,10 @@ export default {
     productId: {
       type: String,
       default: null
+    },
+    network: {
+      type: Object,
+      default: () => null
     }
   },
   mixins: [ Base ],
@@ -38,7 +42,11 @@ export default {
     }
   },
   created () {
-    this.getData()
+    if (!this.network) {
+      this.getData()
+    } else {
+      this.data = this.$_.cloneDeep(this.network)
+    }
   },
   computed: {
   },

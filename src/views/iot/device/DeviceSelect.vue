@@ -13,7 +13,7 @@
           <a-row :gutter="48">
             <a-col :md="8" :sm="24">
               <a-form-item label="编号">
-                <a-input v-model="searchObj.code" placeholder="请输入"/>
+                <a-input v-model="searchObj.id" placeholder="请输入"/>
               </a-form-item>
             </a-col>
             <a-col :md="8" :sm="24">
@@ -74,8 +74,15 @@ export default {
   },
   methods: {
     search () {
-      this.searchObj.productId = this.productId
-      this.$refs.tb.search(this.searchObj)
+      const condition = []
+      if (this.searchObj.id) {
+        condition.push({ key: 'id', value: this.searchObj.id, oper: 'LIKE' })
+      }
+      if (this.searchObj.name) {
+        condition.push({ key: 'name', value: this.searchObj.name, oper: 'LIKE' })
+      }
+      condition.push({ key: 'productId', value: this.productId })
+      this.$refs.tb.search(condition)
     },
     resetSearch () {
       this.searchObj = _.cloneDeep(defautSearchObj)

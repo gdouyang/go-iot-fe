@@ -8,7 +8,7 @@
               <a-form-item label="日志类型">
                 <a-select mode="multiple" v-model="searchParams.type">
                   <a-select-option
-                    v-for="(item, index) in SelectOptions"
+                    v-for="(item, index) in selectOptions"
                     :key="index"
                     :value="item.id">
                     {{ item.name }}
@@ -55,8 +55,6 @@
         :columns="columns"
         :url="tableUrl"
         method="post"
-        :resultProcess="tableResultProcess"
-        rowKey="id"
       >
         <span slot="action" slot-scope="text">
           <a size="small" @click="showDetail(text)">查看</a>
@@ -79,20 +77,9 @@ export default {
     }
   },
   data () {
-    const columns = [
-      { dataIndex: 'type', title: '类型' },
-      { dataIndex: 'createTime', title: '时间' },
-      { dataIndex: 'content', title: '内容', ellipsis: true },
-      {
-        title: '操作',
-        width: '100px',
-        align: 'center',
-        scopedSlots: { customRender: 'content' }
-      }
-    ]
     return {
       tableUrl: '',
-      SelectOptions: [
+      selectOptions: [
         // { id: 'event', name: '事件上报' },
         // { id: 'readProperty', name: '属性读取' },
         // { id: 'writeProperty', name: '属性修改' },
@@ -103,22 +90,25 @@ export default {
         { id: 'online', name: '上线' }
         // { id: 'other', name: '其它' }
       ],
-      columns,
+      columns: [
+        { dataIndex: 'type', title: '类型', width: '120px' },
+        { dataIndex: 'createTime', title: '时间', width: '300px' },
+        { dataIndex: 'content', title: '内容', ellipsis: true },
+        { title: '操作', width: '200px', align: 'center', scopedSlots: { customRender: 'action' } }
+      ],
       searchParams: {
         type: [],
         createTime: []
       }
     }
   },
-  mounted () {
+  created () {
     this.tableUrl = getDeviceLogsUrl(this.deviceId)
+  },
+  mounted () {
     this.onSearch()
   },
   methods: {
-    tableResultProcess (result) {
-      // result.pageNum = result.pageIndex + 1
-      // result.list = result.data
-    },
     onSearch () {
       // eslint-disable-next-line no-shadow
       const params = []
@@ -145,15 +135,17 @@ export default {
       }
       this.search(this.searchParams)
     },
-    showDetail (content) {
+    showDetail (record) {
+      let content = null
       try {
-        content = JSON.stringify(JSON.parse(content), null, 2)
+        content = JSON.stringify(JSON.parse(record.content), null, 2)
       } catch (error) {
+        content = record.content
       }
       this.$confirm({
         width: '50VW',
         title: '详细信息',
-        content: `<pre>${content}</pre>`,
+        content: (<pre>{ content }</pre>),
         okText: '确定',
         cancelText: '关闭'
       })

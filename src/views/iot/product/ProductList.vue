@@ -32,7 +32,13 @@
           <span slot="action" slot-scope="text, record">
             <a size="small" @click="detail(record.id)">查看</a>
             <a-divider type="vertical" />
-            <a size="small" @click="unDeploy(record.id)" v-if="record.state">停用</a>
+            <a-popconfirm
+              v-if="record.state"
+              title="确认停用？"
+              @confirm="unDeploy(record.id)"
+            >
+              <a>停用</a>
+            </a-popconfirm>
             <a size="small" @click="deploy(record.id)" v-else>发布</a>
             <template v-if="!record.state">
               <a-divider type="vertical" />

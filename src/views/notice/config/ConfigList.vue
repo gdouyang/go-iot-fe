@@ -27,8 +27,13 @@
         <a @click="handleEdit(record)">编辑</a>
         <a-divider type="vertical" />
         <a @click="remove(record)">删除</a>
-        <!-- <a-divider type="vertical" /> -->
-        <!-- <a @click="showHistory(record)">通知记录</a> -->
+        <a-divider type="vertical" />
+        <a-popconfirm
+          title="确认复制？"
+          @confirm="copy(record)"
+        >
+          <a>复制</a>
+        </a-popconfirm>
         <a-divider type="vertical"/>
         <span v-if="record.state !== 'stopped'">
           <a-popconfirm
@@ -57,7 +62,7 @@
 
 <script>
 // import _ from 'lodash'
-import { remove, start, stop } from '@/views/notice/api.js'
+import { remove, start, stop, copyNotify } from '@/views/notice/api.js'
 import ConfigAdd from './modules/ConfigAdd'
 import NoticeHistory from './modules/NoticeHistory'
 // import encodeQueryParam from '@/utils/encodeParam.js'
@@ -120,6 +125,14 @@ export default {
               _this.handleOk()
             }
           })
+        }
+      })
+    },
+    copy (row) {
+      copyNotify(row.id).then(data => {
+        if (data.success) {
+          this.$message.success('操作成功')
+          this.handleOk()
         }
       })
     },

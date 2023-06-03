@@ -24,6 +24,10 @@ export function updateNotify (id, data) {
   return Vue.prototype.$http.put(`/notifier/config/${id}`, data)
 }
 
+export function copyNotify (id) {
+  return Vue.prototype.$http.post(`/notifier/config/${id}/copy`)
+}
+
 export function configTypes () {
   return Vue.prototype.$http.get(`/notifier/config/types`)
   .then(res => {

@@ -44,14 +44,14 @@
     >
       <a-form-model ref="form" :model="currentLog" :labelCol="{span: 3}" :wrapperCol="{span: 21}">
         <a-form-model-item
-          prop="description"
+          prop="desc"
           label="处理结果"
           :rules="[
             {required: true, message: '请输入处理结果'},
             {max: 2000, message: '处理结果不超过2000个字符'}
           ]"
         >
-          <a-textarea :rows="8" v-model="currentLog.description" placeholder="请输入处理结果"/>
+          <a-textarea :rows="8" v-model="currentLog.desc" placeholder="请输入处理结果"/>
         </a-form-model-item>
       </a-form-model>
     </Dialog>
@@ -71,7 +71,7 @@ export default {
   },
   created () {
     this.$nextTick(() => {
-      this.findAlarmLog()
+      this.search()
     })
   },
   data () {
@@ -91,7 +91,7 @@ export default {
       alarmLogId: null,
       currentLog: {
         id: null,
-        description: null
+        desc: null
       }
     }
   },
@@ -122,16 +122,17 @@ export default {
         width: '40VW',
         title: '告警数据',
         content: (
-          <pre>{content}
-          {record.state === 'solve' && (
-            <div>
-              <br/><br/>
-              <span style="font-size: 16px;">处理结果：</span>
-              <br/>
-              <p>{record.description}</p>
-            </div>
-          )}
-          </pre>
+          <div>
+            <pre style="padding: 5px; background-color: #efefef;">{ content }</pre>
+            {record.state === 'solve' && (
+              <div>
+                <br/><br/>
+                <span style="font-size: 16px;">处理结果：</span>
+                <br/>
+                <p style="padding: 5px; background-color: #efefef;">{record.desc}</p>
+              </div>
+            )}
+          </div>
         ),
         okText: '确定',
         cancelText: '关闭'
@@ -139,7 +140,7 @@ export default {
     },
     edit (record) {
       this.currentLog.id = record.id
-      this.currentLog.description = null
+      this.currentLog.desc = null
       this.$refs.dialog.open()
     },
     submitData () {
