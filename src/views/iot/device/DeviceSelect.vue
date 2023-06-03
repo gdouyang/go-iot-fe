@@ -30,7 +30,7 @@
           </a-row>
         </a-form>
       </div>
-      <PageTable ref="tb" url="device/page" :columns="columns" rowKey="id">
+      <PageTable ref="tb" :url="url" :columns="columns" rowKey="id">
         <span slot="state" slot-scope="text, record">
           {{ record.state }}
         </span>
@@ -44,7 +44,7 @@
 
 <script>
 import _ from 'lodash'
-
+import { pageUrl } from '@/views/iot/device/api.js'
 const defautSearchObj = {
   code: '',
   name: ''
@@ -60,6 +60,7 @@ export default {
   },
   data () {
     return {
+      url: pageUrl,
       searchObj: _.cloneDeep(defautSearchObj),
       columns: [
         { title: '编码', dataIndex: 'id' },

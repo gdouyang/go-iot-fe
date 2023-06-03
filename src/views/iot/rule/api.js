@@ -1,5 +1,7 @@
 import Vue from 'vue'
 
+export const tableUrl = '/rule/page'
+
 export function remove (id) {
   return Vue.prototype.$http.delete(`/rule/${id}`)
 }

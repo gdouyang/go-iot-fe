@@ -30,7 +30,7 @@
     <PageTable
       ref="table"
       size="default"
-      url="user/page"
+      :url="url"
       :columns="columns"
     >
       <span slot="enableFlag" slot-scope="text, record">
@@ -40,8 +40,12 @@
       <span slot="action" slot-scope="text, record">
         <a @click="handleEdit(record)">编辑</a>
         <a-divider type="vertical" />
-        <a size="small" v-if="record.enableFlag === false" @click="enable(record)">启用</a>
-        <a size="small" v-if="record.enableFlag" @click="disable(record)">禁用</a>
+        <a-popconfirm title="确认启用？" v-if="record.enableFlag === false" @confirm="enable(record)">
+          <a>启用</a>
+        </a-popconfirm>
+        <a-popconfirm title="确认禁用？" v-else @confirm="disable(record)">
+          <a>禁用</a>
+        </a-popconfirm>
         <a-divider type="vertical" />
         <a @click="remove(record)">删除</a>
       </span>
@@ -53,6 +57,7 @@
 </template>
 
 <script>
+import { userTableUrl, enableUser, disableUser, removeUser } from './api.js'
 import UserModal from './modules/UserModal'
 
 export default {
@@ -62,15 +67,17 @@ export default {
   },
   data () {
     return {
+      url: userTableUrl,
       showTanent: false,
       // 查询参数
       queryParam: {},
       // 表头
       columns: [
-        { title: 'ID', dataIndex: 'id' },
+        { title: 'ID', dataIndex: 'id', width: '150px' },
         { title: '账号', dataIndex: 'username' },
         { title: '名称', dataIndex: 'nickname' },
         { title: '状态', dataIndex: 'enableFlag', scopedSlots: { customRender: 'enableFlag' } },
+        { title: '描述', dataIndex: 'desc' },
         { title: '创建时间', dataIndex: 'createTime' },
         { title: '操作', width: '150px', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
       ]
@@ -110,32 +117,18 @@ export default {
       this.search()
     },
     enable (row) {
-      this.$confirm({
-        title: '确认',
-        content: '确定要启用吗？',
-        onOk: () => {
-          this.$http.put(`user/enable/${row.id}`, {})
-          .then(data => {
-            if (data.success) {
-              this.$message.success('操作成功')
-              this.handleOk()
-            }
-          })
+      enableUser(row.id).then(data => {
+        if (data.success) {
+          this.$message.success('操作成功')
+          this.handleOk()
         }
       })
     },
     disable (row) {
-      this.$confirm({
-        title: '确认',
-        content: '确定要禁用用吗？',
-        onOk: () => {
-          this.$http.put(`user/disable/${row.id}`, {})
-          .then(data => {
-            if (data.success) {
-              this.$message.success('操作成功')
-              this.handleOk()
-            }
-          })
+      disableUser(row.id).then(data => {
+        if (data.success) {
+          this.$message.success('操作成功')
+          this.handleOk()
         }
       })
     },
@@ -145,8 +138,7 @@ export default {
         title: '确认',
         content: '确定要删除吗？',
         onOk: () => {
-          _this.$http.delete(`user/${row.id}`)
-          .then(data => {
+          removeUser(row.id).then(data => {
             if (data.success) {
               _this.$message.success('操作成功')
               _this.handleOk()

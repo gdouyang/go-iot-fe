@@ -25,7 +25,7 @@
     <PageTable
       ref="table"
       size="default"
-      url="role/page"
+      :url="url"
       :columns="columns"
     >
       <span slot="action" slot-scope="text, record">
@@ -41,6 +41,7 @@
 </template>
 
 <script>
+import { roleTableUrl, removeRole } from './api.js'
 import RoleModal from './modules/RoleModal'
 
 export default {
@@ -50,12 +51,14 @@ export default {
   },
   data () {
     return {
+      url: roleTableUrl,
       // 查询参数
       queryParam: {},
       // 表头
       columns: [
-        { title: 'ID', dataIndex: 'id' },
+        { title: 'ID', dataIndex: 'id', width: '150px' },
         { title: '角色名称', dataIndex: 'name' },
+        { title: '描述', dataIndex: 'desc' },
         { title: '创建时间', dataIndex: 'createTime' },
         { title: '操作', width: '150px', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
       ]
@@ -92,8 +95,7 @@ export default {
         title: '确认',
         content: '确定要删除吗？',
         onOk () {
-          _this.$http.delete(`role/${row.id}`)
-          .then(data => {
+          removeRole(row.id).then(data => {
             if (data.success) {
               _this.$message.success('操作成功')
               _this.handleOk()

@@ -127,7 +127,8 @@ export default {
       showSizeChanger: this.showSizeChanger,
       showTotal: function (total, range) {
         // [${range[0]}-${range[1]}]
-        return `页码: ${this.stateCurrent} 总数: ${total}`
+        var totalPage = Math.ceil(total / this.statePageSize)
+        return `页码: ${this.stateCurrent} / ${totalPage} 总数: ${total}`
       },
       itemRender: (current, type, originalElement) => {
         if (type === 'prev') {
@@ -156,7 +157,11 @@ export default {
       this.loadData()
     },
     search (params, paramCallback) {
+      this.localPagination.current = 1
       this.search_parameter = params
+      this.search1(params, paramCallback)
+    },
+    search1 (params, paramCallback) {
       let parameter = {
         pageNum: this.localPagination.current,
         pageSize: this.localPagination.pageSize,
@@ -164,6 +169,7 @@ export default {
       }
       if (parameter.pageNum === 1) {
         parameter.searchAfter = null
+        this.searchAfterList = []
       } else if (this.searchAfter) {
         parameter.searchAfter = this.searchAfter
       }
@@ -196,7 +202,7 @@ export default {
         if (pagination) {
           if (pagination.current) {
             if (pagination.current < this.localPagination.current) {
-              this.searchAfterList = this.$_.dropRight(this.searchAfterList, pagination.current)
+              this.searchAfterList = this.$_.dropRight(this.searchAfterList, 2)
               this.searchAfter = this.$_.last(this.searchAfterList)
             }
             if (pagination.current === 1) {
@@ -206,12 +212,15 @@ export default {
             this.localPagination.current = pagination.current
             this.$emit('update:pageNum', pagination.current)
           }
-          if (pagination.pageSize) {
+          if (pagination.pageSize && this.localPagination.pageSize !== pagination.pageSize) {
+            this.searchAfterList = []
+            this.searchAfter = null
             this.localPagination.pageSize = pagination.pageSize
             this.$emit('update:pageSize', pagination.pageSize)
           }
         }
-        this.search(this.search_parameter, this.search_paramCallback)
+        this.search_parameter.pageNum = this.localPagination.current
+        this.search1(this.search_parameter, this.search_paramCallback)
         return
       }
       this.localLoading = true

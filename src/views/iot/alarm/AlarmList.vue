@@ -22,7 +22,7 @@
         </a-row>
       </a-form>
     </div>
-    <PageTable ref="tb" rowKey="id" :columns="columns" url="/alarm/log/page">
+    <PageTable ref="tb" rowKey="id" :columns="columns" :url="url">
       <span slot="state" slot-scope="text">
         <a-tag color="#87d068" v-if="text === 'solve'">已处理</a-tag>
         <a-tag color="#f50" v-else>未处理</a-tag>
@@ -58,10 +58,7 @@
   </a-card>
 </template>
 <script>
-// import _ from 'lodash'
-// import moment from 'moment'
-import { solveAlarmLog } from './api.js'
-// import encodeQueryParam from '@/utils/encodeParam.js'
+import { pageUrl, solveAlarmLog } from './api.js'
 export default {
   name: 'AlamrList',
   mixins: [ ],
@@ -76,6 +73,7 @@ export default {
   },
   data () {
     return {
+      url: pageUrl,
       searchObj: {
         deviceId: undefined,
         productId: undefined
@@ -83,7 +81,7 @@ export default {
       columns: [
         { title: '告警名称', dataIndex: 'alarmName' },
         { title: '设备ID', dataIndex: 'deviceId' },
-        { title: '产品名称', dataIndex: 'productId' },
+        { title: '产品ID', dataIndex: 'productId' },
         { title: '告警时间', dataIndex: 'createTime', scopedSlots: { customRender: 'createTime' } },
         { title: '处理状态', dataIndex: 'state', align: 'center', width: '100px', scopedSlots: { customRender: 'state' } },
         { title: '操作', width: '120px', align: 'center', scopedSlots: { customRender: 'action' } }

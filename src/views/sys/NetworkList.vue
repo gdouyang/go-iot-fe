@@ -45,7 +45,7 @@ export default {
       queryParam: {},
       // 表头
       columns: [
-        { title: 'ID', dataIndex: 'id' },
+        { title: 'ID', dataIndex: 'id', width: '150px' },
         { title: '产品', dataIndex: 'productId' },
         { title: '网络类型', dataIndex: 'type' },
         // { title: '名称', dataIndex: 'name' },

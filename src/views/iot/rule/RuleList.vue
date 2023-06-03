@@ -22,7 +22,7 @@
       <a-button type="primary" icon="plus" @click="handleAdd">新建</a-button>
     </div>
 
-    <PageTable ref="tb" url="/rule/page" :columns="columns">
+    <PageTable ref="tb" :url="url" :columns="columns">
       <span slot="state" slot-scope="text">
         {{ text }}
       </span>
@@ -67,7 +67,7 @@
 
 <script>
 import _ from 'lodash'
-import { get, remove, start, stop } from './api.js'
+import { tableUrl, get, remove, start, stop } from './api.js'
 import RuleAdd from './modules/RuleAdd.vue'
 
 export default {
@@ -77,6 +77,7 @@ export default {
   },
   data () {
     return {
+      url: tableUrl,
       // 查询参数
       queryParam: {},
       // 表头

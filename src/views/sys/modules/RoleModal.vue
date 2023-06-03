@@ -42,7 +42,7 @@
 <script>
 import _ from 'lodash'
 import tree from 'vue-giant-tree'
-
+import { getRole, editRole, addRole, getRoleRelMenus, getMenus } from '../api.js'
 const defaultAddObj = {
   'name': '',
   'desc': ''
@@ -85,6 +85,7 @@ export default {
   },
   methods: {
     add () {
+      this.addObj = _.cloneDeep(defaultAddObj)
       this.isEdit = false
       this.getTreeData()
       this.$refs.addModal.open({ title: '新增' })
@@ -92,7 +93,7 @@ export default {
     edit (record) {
       this.isEdit = true
       this.spinning++
-      this.$http.get(`role/${record.id}`)
+      getRole(record.id)
       .then(data1 => {
         if (data1.success) {
           const data = data1.result
@@ -116,9 +117,9 @@ export default {
           values.ruleRefMenus = this.getCheckPermissions()
           let promise = null
           if (this.isEdit) {
-            promise = this.$http.put('role', values)
+            promise = editRole(values)
           } else {
-            promise = this.$http.post('role', values)
+            promise = addRole(values)
           }
           promise.then(data => {
             if (data.success) {
@@ -141,7 +142,7 @@ export default {
     getTreeData () {
       if (this.isEdit) {
         this.spinning++
-        this.$http.get(`/role/ref-menus/${this.addObj.id}`)
+        getRoleRelMenus(this.addObj.id)
         .then(data => {
           if (data.success) {
             this.getAllMenu(data.result)
@@ -155,8 +156,7 @@ export default {
     },
     getAllMenu (checkeds) {
       this.spinning++
-      this.$http.get('menu/list')
-      .then(data => {
+      getMenus().then(data => {
         const datas = data.result
         const list = []
         let id = 1

@@ -261,6 +261,7 @@ export default {
       this.isFinish = false
       this.count = 0
       this.errMessage = null
+      this.search()
     }
   }
 }

@@ -22,7 +22,7 @@
       <a-button type="primary" icon="plus" @click="handleAdd">新建</a-button>
     </div>
 
-    <PageTable ref="tb" url="/notifier/config/page" :columns="columns">
+    <PageTable ref="tb" :url="url" :columns="columns">
       <span slot="action" slot-scope="text, record">
         <a @click="handleEdit(record)">编辑</a>
         <a-divider type="vertical" />
@@ -62,7 +62,7 @@
 
 <script>
 // import _ from 'lodash'
-import { remove, start, stop, copyNotify } from '@/views/notice/api.js'
+import { configTableUrl, remove, start, stop, copyNotify } from '@/views/notice/api.js'
 import ConfigAdd from './modules/ConfigAdd'
 import NoticeHistory from './modules/NoticeHistory'
 // import encodeQueryParam from '@/utils/encodeParam.js'
@@ -74,6 +74,7 @@ export default {
   },
   data () {
     return {
+      url: configTableUrl,
       // 查询参数
       queryParam: {
         name: ''

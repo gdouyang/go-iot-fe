@@ -83,6 +83,7 @@
 
 <script>
 import _ from 'lodash'
+import { getAllRole } from '../api.js'
 const defaultAddObj = {
   'username': '',
   'name': '',
@@ -185,8 +186,7 @@ export default {
       })
     },
     getAllRole () {
-      this.$http.post('role/page', { pageNum: 1, pageSize: 10, condition: {} })
-      .then(resp => {
+      getAllRole().then(resp => {
         this.roleList = resp.result.list
       })
     }

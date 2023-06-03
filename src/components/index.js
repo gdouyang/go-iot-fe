@@ -19,7 +19,6 @@ import NumberInfo from '@/components/NumberInfo'
 import Tree from '@/components/Tree/Tree'
 import Trend from '@/components/Trend'
 import STable from '@/components/Table'
-import PageTable from '@/components/Table/PageTable.vue'
 import MultiTab from '@/components/MultiTab'
 import IconSelector from '@/components/IconSelector'
 import TagSelect from '@/components/TagSelect'
@@ -49,7 +48,6 @@ export {
   NumberInfo,
   Tree,
   STable,
-  PageTable,
   MultiTab,
   IconSelector,
   TagSelect,

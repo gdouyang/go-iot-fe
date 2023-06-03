@@ -1,5 +1,7 @@
 import Vue from 'vue'
 
+export const configTableUrl = '/notifier/config/page'
+
 export function remove (id) {
   return Vue.prototype.$http.delete(`/notifier/config/${id}`)
 }

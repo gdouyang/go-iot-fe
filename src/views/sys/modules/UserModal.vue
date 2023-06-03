@@ -10,108 +10,110 @@
       @cancel="handleCancel"
     >
       <a-spin :spinning="spinning > 0">
-        <a-form class="permission-form" :form="form">
-          <a-form-item
-            :labelCol="labelCol"
-            :wrapperCol="wrapperCol"
+        <a-form-model ref="addFormRef" :model="addObj" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-form-model-item
             label="账号"
+            prop="username"
+            :rules="[{ required: true, message: '请输入' }]"
           >
             <a-input
-              v-decorator="['username', { rules: [{ required: true, message: '请输入' }] }]"
+              v-model="addObj.username"
               :max-length="32"
             />
-          </a-form-item>
-          <a-form-item
-            :labelCol="labelCol"
-            :wrapperCol="wrapperCol"
+          </a-form-model-item>
+          <a-form-model-item
             label="名称"
+            prop="nickname"
+            :rules="[{ required: true, message: '请输入' }]"
           >
             <a-input
-              placeholder="名称"
-              v-decorator="['nickname', { rules: [{ required: true, message: '请输入' }] }]"
+              v-model="addObj.nickname"
               :max-length="32"
             />
-          </a-form-item>
+          </a-form-model-item>
 
-          <a-form-item
-            :labelCol="labelCol"
-            :wrapperCol="wrapperCol"
+          <a-form-model-item
             label="状态"
+            prop="enableFlag"
+            :rules="[{ required: true, message: '请选择' }]"
           >
-            <a-select
-              v-decorator="['enableFlag', { rules: [{ required: true, message: '请输入' }] }]">
-              <a-select-option :value="true">
+            <a-select v-model="addObj.enableFlag">
+              <a-select-option value="true">
                 启动
               </a-select-option>
-              <a-select-option :value="false">
+              <a-select-option value="false">
                 禁用
               </a-select-option>
             </a-select>
-          </a-form-item>
+          </a-form-model-item>
 
-          <a-form-item
-            :labelCol="labelCol"
-            :wrapperCol="wrapperCol"
+          <a-form-model-item
             label="密码"
+            prop="password"
+            :rules="[{ required: true, message: '请输入' }, { min: 6, message: '密码不小于6位' }]"
             v-if="!isEdit"
           >
             <a-input
-              v-decorator="['password', { rules: [{ required: true, message: '请输入' }, { min: 6, message: '密码不小于6位' }] }]"
+              v-model="addObj.password"
               type="password"
               :max-length="20"
             />
-          </a-form-item>
+          </a-form-model-item>
 
-          <a-form-item
-            :labelCol="labelCol"
-            :wrapperCol="wrapperCol"
+          <a-form-model-item
             label="确认密码"
+            prop="password2"
+            :rules="[{ required: true, message: '请输入' }, { validator: validatePassCheck, trigger: 'blur' }]"
             v-if="!isEdit"
           >
             <a-input
-              v-decorator="['password2', { rules: [{ required: true, message: '请输入' }, { validator: validatePassCheck, trigger: 'blur' }] }]"
+              v-model="addObj.password2"
               type="password"
               :max-length="20"
             />
-          </a-form-item>
+          </a-form-model-item>
 
-          <a-form-item
-            :labelCol="labelCol"
-            :wrapperCol="wrapperCol"
+          <a-form-model-item
             label="角色"
+            prop="roleId"
+            :rules="[{ required: true, message: '请选择角色' }]"
           >
-            <a-select
-              v-decorator="['roleId', { rules: [{ required: true, message: '请输入' }] }]">
+            <a-select v-model="addObj.roleId">
               <a-select-option v-for="item in roleList" :value="item.id" :key="item.id">
                 {{ item.name }}
               </a-select-option>
             </a-select>
-          </a-form-item>
+          </a-form-model-item>
 
-          <a-form-item
-            :labelCol="labelCol"
-            :wrapperCol="wrapperCol"
+          <a-form-model-item
             label="描述"
           >
             <a-textarea
               :rows="5"
               placeholder="..."
-              id="desc"
-              v-decorator="['desc']"
+              v-model="addObj.desc"
               :max-length="200"
             />
-          </a-form-item>
+          </a-form-model-item>
 
-        </a-form>
+        </a-form-model>
       </a-spin>
     </a-modal>
   </div>
 </template>
 
 <script>
-import pick from 'lodash.pick'
-// import _ from 'lodash'
-
+import { editUser, addUser, getAllRole, getUser } from '../api.js'
+import _ from 'lodash'
+const defaultAddObj = {
+  username: '',
+  nickname: '',
+  enableFlag: 'true',
+  password: '',
+  password2: '',
+  roleId: null,
+  desc: ''
+}
 export default {
   name: 'UserModal',
   props: {
@@ -134,11 +136,10 @@ export default {
       },
       visible: false,
       confirmLoading: false,
-      mdl: {},
+      addObj: _.cloneDeep(defaultAddObj),
       title: '',
       spinning: 0,
 
-      form: this.$form.createForm(this),
       isEdit: false,
       roleList: []
     }
@@ -147,10 +148,9 @@ export default {
   },
   methods: {
     validatePassCheck (rule, value, callback) {
-      const form = this.form
       if (value === '') {
         callback(new Error('请再次输入密码'))
-      } else if (value !== form.getFieldValue('password')) {
+      } else if (value !== this.addObj.password) {
         callback(new Error('两次密码不一致!'))
       } else {
         callback()
@@ -158,28 +158,22 @@ export default {
     },
     add () {
       this.title = '新增'
-      this.mdl = {}
+      this.addObj = _.cloneDeep(defaultAddObj)
       this.isEdit = false
       this.visible = true
       this.getAllRole()
-      this.$nextTick(() => {
-        this.form.resetFields()
-      })
     },
     edit (record) {
       this.isEdit = true
       this.spinning++
-      this.$http.get(`user/${record.id}`)
-      .then(data1 => {
+      getUser(record.id).then(data1 => {
         if (data1.success) {
           const data = data1.result
-          this.mdl = Object.assign({}, data)
+          data.enableFlag = data.enableFlag + ''
+          this.addObj = Object.assign({}, data)
           this.title = '修改'
           this.visible = true
           this.getAllRole()
-          this.$nextTick(() => {
-            this.form.setFieldsValue(pick(this.mdl, 'username', 'nickname', 'enableFlag', 'desc', 'roleId'))
-          })
         }
       }).finally(() => {
         this.spinning--
@@ -190,31 +184,30 @@ export default {
       this.visible = false
     },
     handleOk () {
-      const _this = this
       // 触发表单验证
-      this.form.validateFields((err, values) => {
+      this.$refs.addFormRef.validate((valid) => {
         // 验证表单没错误
-        if (!err) {
+        if (valid) {
+          const values = _.cloneDeep(this.addObj)
           console.log('form values', values)
-          values.id = this.mdl.id
-          values.isTenant = this.showTanent
+          values.enableFlag = values.enableFlag === 'true'
           this.confirmLoading = true
           let promise = null
           if (this.isEdit) {
-            promise = this.$http.put('user', values)
+            promise = editUser(values)
           } else {
-            promise = this.$http.post('user', values)
+            promise = addUser(values)
           }
           promise.then(data => {
             if (data.success) {
               this.$message.success('操作成功')
-              _this.close()
+              this.close()
               this.$emit('ok')
             } else {
               this.$message.success(data.message)
             }
           }).finally(() => {
-            _this.confirmLoading = false
+            this.confirmLoading = false
           })
         }
       })
@@ -223,8 +216,7 @@ export default {
       this.close()
     },
     getAllRole () {
-      this.$http.post('role/page', { pageNum: 1, pageSize: 10, condition: {} })
-      .then(resp => {
+      getAllRole().then(resp => {
         this.roleList = resp.result.list
       })
     }
