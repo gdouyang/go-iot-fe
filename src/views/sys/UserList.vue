@@ -3,17 +3,17 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="48">
-          <a-col :md="8" :sm="24">
+          <a-col :md="5" :sm="24">
             <a-form-item label="账号">
-              <a-input v-model="queryParam.username" placeholder="请输入"/>
+              <a-input v-model="searchObj.username" placeholder="请输入"/>
             </a-form-item>
           </a-col>
-          <a-col :md="8" :sm="24">
+          <a-col :md="5" :sm="24">
             <a-form-item label="名称">
-              <a-input v-model="queryParam.nickname" placeholder="请输入"/>
+              <a-input v-model="searchObj.nickname" placeholder="请输入"/>
             </a-form-item>
           </a-col>
-          <a-col :md="8" :sm="24">
+          <a-col :md="5" :sm="24">
             <span class="table-page-search-submitButtons">
               <a-button type="primary" @click="search">查询</a-button>
               <a-button style="margin-left: 8px" @click="resetSearch">重置</a-button>
@@ -27,15 +27,10 @@
       <a-button type="primary" icon="plus" @click="handleAdd">新建</a-button>
     </div>
 
-    <PageTable
-      ref="table"
-      size="default"
-      :url="url"
-      :columns="columns"
-    >
+    <PageTable ref="tb" :url="url" :columns="columns">
       <span slot="enableFlag" slot-scope="text, record">
-        <span v-if="record.enableFlag">启用</span>
-        <span v-if="record.enableFlag === false">禁用</span>
+        <a-tag color="#87d068" v-if="record.enableFlag">启用</a-tag>
+        <a-tag color="#f50" v-else>禁用</a-tag>
       </span>
       <span slot="action" slot-scope="text, record">
         <a @click="handleEdit(record)">编辑</a>
@@ -70,7 +65,7 @@ export default {
       url: userTableUrl,
       showTanent: false,
       // 查询参数
-      queryParam: {},
+      searchObj: {},
       // 表头
       columns: [
         { title: 'ID', dataIndex: 'id', width: '150px' },
@@ -94,16 +89,16 @@ export default {
   methods: {
     search () {
       const condition = []
-      if (this.queryParam.username) {
-        condition.push({ key: 'username', value: this.queryParam.username, oper: 'LIKE' })
+      if (this.searchObj.username) {
+        condition.push({ key: 'username', value: this.searchObj.username, oper: 'LIKE' })
       }
-      if (this.queryParam.nickname) {
-        condition.push({ key: 'nickname', value: this.queryParam.nickname, oper: 'LIKE' })
+      if (this.searchObj.nickname) {
+        condition.push({ key: 'nickname', value: this.searchObj.nickname, oper: 'LIKE' })
       }
-      this.$refs.table.search(condition)
+      this.$refs.tb.search(condition)
     },
     resetSearch () {
-      this.queryParam = {}
+      this.searchObj = {}
       this.search()
     },
     handleAdd () {

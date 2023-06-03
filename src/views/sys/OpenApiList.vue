@@ -3,17 +3,17 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="48">
-          <a-col :md="8" :sm="24">
+          <a-col :md="5" :sm="24">
             <a-form-item label="账号">
-              <a-input v-model="queryParam.username" placeholder="请输入"/>
+              <a-input v-model="searchObj.username" placeholder="请输入"/>
             </a-form-item>
           </a-col>
-          <a-col :md="8" :sm="24">
+          <a-col :md="5" :sm="24">
             <a-form-item label="名称">
-              <a-input v-model="queryParam.name" placeholder="请输入"/>
+              <a-input v-model="searchObj.name" placeholder="请输入"/>
             </a-form-item>
           </a-col>
-          <a-col :md="8" :sm="24">
+          <a-col :md="5" :sm="24">
             <span class="table-page-search-submitButtons">
               <a-button type="primary" @click="search">查询</a-button>
               <a-button style="margin-left: 8px" @click="resetSearch">重置</a-button>
@@ -27,12 +27,7 @@
       <a-button type="primary" icon="plus" @click="handleAdd">新建</a-button>
     </div>
 
-    <PageTable
-      ref="table"
-      size="default"
-      url="open-api/page"
-      :columns="columns"
-    >
+    <PageTable ref="tb" url="open-api/page" :columns="columns">
       <span slot="action" slot-scope="text, record">
         <a @click="handleEdit(record)">编辑</a>
         <a-divider type="vertical" />
@@ -60,7 +55,7 @@ export default {
     return {
       showTanent: false,
       // 查询参数
-      queryParam: {},
+      searchObj: {},
       // 表头
       columns: [
         { title: 'ID', dataIndex: 'id' },
@@ -82,11 +77,11 @@ export default {
   },
   methods: {
     search () {
-      this.queryParam.isTenant = this.showTanent
-      this.$refs.table.search(this.queryParam)
+      this.searchObj.isTenant = this.showTanent
+      this.$refs.tb.search(this.searchObj)
     },
     resetSearch () {
-      this.queryParam = {}
+      this.searchObj = {}
       this.search()
     },
     handleAdd () {

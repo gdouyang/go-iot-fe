@@ -3,17 +3,25 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="48">
-          <a-col :md="8" :sm="24">
-            <a-form-item label="设备ID">
-              <a-input v-model="searchObj.deviceId" placeholder="请输入"/>
-            </a-form-item>
-          </a-col>
-          <a-col :md="8" :sm="24">
+          <a-col :md="5" :sm="24">
             <a-form-item label="产品ID">
               <a-input v-model="searchObj.productId" placeholder="请输入"/>
             </a-form-item>
           </a-col>
-          <a-col :md="8" :sm="24">
+          <a-col :md="5" :sm="24">
+            <a-form-item label="设备ID">
+              <a-input v-model="searchObj.deviceId" placeholder="请输入"/>
+            </a-form-item>
+          </a-col>
+          <a-col :md="5" :sm="24">
+            <a-form-item label="状态">
+              <a-select v-model="searchObj.state" :allowClear="true">
+                <a-select-option value="solve">已处理</a-select-option>
+                <a-select-option value="unsolve">未处理</a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+          <a-col :md="5" :sm="24">
             <span class="table-page-search-submitButtons">
               <a-button type="primary" @click="search">查询</a-button>
               <a-button style="margin-left: 8px" @click="resetSearch">重置</a-button>
@@ -99,8 +107,8 @@ export default {
       if (this.searchObj.deviceId) {
         condition.push({ key: 'deviceId', value: this.searchObj.deviceId, oper: 'LIKE' })
       }
-      if (this.searchObj.productId) {
-        condition.push({ key: 'productId', value: this.searchObj.productId, oper: 'LIKE' })
+      if (this.searchObj.state) {
+        condition.push({ key: 'state', value: this.searchObj.state })
       }
       this.$refs.tb.search(condition)
     },

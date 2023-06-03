@@ -5,26 +5,33 @@
         <div class="table-page-search-wrapper">
           <a-form layout="inline">
             <a-row :gutter="48">
-              <a-col :md="6" :sm="24">
+              <a-col :md="5" :sm="24">
+                <a-form-item label="产品">
+                  <a-select v-model="searchObj.productId" placeholder="产品" :allowClear="true">
+                    <a-select-option v-for="p in productList" :key="p.id" :value="p.id">{{ p.name }}</a-select-option>
+                  </a-select>
+                </a-form-item>
+              </a-col>
+              <a-col :md="5" :sm="24">
                 <a-form-item label="设备ID">
                   <a-input v-model="searchObj.id" placeholder="请输入"/>
                 </a-form-item>
               </a-col>
-              <a-col :md="6" :sm="24">
+              <a-col :md="5" :sm="24">
                 <a-form-item label="名称">
                   <a-input v-model="searchObj.name" placeholder="请输入"/>
                 </a-form-item>
               </a-col>
-              <a-col :md="6" :sm="24">
+              <a-col :md="5" :sm="24">
                 <a-form-item label="状态">
-                  <a-select v-model="searchObj.state">
+                  <a-select v-model="searchObj.state" :allowClear="true">
                     <a-select-option value="noActive">未激活</a-select-option>
                     <a-select-option value="offline">离线</a-select-option>
                     <a-select-option value="online">在线</a-select-option>
                   </a-select>
                 </a-form-item>
               </a-col>
-              <a-col :md="6" :sm="24">
+              <a-col :md="4" :sm="24">
                 <span class="table-page-search-submitButtons">
                   <a-button type="primary" @click="search">查询</a-button>
                   <a-button style="margin-left: 8px" @click="resetSearch">重置</a-button>
@@ -40,14 +47,11 @@
           <a-button icon="disconnect" @click="batchUndeploy">批量停用</a-button>
         </div>
         <PageTable ref="tb" :url="tableUrl" :columns="columns" rowKey="id" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }">
-          <span slot="state" slot-scope="text, record">
-            <a-badge status="success" :text="record.state" v-if="record.state == 'online'" />
-            <a-badge status="default" :text="record.state" v-else-if="record.state == 'offline'" />
-            <a-badge status="default" text="--" v-else />
+          <span slot="state" slot-scope="text">
+            <a-tag color="#87d068" v-if="text == 'online'">{{ text }}</a-tag>
+            <a-tag color="#f50" v-else-if="text == 'offline'">{{ text }}</a-tag>
+            <a-tag color="gray" v-else>{{ text }}</a-tag>
           </span>
-          <!-- <span slot="registryTime" slot-scope="text, record">
-            {{ $moment(record.registryTime).format('YYYY-MM-DD HH:mm:ss') }}
-          </span> -->
           <span slot="createTime" slot-scope="text, record">
             {{ $moment(record.createTime).format('YYYY-MM-DD HH:mm:ss') }}
           </span>
@@ -93,7 +97,7 @@
 
 <script>
 import _ from 'lodash'
-import { pageUrl, remove, undeploy, deploy, batchDeploy, batchUndeploy } from '@/views/iot/device/api.js'
+import { pageUrl, remove, undeploy, deploy, batchDeploy, batchUndeploy, getProductList } from '@/views/iot/device/api.js'
 import DeviceAdd from './modules/DeviceAdd.vue'
 import DeviceImport from './modules/DeviceImport.vue'
 import DeviceDetail from './editor/Index.vue'
@@ -115,8 +119,8 @@ export default {
         { title: '名称', dataIndex: 'name' },
         { title: '产品', dataIndex: 'productId' },
         { title: '状态', dataIndex: 'state', scopedSlots: { customRender: 'state' } },
-        // { title: '注册时间', dataIndex: 'registryTime', scopedSlots: { customRender: 'registryTime' } },
         { title: '创建时间', dataIndex: 'createTime', scopedSlots: { customRender: 'createTime' } },
+        { title: '说明', dataIndex: 'desc' },
         { title: '操作', dataIndex: 'action', minWidth: 110, scopedSlots: { customRender: 'action' } }
       ],
       GetDetailStatus: false,
@@ -124,7 +128,8 @@ export default {
       selectedRows: [],
       isFinish: false,
       count: 0,
-      errMessage: ''
+      errMessage: '',
+      productList: []
     }
   },
   created () {
@@ -134,6 +139,11 @@ export default {
         this.detail(deviceId)
       } else {
         this.search()
+        getProductList().then((resp) => {
+          if (resp.success) {
+            this.productList = resp.result
+          }
+        })
       }
     })
   },
@@ -148,6 +158,9 @@ export default {
       }
       if (this.searchObj.state) {
         condition.push({ key: 'state', value: this.searchObj.state })
+      }
+      if (this.searchObj.productId) {
+        condition.push({ key: 'productId', value: this.searchObj.productId })
       }
       this.$refs.tb.search(condition)
     },

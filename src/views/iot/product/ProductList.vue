@@ -5,19 +5,19 @@
         <div class="table-page-search-wrapper">
           <a-form layout="inline">
             <a-row :gutter="48">
-              <a-col :md="6" :sm="24">
+              <a-col :md="5" :sm="24">
                 <a-form-item label="产品ID">
                   <a-input v-model="searchObj.id" placeholder="请输入"/>
                 </a-form-item>
               </a-col>
-              <a-col :md="6" :sm="24">
+              <a-col :md="5" :sm="24">
                 <a-form-item label="名称">
                   <a-input v-model="searchObj.name" placeholder="请输入"/>
                 </a-form-item>
               </a-col>
-              <a-col :md="6" :sm="24">
+              <a-col :md="5" :sm="24">
                 <a-form-item label="状态">
-                  <a-select v-model="searchObj.state">
+                  <a-select v-model="searchObj.state" :allowClear="true">
                     <a-select-option value="true">发布</a-select-option>
                     <a-select-option value="false">停用</a-select-option>
                   </a-select>
@@ -37,10 +37,11 @@
         </div>
         <PageTable ref="tb" :url="tableUrl" :columns="columns" rowKey="id">
           <span slot="deviceType" slot-scope="text">
-            {{ text.text }}
+            {{ text }}
           </span>
           <span slot="state" slot-scope="text">
-            <a-badge :status="text ? 'success' : 'default'" :text="text ? '发布' : '停用'" />
+            <a-tag color="#87d068" v-if="text">发布</a-tag>
+            <a-tag color="#f50" v-else>停用</a-tag>
           </span>
           <span slot="action" slot-scope="text, record">
             <a size="small" @click="detail(record.id)">查看</a>
@@ -90,10 +91,8 @@ export default {
         { title: '产品ID', dataIndex: 'id' },
         { title: '名称', dataIndex: 'name' },
         { title: '状态', dataIndex: 'state', scopedSlots: { customRender: 'state' } },
-        // { title: '设备类型', dataIndex: 'deviceType', scopedSlots: { customRender: 'deviceType' } },
         { title: '创建时间', dataIndex: 'createTime' },
         { title: '说明', dataIndex: 'desc' },
-        // { title: '修改时间', dataIndex: 'modifyTime' },
         { title: '操作', dataIndex: 'action', minWidth: 110, scopedSlots: { customRender: 'action' } }
       ],
       GetDetailStatus: false

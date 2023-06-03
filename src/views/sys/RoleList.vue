@@ -3,12 +3,12 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="48">
-          <a-col :md="8" :sm="24">
+          <a-col :md="5" :sm="24">
             <a-form-item label="名称">
-              <a-input v-model="queryParam.name" placeholder="请输入"/>
+              <a-input v-model="searchObj.name" placeholder="请输入"/>
             </a-form-item>
           </a-col>
-          <a-col :md="8" :sm="24">
+          <a-col :md="5" :sm="24">
             <span class="table-page-search-submitButtons">
               <a-button type="primary" @click="search">查询</a-button>
               <a-button style="margin-left: 8px" @click="resetSearch">重置</a-button>
@@ -22,12 +22,7 @@
       <a-button type="primary" icon="plus" @click="handleAdd">新建</a-button>
     </div>
 
-    <PageTable
-      ref="table"
-      size="default"
-      :url="url"
-      :columns="columns"
-    >
+    <PageTable ref="tb" :url="url" :columns="columns">
       <span slot="action" slot-scope="text, record">
         <a @click="handleEdit(record)">编辑</a>
         <a-divider type="vertical" />
@@ -53,7 +48,7 @@ export default {
     return {
       url: roleTableUrl,
       // 查询参数
-      queryParam: {},
+      searchObj: {},
       // 表头
       columns: [
         { title: 'ID', dataIndex: 'id', width: '150px' },
@@ -70,13 +65,13 @@ export default {
   methods: {
     search () {
       const condition = []
-      if (this.queryParam.name) {
-        condition.push({ key: 'name', value: this.queryParam.name, oper: 'LIKE' })
+      if (this.searchObj.name) {
+        condition.push({ key: 'name', value: this.searchObj.name, oper: 'LIKE' })
       }
-      this.$refs.table.search(condition)
+      this.$refs.tb.search(condition)
     },
     resetSearch () {
-      this.queryParam = {}
+      this.searchObj = {}
       this.search()
     },
     handleAdd () {
