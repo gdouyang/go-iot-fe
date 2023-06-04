@@ -240,18 +240,19 @@ export default {
       })
     },
     batchUndeploy () {
+      let msg = '确定要批量停用吗？'
       if (_.isEmpty(this.selectedRowKeys)) {
-        this.$message.error('请选择数据')
-        return
+        msg = '确定要全部停用吗？'
       }
       this.$confirm({
         title: '确认',
-        content: '确定要批量停用吗？',
+        content: msg,
         onOk: () => {
-          batchUndeploy(this.selectedRowKeys).then(data => {
-            if (data.success) {
-              this.$message.success('操作成功')
-              this.search()
+          batchUndeploy(this.selectedRowKeys).then(resp => {
+            if (resp.success) {
+              this.showProcessResult(resp.result)
+            } else {
+              this.$message.success(resp.message)
             }
           })
         }

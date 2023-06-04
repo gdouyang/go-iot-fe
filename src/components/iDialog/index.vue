@@ -14,7 +14,7 @@
       <a-button key="back" @click="close">
         {{ cancelText }}
       </a-button>
-      <a-button key="submit" :type="okType" @click="ok" v-if="showOk">
+      <a-button key="submit" :type="okType" @click="ok" :loading="okBtnLoading" v-if="showOk">
         {{ okText }}
       </a-button>
     </template>
@@ -44,6 +44,10 @@ export default {
     okType: {
       type: String,
       default: 'primary'
+    },
+    okBtnLoading: {
+      type: Boolean,
+      default: false
     },
     width: {
       type: [String, Number],

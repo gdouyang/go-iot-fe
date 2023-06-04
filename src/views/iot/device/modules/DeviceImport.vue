@@ -8,6 +8,7 @@
     @close="addClose"
     :width="500"
     title="批量导入设备"
+    :okBtnLoading="okBtnLoading"
   >
     <a-form-model
       ref="addFormRef"
@@ -76,6 +77,7 @@ export default {
       addObj: _.cloneDeep(defaultAddObj),
       productList: [],
       importLoading: false,
+      okBtnLoading: false,
       isFinish: false,
       count: 0,
       errMessage: null
@@ -97,6 +99,7 @@ export default {
     },
     addClose () {
       this.importLoading = false
+      this.okBtnLoading = false
       this.isFinish = false
       this.count = 0
       this.errMessage = null
@@ -109,12 +112,14 @@ export default {
           const formData = new FormData()
           formData.append('file', this.file)
           this.importLoading = true
+          this.okBtnLoading = true
           this.$http.post(`device/${this.addObj.productId}/import`, formData)
           .then((resp) => {
             if (resp.success) {
               this.showImportResult(resp.result)
             } else {
               this.$message.success(resp.message)
+              this.okBtnLoading = true
             }
           })
         }
@@ -129,12 +134,15 @@ export default {
           this.count = temp
           if (res.result.finish) {
             this.isFinish = true
+            this.okBtnLoading = false
             source.close()
             this.$message.success('操作成功')
             this.$refs.addModal.close()
             this.$emit('success')
           }
         } else {
+          this.isFinish = true
+          this.okBtnLoading = false
           this.errMessage = res.message
         }
       }
