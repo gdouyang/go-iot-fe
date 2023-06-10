@@ -33,7 +33,7 @@
                   <a-button
                     icon="search"
                     type="primary"
-                    @click="onSearch"
+                    @click="search"
                   >
                     查询
                   </a-button>
@@ -106,11 +106,10 @@ export default {
     this.tableUrl = getDeviceLogsUrl(this.deviceId)
   },
   mounted () {
-    this.onSearch()
+    this.search()
   },
   methods: {
-    onSearch () {
-      // eslint-disable-next-line no-shadow
+    search () {
       const params = []
       if (!_.isEmpty(this.searchParams.createTime)) {
         const formatDate = this.searchParams.createTime.map((e) => moment(e).format('YYYY-MM-DD HH:mm:ss'))
@@ -119,17 +118,14 @@ export default {
       if (!_.isEmpty(this.searchParams.type)) {
         params.push({ key: 'type', oper: 'IN', value: this.searchParams.type })
       }
-      this.search(params)
-    },
-    search (params) {
       this.$refs.tb.search(params)
     },
     resetSearch () {
       this.searchParams = {
         type: [],
-        createTime: null
+        createTime: []
       }
-      this.search(this.searchParams)
+      this.search()
     },
     showDetail (record) {
       let content = null
