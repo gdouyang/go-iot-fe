@@ -1,9 +1,6 @@
-<style lang="less">
-</style>
-
 <template>
   <Dialog ref="addModal" @confirm="addConfirm" @close="addClose">
-    <PageTable ref="tb" url="/notify/history/page" :columns="columns">
+    <PageTable ref="tb" :url="url" :columns="columns">
       <span slot="notifyTime" slot-scope="text">
         {{ text ? $moment(text).format('YYYY-MM-DD HH:mm:ss') : '/' }}
       </span>
@@ -20,7 +17,7 @@
 
 <script>
 import _ from 'lodash'
-import encodeQueryParam from '@/utils/encodeParam.js'
+import { historyTableUrl } from '@/views/notice/api.js'
 const defaultAddObj = {
   id: null,
   name: '',
@@ -35,6 +32,7 @@ export default {
   name: 'NoticeHistory',
   data () {
     return {
+      url: historyTableUrl,
       labelCol: {
         xs: { span: 24 },
         sm: { span: 5 }
@@ -46,42 +44,19 @@ export default {
       addObj: _.cloneDeep(defaultAddObj),
       colorMap: colorMap,
       columns: [
-        {
-          title: 'ID',
-          dataIndex: 'id'
-        },
-        {
-          title: '时间',
-          dataIndex: 'notifyTime',
-          scopedSlots: { customRender: 'notifyTime' }
-        },
-        {
-          dataIndex: 'state',
-          title: '状态',
-          scopedSlots: { customRender: 'state' }
-        },
-        {
-          title: '操作',
-          width: '150px',
-          dataIndex: 'action',
-          scopedSlots: { customRender: 'action' }
-        }
+        { title: 'ID', dataIndex: 'id' },
+        { title: '时间', dataIndex: 'notifyTime', scopedSlots: { customRender: 'notifyTime' } },
+        { dataIndex: 'state', title: '状态', scopedSlots: { customRender: 'state' } },
+        { title: '操作', width: '150px', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
       ]
     }
   },
   created () {},
   methods: {
     open (id) {
-      const initParam = {
-        terms: { notifierId: id },
-        sorts: {
-          field: 'notifyTime',
-          order: 'desc'
-        }
-      }
       this.$refs.addModal.open({ title: '通知记录' })
       this.$nextTick(() => {
-        this.$refs.tb.search(encodeQueryParam(initParam))
+        this.$refs.tb.search([{ key: 'notifierId', value: id }])
       })
     },
     addClose () {
@@ -114,3 +89,5 @@ export default {
   }
 }
 </script>
+<style lang="less" scoped>
+</style>

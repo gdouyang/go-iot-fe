@@ -16,11 +16,11 @@ export function undeploy (id) {
 }
 
 export function batchDeploy (ids) {
-  return Vue.prototype.$http.post(`device/batch/_deploy`, ids)
+  return Vue.prototype.$http.post(`device/batch/deploy`, ids)
 }
 
 export function batchUndeploy (ids) {
-  return Vue.prototype.$http.post(`device/batch/_undeploy`, ids)
+  return Vue.prototype.$http.post(`device/batch/undeploy`, ids)
 }
 
 export function remove (id) {
@@ -56,7 +56,7 @@ export function getProductList () {
 }
 
 export function cmdInvoke (deviceId, params) {
-  return Vue.prototype.$http.post(`/device/${deviceId}/cmd`, params)
+  return Vue.prototype.$http.post(`/device/${deviceId}/invoke`, params)
 }
 
 export function updateLocation (params) {
@@ -64,11 +64,15 @@ export function updateLocation (params) {
 }
 
 export function queryProperty (deviceId, data) {
-  return Vue.prototype.$http.post(`/device/propertys/${deviceId}/query`, data)
+  return Vue.prototype.$http.post(`/device/${deviceId}/properties`, data)
 }
 
 export function getDeviceLogsUrl (deviceId) {
-  return `/device/propertys/${deviceId}/query`
+  return `/device/${deviceId}/logs`
+}
+
+export function getDevicePropertysUrl (deviceId) {
+  return `/device/${deviceId}/properties`
 }
 
 // export function getEvent (deviceId, itemId) {

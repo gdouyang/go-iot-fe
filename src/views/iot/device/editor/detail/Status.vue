@@ -105,7 +105,7 @@ export default {
     propertiesRealTime () {
       const device = this.device
       this.loading = true
-      queryProperty(device.id, { type: 'properties' }).then(resp => {
+      queryProperty(device.id, { }).then(resp => {
         const metadata = JSON.parse(this.device.metadata)
         const properties = _.cloneDeep(metadata.properties)
         this.events = metadata.events

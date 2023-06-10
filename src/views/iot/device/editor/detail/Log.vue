@@ -122,11 +122,7 @@ export default {
       this.search(params)
     },
     search (params) {
-      this.$refs.tb.search(params, (p) => {
-        p.type = 'devicelogs'
-        p.deviceId = this.deviceId
-        return p
-      })
+      this.$refs.tb.search(params)
     },
     resetSearch () {
       this.searchParams = {
