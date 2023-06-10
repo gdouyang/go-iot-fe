@@ -75,6 +75,13 @@ export function getDevicePropertysUrl (deviceId) {
   return `/device/${deviceId}/properties`
 }
 
+export function getEventBusUrl (deviceId, topic) {
+  if (window.location.protocol.startsWith('https')) {
+    return `wss://${window.location.host}/api/eventbus/${deviceId}/${topic}`
+  }
+  return `ws://${window.location.host}/api/eventbus/${deviceId}/${topic}`
+}
+
 // export function getEvent (deviceId, itemId) {
 //   return Vue.prototype.$http.get(`/device/${ deviceId }/event/${ itemId }?format=true&pageSize=1`)
 // }

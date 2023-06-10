@@ -67,7 +67,7 @@
 
 <script>
 import { PageHeaderWrapper } from '@ant-design-vue/pro-layout'
-import { getDetail, connect, disconnect, deploy } from '@/views/iot/device/api.js'
+import { getDetail, connect, disconnect, deploy, getEventBusUrl } from '@/views/iot/device/api.js'
 import Info from './detail/Info.vue'
 import Status from './detail/Status.vue'
 import Function from './detail/Function.vue'
@@ -191,10 +191,9 @@ export default {
       })
     },
     connectWs () {
-      var ws = this.ws = new WebSocket(`ws://${window.location.host}/api/realtime/${this.GetDeviceId}/*`)
+      var ws = this.ws = new WebSocket(getEventBusUrl(this.GetDeviceId, '*'))
       ws.onopen = function (evt) {
         console.log('Connection open ...')
-        // ws.send('Hello WebSockets!')
       }
 
       ws.onmessage = (evt) => {
