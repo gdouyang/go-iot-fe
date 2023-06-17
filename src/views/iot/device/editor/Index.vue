@@ -82,11 +82,6 @@ export default {
     Function,
     Log
   },
-  provide () {
-    return {
-      reloadFuncs: this.reloadFuncs
-    }
-  },
   data () {
     return {
       loading: true,
@@ -98,7 +93,6 @@ export default {
         { key: 'function', tab: '设备功能' },
         { key: 'log', tab: '日志' }
       ],
-      reloadFuncs: new Map(),
       realtimeData: {}
     }
   },
@@ -159,9 +153,6 @@ export default {
           this.detailData = result
         }
       })
-      this.reloadFuncs.forEach((fun) => {
-        fun()
-      })
     },
     disconnectDevice () {
       const deviceId = this.GetDeviceId
@@ -204,7 +195,7 @@ export default {
         } else if (data.type === 'offline') {
           this.detailData.state = 'offline'
         } else if (data.type === 'prop' || data.type === 'event') {
-          this.realtimeData = data.data
+          this.realtimeData = data
         }
       }
 

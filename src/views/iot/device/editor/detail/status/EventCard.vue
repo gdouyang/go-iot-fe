@@ -56,6 +56,9 @@ export default {
     this.getValue()
   },
   methods: {
+    inc () {
+      this.formatValue++
+    },
     getValue () {
       queryEvent(this.device.id, this.item.id, { pageNum: 1, pageSize: 1 })
       .then(resp => {

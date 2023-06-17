@@ -3,15 +3,16 @@
     <!-- <a href="#" slot="action">
       <a-icon type="sync" />
     </a> -->
-    <span v-if="state === 'online'">上线时间：{{ GetTime(runInfo.onlineTime) }}</span>
-    <span v-else>离线时间：{{ GetTime(runInfo.onlineTime) }}</span>
+    <span v-if="state === 'online'">上线时间：{{ time }}</span>
+    <span v-if="state === 'offline'">离线时间：{{ time }}</span>
   </ChartCard>
 </template>
 
 <script>
 import ChartCard from '@/components/Charts/ChartCard'
+import { queryLogs } from '@/views/iot/device/api.js'
 // eslint-disable-next-line no-unused-vars
-import moment from 'moment'
+// import moment from 'moment'
 export default {
   name: 'DeviceState',
   props: {
@@ -19,17 +20,32 @@ export default {
       type: String,
       default: () => ''
     },
-    runInfo: {
+    device: {
       type: Object,
-      default: () => { return { onlineTime: '', offlineTime: '' } }
+      default: () => { return { } }
     }
   },
   components: {
     ChartCard
   },
+  data () {
+    return {
+      time: ''
+    }
+  },
+  mounted () {
+    this.GetTime()
+  },
   methods: {
-    GetTime (time) {
-      return moment(time).format('YYYY-MM-DD HH:mm:ss')
+    GetTime () {
+      if (this.state === 'online' || this.state === 'offline') {
+        queryLogs(this.device.id, { pageSize: 1, condition: [ { key: 'type', value: this.state } ] })
+        .then(resp => {
+          if (resp.success && resp.result.list.length > 0) {
+            this.time = resp.result.list[0].createTime
+          }
+        })
+      }
     }
   }
 }

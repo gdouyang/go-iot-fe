@@ -9,7 +9,7 @@
         :xl="6"
         style="margin-bottom: 24px;"
       >
-        <DeviceState :state="device.state" :runInfo="device" />
+        <DeviceState :state="device.state" :device="device" />
       </a-col>
       <a-col
         :xs="24"
@@ -33,7 +33,7 @@
         v-for="item in events"
         :key="item.id"
       >
-        <EventCard :item="item" :device="device" />
+        <EventCard :item="item" :device="device" :ref="'eventCard' + item.id"/>
       </a-col>
     </a-row>
   </a-spin>
@@ -62,7 +62,6 @@ export default {
       default: () => {}
     }
   },
-  inject: ['reloadFuncs'],
   data () {
     return {
       properties: [],
@@ -72,34 +71,34 @@ export default {
   },
   watch: {
     realtimeData (newVal) {
-      const that = this
-      _.forEach(this.properties, prop => {
-        prop.list.push({
-          timeString: newVal.createTime,
-          value: newVal[prop.id]
-        })
+      if (newVal.type === 'prop') {
+        const propData = newVal.data
+        const that = this
+        _.forEach(this.properties, prop => {
+          prop.list.push({
+            timeString: propData.createTime,
+            value: propData[prop.id]
+          })
 
-        if (_.size(prop.list) > 20) {
-          var list = []
-          for (var i = prop.list.length - 20; i < prop.list.length; i++) {
-            list.push(prop.list[i])
+          if (_.size(prop.list) > 20) {
+            var list = []
+            for (var i = prop.list.length - 20; i < prop.list.length; i++) {
+              list.push(prop.list[i])
+            }
+            prop.list = list
           }
-          prop.list = list
-        }
-        prop.value = newVal[prop.id]
-        that.$refs['propCard' + prop.id][0].getValue()
-      })
+          prop.value = propData[prop.id]
+          that.$refs['propCard' + prop.id][0].getValue()
+        })
+      } else if (newVal.type === 'event') {
+        this.$refs['eventCard' + newVal.eventId][0].inc()
+      }
     }
   },
   mounted () {
-    const checkerId = this.checkerId = 'status-' + _.uniqueId()
-    this.reloadFuncs.set(checkerId, () => {
-      this.propertiesRealTime()
-    })
     this.propertiesRealTime()
   },
   beforeDestroy () {
-    this.reloadFuncs.delete(this.checkerId)
   },
   methods: {
     propertiesRealTime () {
