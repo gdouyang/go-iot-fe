@@ -15,6 +15,7 @@
 <script>
 // import _ from 'lodash'
 import ChartCard from '@/components/Charts/ChartCard.vue'
+import { queryEvent } from '@/views/iot/device/api.js'
 export default {
   name: 'EventCard',
   props: {
@@ -56,10 +57,10 @@ export default {
   },
   methods: {
     getValue () {
-      this.$http.get(`/device/${ this.device.id }/event/${ this.item.id }?format=true&pageSize=1`)
+      queryEvent(this.device.id, this.item.id, { pageNum: 1, pageSize: 1 })
       .then(resp => {
         if (resp.success) {
-          this.formatValue = resp.result.total
+          this.formatValue = resp.result.totalCount
         }
       })
     }

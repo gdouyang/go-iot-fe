@@ -23,7 +23,7 @@
       >
         <PropertiesCard :item="item" :device="device" :ref="'propCard' + item.id" />
       </a-col>
-      <!-- <a-col
+      <a-col
         :xs="24"
         :sm="12"
         :md="12"
@@ -34,7 +34,7 @@
         :key="item.id"
       >
         <EventCard :item="item" :device="device" />
-      </a-col> -->
+      </a-col>
     </a-row>
   </a-spin>
 </template>
@@ -112,10 +112,12 @@ export default {
         _.forEach(properties, prop => {
           const list = []
           _.forEach(resp.result.list, item => {
-            list.push({
-              timeString: item.createTime,
-              value: item[prop.id]
-            })
+            if (!_.isNil(item[prop.id])) {
+              list.push({
+                timeString: item.createTime,
+                value: item[prop.id]
+              })
+            }
           })
           prop.list = list.reverse()
         })
