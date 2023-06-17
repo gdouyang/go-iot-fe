@@ -75,20 +75,21 @@ export default {
         const propData = newVal.data
         const that = this
         _.forEach(this.properties, prop => {
-          prop.list.push({
-            timeString: propData.createTime,
-            value: propData[prop.id]
-          })
-
-          if (_.size(prop.list) > 20) {
-            var list = []
-            for (var i = prop.list.length - 20; i < prop.list.length; i++) {
-              list.push(prop.list[i])
+          if (!_.isNil(propData[prop.id])) {
+            prop.list.push({
+              timeString: newVal.createTime,
+              value: propData[prop.id]
+            })
+            if (_.size(prop.list) > 20) {
+              var list = []
+              for (var i = prop.list.length - 20; i < prop.list.length; i++) {
+                list.push(prop.list[i])
+              }
+              prop.list = list
             }
-            prop.list = list
+            prop.value = propData[prop.id]
+            that.$refs['propCard' + prop.id][0].getValue()
           }
-          prop.value = propData[prop.id]
-          that.$refs['propCard' + prop.id][0].getValue()
         })
       } else if (newVal.type === 'event') {
         this.$refs['eventCard' + newVal.eventId][0].inc()
