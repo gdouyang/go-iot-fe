@@ -61,6 +61,9 @@
       <template v-if="ActiveTabKey === 'log'">
         <Log :deviceId="detailData.id" v-if="detailData.id"></Log>
       </template>
+      <template v-if="ActiveTabKey === 'properties'">
+        <Properties :device="detailData" v-if="detailData.id" />
+      </template>
     </PageHeaderWrapper>
   </a-spin>
 </template>
@@ -72,15 +75,17 @@ import Info from './detail/Info.vue'
 import Status from './detail/Status.vue'
 import Function from './detail/Function.vue'
 import Log from './detail/Log.vue'
+import Properties from './detail/Properties.vue'
 
 export default {
   name: 'DeviceDetail',
   components: {
     PageHeaderWrapper,
     Info,
-    Status, // ,
+    Status,
     Function,
-    Log
+    Log,
+    Properties
   },
   data () {
     return {
@@ -91,7 +96,8 @@ export default {
         { key: 'info', tab: '实例信息' },
         { key: 'status', tab: '运行状态' },
         { key: 'function', tab: '设备功能' },
-        { key: 'log', tab: '日志' }
+        { key: 'log', tab: '日志' },
+        { key: 'properties', tab: '属性' }
       ],
       realtimeData: {}
     }
