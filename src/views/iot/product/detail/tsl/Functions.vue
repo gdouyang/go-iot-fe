@@ -20,7 +20,6 @@
       v-if="visible"
       :product="product"
       :data="current"
-      :unitsData="unitsData"
       @save="saveData"
       @close="close"
     />
@@ -41,10 +40,6 @@ export default {
       default: () => {}
     },
     data: {
-      type: Array,
-      default: () => []
-    },
-    unitsData: {
       type: Array,
       default: () => []
     }

@@ -83,7 +83,15 @@ export default {
       this.data = item
     },
     GetData () {
-      return typeof (this.data.value) === 'object' ? JSON.stringify(this.data.value) : this.data.value || '/'
+      if (_.isNil(this.data.value)) {
+        return '/'
+      }
+      const unit = _.toString(this.item.valueType.unit)
+      if (typeof (this.data.value) === 'object') {
+        return JSON.stringify(this.data.value)
+      } else {
+        return this.data.value + unit
+      }
     }
   }
 }

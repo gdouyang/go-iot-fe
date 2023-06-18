@@ -19,7 +19,6 @@
     <EventsAdd
       v-if="visible"
       :data="current"
-      :unitsData="unitsData"
       @save="saveData"
       @close="close"
     />
@@ -36,10 +35,6 @@ export default {
   },
   props: {
     data: {
-      type: Array,
-      default: () => []
-    },
-    unitsData: {
       type: Array,
       default: () => []
     }

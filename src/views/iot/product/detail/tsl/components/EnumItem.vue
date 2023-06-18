@@ -8,9 +8,7 @@
             :value="item.value"
             @change="valueChange($event, index)" />
         </a-col>
-        <a-col
-          :span="1"
-          :style="{ textAlign: 'center' }">
+        <a-col :span="1" style="text-align: center;">
           <a-icon type="arrow-right" />
         </a-col>
         <a-col :span="10">
@@ -19,35 +17,17 @@
             :value="item.text"
             @change="textChange($event, index)" />
         </a-col>
-        <a-col
-          :span="3"
-          :style="{ textAlign: 'center' }">
-          <template
-            v-if="index === 0">
-            <a-icon
-              v-if="arrayEnumData.length - 1 === 0"
-              type="plus-circle"
-              @click="plus" />
-            <a-icon
-              v-else
-              type="minus-circle"
-              @click="minus(index)" />
+        <a-col :span="3" style="text-align: center;">
+          <template v-if="index === 0">
+            <a-icon v-if="arrayEnumData.length - 1 === 0" type="plus-circle" @click="plus" />
+            <a-icon v-else type="minus-circle" @click="minus(index)" />
           </template>
           <template v-else>
-            <a-row
-              v-if="index === arrayEnumData.length - 1">
-              <a-icon
-                type="plus-circle"
-                @click="plus" />
-              <a-icon
-                :style="{ paddingLeft: 10 }"
-                type="minus-circle"
-                @click="minus(index)" />
+            <a-row v-if="index === arrayEnumData.length - 1">
+              <a-icon type="plus-circle" @click="plus" />
+              <a-icon style="padding-left:10px;" type="minus-circle" @click="minus(index)" />
             </a-row>
-            <a-icon
-              type="minus-circle"
-              v-else
-              @click="minus(index)" />
+            <a-icon v-else type="minus-circle" @click="minus(index)" />
           </template>
         </a-col>
       </a-row>
@@ -64,17 +44,13 @@ export default {
     data: {
       type: Object,
       default: () => {}
-    },
-    unitsData: {
-      type: Array,
-      default: () => []
     }
   },
   created () {
-    if (_.has(this.data, 'elements')) {
+    if (_.has(this.data, 'elements') && !_.isEmpty(this.data.elements)) {
       this.arrayEnumData = this.data.elements
     } else {
-      this.arrayEnumData = [{ text: '', value: '', id: 0 }]
+      this.arrayEnumData = [{ text: '', value: '' }]
     }
   },
   data () {
@@ -97,7 +73,7 @@ export default {
       this.data.elements = datas
     },
     plus () {
-      this.setArrayEnumData([...this.arrayEnumData, { id: this.arrayEnumData.length + 1 }])
+      this.setArrayEnumData([...this.arrayEnumData, { text: '', value: '' }])
     },
     minus (index) {
       this.arrayEnumData.splice(index, 1)

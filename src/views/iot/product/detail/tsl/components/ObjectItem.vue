@@ -1,33 +1,22 @@
 <template>
   <div>
-    <a-form-model-item
-      label="JSON对象"
-    >
+    <a-form-model-item label="JSON对象">
       <a-list bordered :dataSource="properties" v-if="properties.length > 0">
         <template slot="renderItem" slot-scope="item">
           <a-list-item>
             参数名称：{{ item.name }}
             <template slot="actions">
-              <a-button
-                type="link"
-                @click="edit(item)"
-              >
+              <a-button type="link" @click="edit(item)">
                 编辑
               </a-button>
-              <a-button
-                type="link"
-                @click="remove(item)"
-              >
+              <a-button type="link" @click="remove(item)">
                 删除
               </a-button>
             </template>
           </a-list-item>
         </template>
       </a-list>
-      <a-button
-        type="link"
-        @click="add"
-      >
+      <a-button type="link" @click="add">
         <a-icon type="plus" />
         添加参数
       </a-button>
@@ -53,10 +42,6 @@ export default {
     data: {
       type: Object,
       default: () => {}
-    },
-    unitsData: {
-      type: Array,
-      default: () => []
     }
   },
   created () {

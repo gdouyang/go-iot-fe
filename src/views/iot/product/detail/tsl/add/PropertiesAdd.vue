@@ -79,10 +79,6 @@ export default {
     data: {
       type: Object,
       default: () => {}
-    },
-    unitsData: {
-      type: Array,
-      default: () => []
     }
   },
   created () {

@@ -30,17 +30,10 @@
             <a-col :md="6" :sm="24">
               <div :style="{ overflow: 'hidden' }">
                 <div :style="{ float: 'right', marginBottom: '24px' }">
-                  <a-button
-                    icon="search"
-                    type="primary"
-                    @click="search"
-                  >
+                  <a-button icon="search" type="primary" @click="search">
                     查询
                   </a-button>
-                  <a-button
-                    :style="{ marginLeft: '8px' }"
-                    @click="resetSearch"
-                  >
+                  <a-button :style="{ marginLeft: '8px' }" @click="resetSearch">
                     重置
                   </a-button>
                 </div>
@@ -49,13 +42,7 @@
           </a-row>
         </a-form>
       </div>
-      <PageTable
-        ref="tb"
-        :loading="false"
-        :columns="columns"
-        :url="tableUrl"
-        method="post"
-      >
+      <PageTable ref="tb" :columns="columns" :url="tableUrl">
         <span slot="action" slot-scope="text">
           <a size="small" @click="showDetail(text)">查看</a>
         </span>

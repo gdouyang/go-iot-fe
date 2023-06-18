@@ -46,7 +46,6 @@
               :propertyData="properties"
               :functionsData="functions"
               :eventsData="events"
-              :unitsData="units"
               @refresh="reloadDevice"
               @save="updateData"></TSL>
           </a-tab-pane>
@@ -85,8 +84,7 @@ export default {
       detailData: {},
       properties: [],
       functions: [],
-      events: [],
-      units: []
+      events: []
     }
   },
   mounted () {

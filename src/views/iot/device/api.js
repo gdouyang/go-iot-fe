@@ -68,7 +68,7 @@ export function queryProperty (deviceId, data) {
 }
 
 export function queryEvent (deviceId, eventId, data) {
-  return Vue.prototype.$http.post(`/device/${deviceId}/${eventId}/event`, data)
+  return Vue.prototype.$http.post(`/device/${deviceId}/event/${eventId}`, data)
 }
 
 export function queryLogs (deviceId, data) {

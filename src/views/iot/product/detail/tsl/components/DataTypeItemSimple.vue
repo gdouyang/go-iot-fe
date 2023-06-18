@@ -25,7 +25,7 @@
       <NumberItem :data="data[field]" />
     </template>
     <template v-else-if="['int', 'long'].indexOf(data[field].type) !== -1">
-      <!-- <IntergeItem :data="data[field]" /> -->
+      <IntegerItem :data="data[field]" />
     </template>
     <template v-else-if="['string'].indexOf(data[field].type) !== -1">
       <StringItem :data="data[field]" />
@@ -37,6 +37,7 @@
 </template>
 
 <script>
+import IntegerItem from './IntegerItem.vue'
 import NumberItem from './NumberItem.vue'
 import StringItem from './StringItem.vue'
 import BooleanItem from './BooleanItem.vue'
@@ -44,6 +45,7 @@ import BooleanItem from './BooleanItem.vue'
 export default {
   name: 'DataTypeItemSimple',
   components: {
+    IntegerItem,
     NumberItem,
     StringItem,
     BooleanItem
@@ -60,10 +62,6 @@ export default {
     data: {
       type: Object,
       default: () => {}
-    },
-    unitsData: {
-      type: Array,
-      default: () => []
     },
     prop: {
       type: String,

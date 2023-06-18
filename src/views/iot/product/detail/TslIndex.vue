@@ -7,13 +7,13 @@
           <a-button @click="showTSL">物模型</a-button>
         </template>
         <a-tab-pane key="1" tab="属性定义">
-          <Properties :product="product" :data="propertyData" :unitsData="unitsData" @save="saveProperties"/>
+          <Properties :product="product" :data="propertyData" @save="saveProperties"/>
         </a-tab-pane>
         <a-tab-pane key="2" tab="功能定义">
-          <Functions :product="product" :data="functionsData" :unitsData="unitsData" @save="saveFunctions"/>
+          <Functions :product="product" :data="functionsData" @save="saveFunctions"/>
         </a-tab-pane>
         <a-tab-pane key="3" tab="事件定义">
-          <Events :data="eventsData" :unitsData="unitsData" @save="saveEvents"/>
+          <Events :data="eventsData" @save="saveEvents"/>
         </a-tab-pane>
       </a-tabs>
     </a-spin>
@@ -49,10 +49,6 @@ export default {
       default: () => null
     },
     eventsData: {
-      type: [Object, Array],
-      default: () => null
-    },
-    unitsData: {
       type: [Object, Array],
       default: () => null
     }
