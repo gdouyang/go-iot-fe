@@ -68,7 +68,7 @@ export function queryProperty (deviceId, data) {
 }
 
 export function queryEvent (deviceId, eventId, data) {
-  return Vue.prototype.$http.post(`/device/${deviceId}/event/${eventId}`, data)
+  return Vue.prototype.$http.post(getDeviceEventsUrl(deviceId, eventId), data)
 }
 
 export function queryLogs (deviceId, data) {
@@ -81,6 +81,10 @@ export function getDeviceLogsUrl (deviceId) {
 
 export function getDevicePropertysUrl (deviceId) {
   return `/device/${deviceId}/properties`
+}
+
+export function getDeviceEventsUrl (deviceId, eventId) {
+  return `/device/${deviceId}/event/${eventId}`
 }
 
 export function getEventBusUrl (deviceId, topic) {
