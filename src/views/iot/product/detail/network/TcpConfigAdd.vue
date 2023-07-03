@@ -51,7 +51,7 @@
           ]"
         >
           <a-select v-model="addObj.configuration.delimeter.type" @change="parserTypeChange">
-            <a-select-option value="DIRECT">不处理</a-select-option>
+            <a-select-option value="NONE">不处理</a-select-option>
             <a-select-option value="Delimited">分隔符</a-select-option>
             <a-select-option value="FixLength">固定长度</a-select-option>
             <a-select-option value="SplitFunc">自定义脚本</a-select-option>
@@ -111,7 +111,7 @@ import 'brace/mode/javascript'
 import 'brace/theme/chrome'
 // import moment from 'moment'
 import _ from 'lodash'
-import { defaultTcpAddObj } from './entity.js'
+import { newTcpAddObj } from './entity.js'
 import Base from './Base.vue'
 
 export default {
@@ -132,7 +132,7 @@ export default {
         xs: { span: 24 },
         sm: { span: 16 }
       },
-      addObj: _.cloneDeep(defaultTcpAddObj),
+      addObj: newTcpAddObj(),
       isEdit: false,
       aceOptions: {
         enableBasicAutocompletion: true, // 启用基本自动完成功能
@@ -158,7 +158,7 @@ export default {
         return
       }
       this.productId = productId
-      this.getNetwork(productId, defaultTcpAddObj)
+      this.getNetwork(productId, newTcpAddObj())
       .then(data => {
         this.isEdit = false
         if (data.id) {
@@ -169,7 +169,7 @@ export default {
       })
     },
     addClose () {
-      this.addObj = _.cloneDeep(defaultTcpAddObj)
+      this.addObj = newTcpAddObj()
       this.$refs.addFormRef.resetFields()
     },
     addConfirm () {

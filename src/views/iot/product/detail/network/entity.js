@@ -1,21 +1,23 @@
-const defaultTcpAddObj = {
-  id: null,
-  name: '',
-  type: 'TCP_SERVER',
-  productId: null,
-  configuration: {
-    useTLS: false,
-    certificate: null,
-    host: '',
-    delimeter: {
-      type: null, // Delimited, FixLength
-      splitFunc: null,
-      length: null
+export function newTcpAddObj () {
+  return {
+    id: null,
+    name: '',
+    type: 'TCP_SERVER',
+    productId: null,
+    configuration: {
+      useTLS: false,
+      certificate: null,
+      host: '',
+      delimeter: {
+        type: 'NONE', // Delimited, FixLength
+        splitFunc: null,
+        length: null
+      }
     }
   }
 }
 
-function parserType (type) {
+export function parserType (type) {
   if (type === 'Delimited') {
     return '分隔符'
   } else if (type === 'FixLength') {
@@ -27,43 +29,47 @@ function parserType (type) {
   }
 }
 
-const defaultMqttAddObj = {
-  id: null,
-  name: '',
-  type: 'MQTT_BROKER',
-  productId: null,
-  configuration: {
-    useTLS: false,
-    certificate: null,
-    host: '',
-    port: null
+export function newMqttAddObj () {
+  return {
+    id: null,
+    name: '',
+    type: 'MQTT_BROKER',
+    productId: null,
+    configuration: {
+      useTLS: false,
+      certificate: null,
+      host: '',
+      port: null
+    }
   }
 }
 
-const defaultWebSocketAddObj = {
-  id: null,
-  name: '',
-  type: 'WEBSOCKET_SERVER',
-  productId: null,
-  configuration: {
-    useTLS: false,
-    certificate: null,
-    host: '',
-    routers: [{ url: '' }]
+export function newWebSocketAddObj () {
+  return {
+    id: null,
+    name: '',
+    type: 'WEBSOCKET_SERVER',
+    productId: null,
+    configuration: {
+      useTLS: false,
+      certificate: null,
+      host: '',
+      routers: [{ url: '' }]
+    }
   }
 }
 
-const defaultHttpAddObj = {
-  id: null,
-  name: '',
-  type: 'HTTP_SERVER',
-  productId: null,
-  configuration: {
-    useTLS: false,
-    certificate: null,
-    host: '',
-    routers: [{ url: '' }]
+export function newHttpAddObj () {
+  return {
+    id: null,
+    name: '',
+    type: 'HTTP_SERVER',
+    productId: null,
+    configuration: {
+      useTLS: false,
+      certificate: null,
+      host: '',
+      routers: [{ url: '' }]
+    }
   }
 }
-
-export { defaultTcpAddObj, parserType, defaultMqttAddObj, defaultWebSocketAddObj, defaultHttpAddObj }

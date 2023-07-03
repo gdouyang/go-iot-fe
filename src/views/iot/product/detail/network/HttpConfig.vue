@@ -18,7 +18,7 @@
 <script>
 // import moment from 'moment'
 import HttpConfigAdd from './HttpConfigAdd.vue'
-import { defaultHttpAddObj } from './entity.js'
+import { newHttpAddObj } from './entity.js'
 import _ from 'lodash'
 import Base from './Base.vue'
 
@@ -40,14 +40,16 @@ export default {
   },
   data () {
     return {
-      data: _.cloneDeep(defaultHttpAddObj)
+      data: newHttpAddObj()
     }
   },
   created () {
     if (!this.network) {
       this.getData()
     } else {
-      this.data = this.$_.cloneDeep(this.network)
+      const data = _.cloneDeep(this.network)
+      this.convertConfiguration(data, newHttpAddObj())
+      this.data = data
     }
   },
   computed: {
@@ -71,7 +73,7 @@ export default {
   },
   methods: {
     getData () {
-      this.getNetwork(this.productId, defaultHttpAddObj)
+      this.getNetwork(this.productId, newHttpAddObj())
       .then(data => {
         this.data = data
       })

@@ -18,7 +18,7 @@
 <script>
 // import moment from 'moment'
 import WebSocketConfigAdd from './WebSocketConfigAdd.vue'
-import { defaultWebSocketAddObj } from './entity.js'
+import { newWebSocketAddObj } from './entity.js'
 import _ from 'lodash'
 import Base from './Base.vue'
 
@@ -40,14 +40,16 @@ export default {
   },
   data () {
     return {
-      data: _.cloneDeep(defaultWebSocketAddObj)
+      data: newWebSocketAddObj()
     }
   },
   created () {
     if (!this.network) {
       this.getData()
     } else {
-      this.data = this.$_.cloneDeep(this.network)
+      const data = _.cloneDeep(this.network)
+      this.convertConfiguration(data, newWebSocketAddObj())
+      this.data = data
     }
   },
   computed: {
@@ -71,7 +73,7 @@ export default {
   },
   methods: {
     getData () {
-      this.getNetwork(this.productId, defaultWebSocketAddObj)
+      this.getNetwork(this.productId, newWebSocketAddObj())
       .then(data => {
         this.data = data
       })

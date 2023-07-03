@@ -50,7 +50,7 @@
 
 <script>
 import _ from 'lodash'
-import { defaultMqttAddObj } from './entity.js'
+import { newMqttAddObj } from './entity.js'
 import Base from './Base.vue'
 
 export default {
@@ -70,7 +70,7 @@ export default {
         xs: { span: 24 },
         sm: { span: 16 }
       },
-      addObj: _.cloneDeep(defaultMqttAddObj),
+      addObj: newMqttAddObj(),
       isEdit: false
     }
   },
@@ -85,7 +85,7 @@ export default {
         return
       }
       this.productId = productId
-      this.getNetwork(productId, defaultMqttAddObj)
+      this.getNetwork(productId, newMqttAddObj())
       .then(data => {
         this.isEdit = false
         if (data.id) {
@@ -96,7 +96,7 @@ export default {
       })
     },
     addClose () {
-      this.addObj = _.cloneDeep(defaultMqttAddObj)
+      this.addObj = newMqttAddObj()
       this.$refs.addFormRef.resetFields()
     },
     addConfirm () {

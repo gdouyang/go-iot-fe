@@ -67,7 +67,7 @@
 <script>
 // import moment from 'moment'
 import _ from 'lodash'
-import { defaultWebSocketAddObj } from './entity.js'
+import { newWebSocketAddObj } from './entity.js'
 import Base from './Base.vue'
 
 export default {
@@ -87,7 +87,7 @@ export default {
         xs: { span: 24 },
         sm: { span: 16 }
       },
-      addObj: _.cloneDeep(defaultWebSocketAddObj),
+      addObj: newWebSocketAddObj(),
       isEdit: false
     }
   },
@@ -102,7 +102,7 @@ export default {
         return
       }
       this.productId = productId
-      this.getNetwork(productId, defaultWebSocketAddObj)
+      this.getNetwork(productId, newWebSocketAddObj())
       .then(data => {
         this.isEdit = false
         if (data.id) {
@@ -113,7 +113,7 @@ export default {
       })
     },
     addClose () {
-      this.addObj = _.cloneDeep(defaultWebSocketAddObj)
+      this.addObj = newWebSocketAddObj()
       this.$refs.addFormRef.resetFields()
     },
     addConfirm () {

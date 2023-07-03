@@ -67,7 +67,7 @@
 <script>
 // import moment from 'moment'
 import _ from 'lodash'
-import { defaultHttpAddObj } from './entity.js'
+import { newHttpAddObj } from './entity.js'
 import Base from './Base.vue'
 
 export default {
@@ -87,7 +87,7 @@ export default {
         xs: { span: 24 },
         sm: { span: 16 }
       },
-      addObj: _.cloneDeep(defaultHttpAddObj),
+      addObj: newHttpAddObj(),
       isEdit: false
     }
   },
@@ -102,7 +102,7 @@ export default {
         return
       }
       this.productId = productId
-      this.getNetwork(productId, defaultHttpAddObj)
+      this.getNetwork(productId, newHttpAddObj())
       .then(data => {
         this.isEdit = false
         if (data.id) {
@@ -113,7 +113,7 @@ export default {
       })
     },
     addClose () {
-      this.addObj = _.cloneDeep(defaultHttpAddObj)
+      this.addObj = newHttpAddObj()
       this.$refs.addFormRef.resetFields()
     },
     addConfirm () {

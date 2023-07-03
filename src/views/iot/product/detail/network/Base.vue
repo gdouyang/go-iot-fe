@@ -39,6 +39,13 @@ export default {
     }
   },
   methods: {
+    convertConfiguration (source, dest) {
+      if (source.configuration) {
+        source.configuration = JSON.parse(source.configuration)
+      } else {
+        source.configuration = dest.configuration
+      }
+    },
     getNetwork (productId, defaultValue) {
       if (!productId) {
         this.$message.error('请指定产品ID')
@@ -47,11 +54,7 @@ export default {
       return getNetwork(productId).then(data => {
         var result = null
         if (data.result) {
-          if (data.result.configuration) {
-            data.result.configuration = JSON.parse(data.result.configuration)
-          } else {
-            data.result.configuration = _.cloneDeep(defaultValue).configuration
-          }
+          this.convertConfiguration(data.result, defaultValue)
           result = data.result
         } else {
           result = _.cloneDeep(defaultValue)

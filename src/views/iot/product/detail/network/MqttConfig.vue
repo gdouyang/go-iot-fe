@@ -16,7 +16,7 @@
 <script>
 // import moment from 'moment'
 import MqttConfigAdd from './MqttConfigAdd.vue'
-import { defaultMqttAddObj } from './entity.js'
+import { newMqttAddObj } from './entity.js'
 import _ from 'lodash'
 import Base from './Base.vue'
 
@@ -38,21 +38,23 @@ export default {
   },
   data () {
     return {
-      data: _.cloneDeep(defaultMqttAddObj)
+      data: newMqttAddObj()
     }
   },
   created () {
     if (!this.network) {
       this.getData()
     } else {
-      this.data = this.$_.cloneDeep(this.network)
+      const data = _.cloneDeep(this.network)
+      this.convertConfiguration(data, newMqttAddObj())
+      this.data = data
     }
   },
   computed: {
   },
   methods: {
     getData () {
-      this.getNetwork(this.productId, defaultMqttAddObj)
+      this.getNetwork(this.productId, newMqttAddObj())
       .then(data => {
         this.data = data
       })

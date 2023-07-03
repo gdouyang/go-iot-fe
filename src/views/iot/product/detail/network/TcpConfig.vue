@@ -17,7 +17,7 @@
 <script>
 // import moment from 'moment'
 import TcpConfigAdd from './TcpConfigAdd.vue'
-import { defaultTcpAddObj, parserType } from './entity.js'
+import { newTcpAddObj, parserType } from './entity.js'
 import _ from 'lodash'
 import Base from './Base.vue'
 
@@ -39,14 +39,16 @@ export default {
   },
   data () {
     return {
-      data: _.cloneDeep(defaultTcpAddObj)
+      data: newTcpAddObj()
     }
   },
   created () {
     if (!this.network) {
       this.getData()
     } else {
-      this.data = this.$_.cloneDeep(this.network)
+      const data = _.cloneDeep(this.network)
+      this.convertConfiguration(data, newTcpAddObj())
+      this.data = data
     }
   },
   computed: {
@@ -56,7 +58,7 @@ export default {
       return parserType(type)
     },
     getData () {
-      this.getNetwork(this.productId, defaultTcpAddObj)
+      this.getNetwork(this.productId, newTcpAddObj())
       .then(data => {
         this.data = data
       })
