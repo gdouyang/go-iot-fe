@@ -206,7 +206,7 @@ export default {
           this.detailData.state = 'online'
         } else if (data.type === 'offline') {
           this.detailData.state = 'offline'
-        } else if (data.type === 'prop' || data.type === 'event') {
+        } else if (data.type === 'property' || data.type === 'event') {
           this.realtimeData = data
         }
       }

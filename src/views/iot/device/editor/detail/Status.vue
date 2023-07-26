@@ -71,7 +71,7 @@ export default {
   },
   watch: {
     realtimeData (newVal) {
-      if (newVal.type === 'prop') {
+      if (newVal.type === 'property') {
         const propData = newVal.data
         const that = this
         _.forEach(this.properties, prop => {
