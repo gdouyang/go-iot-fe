@@ -3,7 +3,7 @@
     <a href="#" slot="extra">
       <a-icon type="sync" />
     </a>
-    <div slot="total" class="prop-data">{{ GetData() }}</div>
+    <div slot="total" class="prop-data" :title="lastData">{{ lastData }}</div>
     <MiniArea :height="40" color="#975FE4" :data="data.visitData" />
   </ChartCard>
 </template>
@@ -47,10 +47,11 @@ export default {
     return {
       data: {
         visitData: []
-      }
+      },
+      lastData: ''
     }
   },
-  mounted () {
+  created () {
     this.getValue()
   },
   methods: {
@@ -63,8 +64,7 @@ export default {
         if (dataType === 'object') {
           item.value = JSON.stringify(value.value) || '/'
         } else {
-          item.value = value.value || '/'
-          item.value = value.value || 0
+          item.value = _.isNil(value.value) ? '/' : value.value
         }
 
         // 特殊类型
@@ -81,16 +81,18 @@ export default {
         }
       }
       this.data = item
+      this.getLastData()
     },
-    GetData () {
+    getLastData () {
       if (_.isNil(this.data.value)) {
-        return '/'
+        this.lastData = '/'
+        return
       }
       const unit = _.toString(this.item.valueType.unit)
       if (typeof (this.data.value) === 'object') {
-        return JSON.stringify(this.data.value)
+        this.lastData = JSON.stringify(this.data.value)
       } else {
-        return this.data.value + unit
+        this.lastData = this.data.value + unit
       }
     }
   }
