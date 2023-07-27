@@ -43,7 +43,10 @@ function OnInvoke(context) {
     { caption: 'message.GetClientId()', meta: 'OnInvoke', value: 'var clientId = message.GetClientId()' },
     { caption: 'context.ReplyOk()', meta: 'OnInvoke', value: 'context.ReplyOk()' },
     { caption: 'context.ReplyFail()', meta: 'OnInvoke', value: 'context.ReplyFail("resaon")' },
-    { caption: 'context.HttpRequest()', meta: 'OnInvoke', value: 'var resp = context.HttpRequest({method:"", url:"", data:{}, header:{}})' }
+    { caption: 'context.HttpRequest()', meta: 'OnInvoke', value: 'var resp = context.HttpRequest({method:"", url:"", data:{}, header:{}})' },
+    // FuncInvoke
+    { caption: 'message.FunctionId', meta: 'FuncInvoke', value: 'var functionId = message.FunctionId;' },
+    { caption: 'message.Data', meta: 'FuncInvoke', value: 'var data = message.Data;' }
   ]
 }
 obj.demoCode = `// 检查在线状态

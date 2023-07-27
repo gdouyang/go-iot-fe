@@ -77,6 +77,7 @@ function OnMessage(context) {
 
 | 方法 | 说明 | 参数 | 返回值 |
 | --- | --- | ---- | ---- |
+| FunctionId | 功能id | - | string |
 | Data | 下发数据 | - | object |
 
 ```javascript

@@ -42,14 +42,17 @@ function OnInvoke(context) {
     { caption: 'context.GetDevice()', meta: 'OnInvoke', value: 'var deviceOper = context.GetDevice()' },
     { caption: 'message.GetClientId()', meta: 'OnInvoke', value: 'var clientId = message.GetClientId()' },
     { caption: 'context.ReplyOk()', meta: 'OnInvoke', value: 'context.ReplyOk()' },
-    { caption: 'context.GetConfig()', meta: 'OnInvoke', value: 'context.ReplyFail("resaon")' }
+    { caption: 'context.GetConfig()', meta: 'OnInvoke', value: 'context.ReplyFail("resaon")' },
+    // FuncInvoke
+    { caption: 'message.FunctionId', meta: 'FuncInvoke', value: 'var functionId = message.FunctionId;' },
+    { caption: 'message.Data', meta: 'FuncInvoke', value: 'var data = message.Data;' }
   ]
 }
 obj.demoCode = `// 设备报文 -> 物模型
 function OnMessage(context) {
   var session = context.GetSession();
   var payload = JSON.parse(context.MsgToString());
-  var topic = session.GetUrl();
+  var topic = context.GetUrl();
   // 根据路径来判断是什么类型
   if (topic.startsWith("/report-property")) {
     context.SaveProperties(payload)
@@ -64,7 +67,7 @@ function OnMessage(context) {
 
 // 物模型 -> 设备报文
 function OnInvoke(context) {
-  var message = context.getMessage();
+  var message = context.GetMessage();
   context.GetSession().SendText(JSON.stringify(message.Data))
 }
 `

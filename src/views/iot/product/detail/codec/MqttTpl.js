@@ -48,7 +48,10 @@ function OnInvoke(context) {
     { caption: 'context.GetDevice()', meta: 'OnInvoke', value: 'var deviceOper = context.GetDevice()' },
     { caption: 'message.GetClientId()', meta: 'OnInvoke', value: 'var clientId = message.GetClientId()' },
     { caption: 'context.ReplyOk()', meta: 'OnInvoke', value: 'context.ReplyOk()' },
-    { caption: 'context.ReplyFail()', meta: 'OnInvoke', value: 'context.ReplyFail("resaon")' }
+    { caption: 'context.ReplyFail()', meta: 'OnInvoke', value: 'context.ReplyFail("resaon")' },
+    // FuncInvoke
+    { caption: 'message.FunctionId', meta: 'FuncInvoke', value: 'var functionId = message.FunctionId;' },
+    { caption: 'message.Data', meta: 'FuncInvoke', value: 'var data = message.Data;' }
   ]
 }
 obj.demoCode = `function OnConnect(context) {
@@ -65,6 +68,8 @@ function OnMessage(context) {
   context.SaveProperties(data)
 }
 function OnInvoke(context) {
+  var msg = context.GetMessage();
+  msg.
 	console.log("OnInvoke: " + JSON.stringify(context.GetMessage().Data))
 	context.GetSession().Publish("test", JSON.stringify(context.GetMessage().Data))
 }
