@@ -10,13 +10,12 @@
       ref="AceEditor"
       v-model="script"
       lang="javascript"
-      theme="chrome"
-      width="900"
+      theme="tomorrow_night"
+      width="1000"
       height="450"
       :options="aceOptions"
-      @init="init"
     />
-    <div>
+    <div style="margin-top: 10px;">
       <a-button type="primary" @click="save">
         保存
       </a-button>
@@ -42,9 +41,10 @@ import AceEditor from 'vue2-ace-editor'
 import 'brace/ext/language_tools' // language extension prerequsite...
 import 'brace/ext/searchbox' // language extension prerequsite...
 import 'brace/mode/javascript'
-import 'brace/theme/chrome'
-// import 'brace/snippets/javascript'
-// import _ from 'lodash'
+import 'brace/theme/tomorrow_night'
+import 'brace/snippets/javascript'
+
+import _ from 'lodash'
 import TcpTpl from './codec/TcpTpl.js'
 import MqttTpl from './codec/MqttTpl.js'
 import WebSocketTpl from './codec/WebsocketTpl.js'
@@ -77,7 +77,8 @@ export default {
         tabSize: 2,
         wrapEnabled: true,
         showPrintMargin: true,
-        readOnly: true
+        readOnly: false,
+        fontSize: 14
       },
       editor: null,
       network: {},
@@ -102,9 +103,7 @@ export default {
           this.codeTip = this.getTpl().codeTip
           this.$nextTick(() => {
             const editor = this.$refs.AceEditor.editor
-            editor.setOptions({
-              readOnly: false
-            })
+            this.init(editor)
           })
         }
       })
@@ -145,30 +144,22 @@ export default {
       this.openDrawer = true
     },
     init (editor) {
-      // editor.on('change', this.change)
-      // editor.commands.addCommand({
-      //   name: 'save',
-      //   bindKey: { win: 'Ctrl-S', mac: 'Command-S' },
-      //   exec: editor => this.$emit('save-change', this.value, editor)
-      // })
-      // editor.commands.addCommand({
-      //   name: 'formatter',
-      //   bindKey: { win: 'Ctrl-Shift-F', mac: 'Command-Shift-F' },
-      //   exec: () => this.$emit('formatter', this.editor)
-      // })
       // 加入自定义语法提示
       const that = this
-      editor.completers = [{
+      editor.completers.push({
+        id: 'goiotCodeCompletions',
+        identifierRegexps: [/a-zA-Z_./],
         getCompletions: function (editor, session, pos, prefix, callback) {
           that.setCompletions(editor, session, pos, prefix, callback)
         }
-      }]
+      })
       this.editor = editor
     },
     setCompletions (editor, session, pos, prefix, callback) {
       const data = this.codeTip
       console.log(prefix)
-      if (prefix.length === 0) {
+      prefix = _.trim(prefix)
+      if (!prefix || prefix === '.' || prefix.length === 0) {
         return callback(null, [])
       } else {
         return callback(null, data)
