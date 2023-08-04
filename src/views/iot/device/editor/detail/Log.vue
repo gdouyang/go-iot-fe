@@ -16,6 +16,11 @@
                 </a-select>
               </a-form-item>
             </a-col>
+            <a-col :md="6" :sm="24">
+              <a-form-item label="TraceId">
+                <a-input v-model="searchParams.traceId" maxlength="100"/>
+              </a-form-item>
+            </a-col>
             <a-col :md="10" :sm="24">
               <a-form-item label="日期">
                 <a-range-picker
@@ -79,13 +84,15 @@ export default {
       ],
       columns: [
         { dataIndex: 'type', title: '类型', width: '120px' },
-        { dataIndex: 'createTime', title: '时间', width: '300px' },
+        { dataIndex: 'traceId', title: 'TraceId', width: '200px', ellipsis: true },
+        { dataIndex: 'createTime', title: '时间', width: '200px' },
         { dataIndex: 'content', title: '内容', ellipsis: true },
         { title: '操作', width: '200px', align: 'center', scopedSlots: { customRender: 'action' } }
       ],
       searchParams: {
         type: [],
-        createTime: []
+        createTime: [],
+        traceId: ''
       }
     }
   },
@@ -104,6 +111,9 @@ export default {
       }
       if (!_.isEmpty(this.searchParams.type)) {
         params.push({ key: 'type', oper: 'IN', value: this.searchParams.type })
+      }
+      if (!_.isEmpty(this.searchParams.traceId)) {
+        params.push({ key: 'traceId', value: _.trim(this.searchParams.traceId) })
       }
       this.$refs.tb.search(params)
     },

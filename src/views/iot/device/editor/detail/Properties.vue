@@ -65,9 +65,9 @@ export default {
     const properties = _.cloneDeep(metadata.properties)
     const columns = []
     _.forEach(properties, prop => {
-      columns.push({ dataIndex: prop.id, title: prop.name })
+      columns.push({ dataIndex: prop.id, title: prop.name, width: '100px', ellipsis: true })
     })
-    columns.push({ dataIndex: 'createTime', title: '时间' })
+    columns.push({ dataIndex: 'createTime', title: '时间', width: '120px' })
     this.columns = columns
     this.search()
   },
