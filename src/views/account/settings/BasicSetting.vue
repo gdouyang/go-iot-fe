@@ -49,20 +49,16 @@
 
     </a-row>
 
-    <!-- <avatar-modal ref="modal" @ok="setavatar"/> -->
-
   </div>
 </template>
 
 <script>
 import pick from 'lodash.pick'
-import AvatarModal from './AvatarModal'
 import { baseMixin } from '@/store/app-mixin'
 
 export default {
   mixins: [baseMixin],
   components: {
-    AvatarModal
   },
   data () {
     return {
