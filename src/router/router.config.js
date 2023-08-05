@@ -68,21 +68,6 @@ export const asyncRouterMap = [
       //   component: () => import('@/views/doc/Doc.vue'),
       //   meta: { title: '文档', keepAlive: true, icon: 'notification' }
       // },
-      // {
-      //   path: '/iot',
-      //   name: 'iotPage',
-      //   component: RouteView,
-      //   redirect: '/iot/product-list',
-      //   meta: { title: '设备管理', icon: 'setting' },
-      //   children: [
-      //     // {
-      //     //   path: '/iot/location-list',
-      //     //   name: 'LocationList',
-      //     //   component: () => import('@/views/iot/device/LocationList'),
-      //     //   meta: { title: '位置', keepAlive: true, permission: [ 'location-mgr' ] }
-      //     // },
-      //   ]
-      // },
       // sys
       {
         path: '/sys',
@@ -149,11 +134,7 @@ export const asyncRouterMap = [
                 path: '/account/settings/security',
                 name: 'SecuritySettings',
                 component: () => import('@/views/account/settings/Security'),
-                meta: {
-                  title: 'account.settings.menuMap.security',
-                  hidden: true,
-                  keepAlive: true
-                }
+                meta: { title: 'account.settings.menuMap.security', hidden: true, keepAlive: true }
               }
             ]
           }
@@ -183,16 +164,6 @@ export const constantRouterMap = [
         path: 'login',
         name: 'login',
         component: () => import('@/views/user/Login')
-      },
-      {
-        path: 'register',
-        name: 'register',
-        component: () => import('@/views/user/Register')
-      },
-      {
-        path: 'register-result',
-        name: 'registerResult',
-        component: () => import('@/views/user/RegisterResult')
       },
       {
         path: 'recover',
