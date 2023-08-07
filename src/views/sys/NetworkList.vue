@@ -49,6 +49,9 @@
         <a-tag color="#87d068" v-if="text === 'runing'">{{ text }}</a-tag>
         <a-tag color="#f50" v-else>{{ text }}</a-tag>
       </span>
+      <span slot="action" slot-scope="text, record">
+        <a @click="meters(record)">查看</a>
+      </span>
     </PageTable>
 
   </a-card>
@@ -70,8 +73,8 @@ export default {
         { title: '网络类型', dataIndex: 'type' },
         { title: '端口', dataIndex: 'port' },
         { title: '状态', dataIndex: 'state', scopedSlots: { customRender: 'state' } },
-        { title: '创建时间', dataIndex: 'createTime' }
-        // { title: '操作', width: '150px', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
+        { title: '创建时间', dataIndex: 'createTime' },
+        { title: '操作', width: '150px', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
       ]
     }
   },
@@ -100,6 +103,22 @@ export default {
     resetSearch () {
       this.searchObj = {}
       this.search()
+    },
+    meters (row) {
+      this.$http.get(`server/meters/${row.id}`).then(data => {
+        const content = JSON.stringify(data.result, null, 2)
+        this.$confirm({
+          width: '400px',
+          title: '信息',
+          content: (
+            <div>
+              <pre style="padding: 5px; background-color: #efefef;">{ content }</pre>
+            </div>
+          ),
+          okText: '确定',
+          cancelText: '关闭'
+        })
+      })
     }
   }
 }
