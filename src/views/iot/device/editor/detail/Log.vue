@@ -4,7 +4,7 @@
       <div>
         <a-form :labelCol="{ span: 6 }" :wrapperCol="{ span: 18 }">
           <a-row :gutter="{ md: 8, lg: 4, xl: 48 }">
-            <a-col :md="8" :sm="24">
+            <a-col :md="5" :sm="24">
               <a-form-item label="日志类型">
                 <a-select mode="multiple" v-model="searchParams.type">
                   <a-select-option
@@ -16,12 +16,12 @@
                 </a-select>
               </a-form-item>
             </a-col>
-            <a-col :md="6" :sm="24">
+            <a-col :md="5" :sm="24">
               <a-form-item label="TraceId">
                 <a-input v-model="searchParams.traceId" maxlength="100"/>
               </a-form-item>
             </a-col>
-            <a-col :md="10" :sm="24">
+            <a-col :md="8" :sm="24">
               <a-form-item label="日期">
                 <a-range-picker
                   v-model="searchParams.createTime"
