@@ -217,9 +217,9 @@ export default {
       this.$refs.DeviceImport.open()
     },
     batchDeploy () {
-      let msg = '确定要批量激活吗？'
+      let msg = `确定要激活${_.size(this.selectedRowKeys)}个设备吗？`
       if (_.isEmpty(this.selectedRowKeys)) {
-        msg = '确定要全部激活吗？'
+        msg = '确定要激活所有设备吗？'
       }
       this.$confirm({
         title: '确认',
@@ -236,9 +236,9 @@ export default {
       })
     },
     batchUndeploy () {
-      let msg = '确定要批量停用吗？'
+      let msg = `确定要停用${_.size(this.selectedRowKeys)}个设备吗？`
       if (_.isEmpty(this.selectedRowKeys)) {
-        msg = '确定要全部停用吗？'
+        msg = '确定要停用所有设备吗？'
       }
       this.$confirm({
         title: '确认',
