@@ -56,7 +56,9 @@
             <a size="small" @click="deploy(record.id)" v-else>发布</a>
             <template v-if="!record.state">
               <a-divider type="vertical" />
-              <a size="small" @click="deleteById(record.id)">删除</a>
+              <a-popconfirm title="确认删除？" @confirm="deleteById(record.id)">
+                <a>删除</a>
+              </a-popconfirm>
             </template>
           </span>
         </PageTable>
@@ -139,7 +141,7 @@ export default {
       this.search()
     },
     deploy (id) {
-      return deploy(id).then(data => {
+      deploy(id).then(data => {
         if (data.success) {
           this.$message.success('操作成功')
           this.search()
@@ -147,7 +149,7 @@ export default {
       })
     },
     unDeploy (id) {
-      return undeploy(id).then(data => {
+      undeploy(id).then(data => {
         if (data.success) {
           this.$message.success('操作成功')
           this.search()
@@ -155,16 +157,10 @@ export default {
       })
     },
     deleteById (id) {
-      this.$confirm({
-        title: '确认',
-        content: '确定要删除吗？',
-        onOk: () => {
-          remove(id).then(data => {
-            if (data.success) {
-              this.$message.success('操作成功')
-              this.search()
-            }
-          })
+      remove(id).then(data => {
+        if (data.success) {
+          this.$message.success('操作成功')
+          this.search()
         }
       })
     }

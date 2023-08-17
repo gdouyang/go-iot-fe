@@ -83,8 +83,8 @@ export default {
       columns: [
         { title: 'ID', dataIndex: 'id' },
         { title: '名称', dataIndex: 'name' },
-        { title: '创建时间', dataIndex: 'createTime', minWidth: 110 },
         { title: '状态', dataIndex: 'state', scopedSlots: { customRender: 'state' } },
+        { title: '创建时间', dataIndex: 'createTime', minWidth: 110 },
         { title: '操作', minWidth: 110, dataIndex: 'action', scopedSlots: { customRender: 'action' } }
       ],
       openModal: false,

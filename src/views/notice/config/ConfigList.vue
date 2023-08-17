@@ -93,6 +93,7 @@ export default {
         { title: '名称', dataIndex: 'name' },
         { title: '通知类型', dataIndex: 'type' },
         { title: '状态', dataIndex: 'state', scopedSlots: { customRender: 'state' } },
+        { title: '创建时间', dataIndex: 'createTime' },
         { title: '操作', width: '250px', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
       ],
       typeList: []

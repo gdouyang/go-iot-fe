@@ -70,7 +70,9 @@
             </a-popconfirm>
             <template v-if="record.state === 'noActive'">
               <a-divider type="vertical" />
-              <a size="small" @click="remove(record)">删除</a>
+              <a-popconfirm title="确认删除？" @confirm="remove(record)">
+                <a>删除</a>
+              </a-popconfirm>
             </template>
           </span>
         </PageTable>
@@ -204,16 +206,10 @@ export default {
       })
     },
     remove (row) {
-      this.$confirm({
-        title: '确认',
-        content: '确定要删除吗？',
-        onOk: () => {
-          remove(row.id).then((data) => {
-              if (data.success) {
-                this.$message.success('操作成功')
-                this.search()
-              }
-            })
+      remove(row.id).then((data) => {
+        if (data.success) {
+          this.$message.success('操作成功')
+          this.search()
         }
       })
     },
