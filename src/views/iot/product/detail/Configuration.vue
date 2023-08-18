@@ -83,7 +83,7 @@ export default {
       const conf = _.filter(this.configuration, p => p.property !== data.property)
       const param = {
         id: this.productId,
-        metaconfig: JSON.stringify(conf)
+        metaconfig: conf
       }
       updateProduct(this.productId, param).then((resp) => {
         if (resp.success) {

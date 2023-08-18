@@ -41,6 +41,7 @@
       <div slot="content">
         <a-descriptions :column="4">
           <a-descriptions-item label="ID">{{ detailData.id }}</a-descriptions-item>
+          <a-descriptions-item label="名称">{{ detailData.name }}</a-descriptions-item>
           <a-descriptions-item label="产品">
             <div>
               {{ detailData.productName }}

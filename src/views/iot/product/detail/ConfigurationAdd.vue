@@ -136,7 +136,11 @@ export default {
       })
     },
     updateData (item) {
-      updateProduct(this.productId, item).then((resp) => {
+      const param = {
+        id: this.productId,
+        metaconfig: item.metaconfig
+      }
+      updateProduct(this.productId, param).then((resp) => {
         if (resp.success) {
           this.$message.success('配置信息修改成功')
           this.visibleChange(false)
