@@ -12,7 +12,7 @@
         :rules="[
           { required: true, message: '设备ID不能为空', trigger: 'blur' },
           { max: 32, message: '设备ID不超过32个字符' },
-          { pattern: new RegExp(/^[0-9a-zA-Z_\-]+$/, 'g'), message: '产品ID只能由数字、字母、下划线、中划线组成' }
+          { pattern: new RegExp(/^[0-9a-zA-Z_\-]+$/, 'g'), message: '设备ID只能由数字、字母、下划线、中划线组成' }
         ]"
       >
         <a-input
