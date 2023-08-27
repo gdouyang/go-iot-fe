@@ -22,7 +22,6 @@
         >
           <a-input
             v-model="addObj.id"
-            :maxLength="32"
             :disabled="isEdit"
           ></a-input>
         </a-form-model-item>
