@@ -44,12 +44,8 @@ import 'brace/mode/javascript'
 import 'brace/theme/tomorrow_night'
 import 'brace/snippets/javascript'
 
-import _ from 'lodash'
-import TcpTpl from './codec/TcpTpl.js'
-import MqttTpl from './codec/MqttTpl.js'
-import WebSocketTpl from './codec/WebsocketTpl.js'
-import HttpTpl from './codec/HttpTpl.js'
-import Modbus from './codec/Modbus.js'
+// import _ from 'lodash'
+import { addCompletions, getCompletions } from './codec/CodeCompletions.js'
 
 export default {
   name: 'Codec1',
@@ -88,6 +84,11 @@ export default {
   created () {
     this.open()
   },
+  beforeDestroy () {
+    if (this.editor) {
+      this.editor.destroy()
+    }
+  },
   computed: {
     isClientNet () {
       return this.network.type === 'TCP_CLIENT' || this.network.type === 'MQTT_CLIENT' || this.network.type === 'MODBUS'
@@ -100,29 +101,13 @@ export default {
       .then(data => {
         if (data.success) {
           this.network = data.result
-          this.codeTip = this.getTpl().codeTip
+          this.codeTip = getCompletions(this.network.type)
           this.$nextTick(() => {
             const editor = this.$refs.AceEditor.editor
             this.init(editor)
           })
         }
       })
-    },
-    getTpl () {
-      var net = this.network
-      if (net.type === 'TCP_SERVER' || net.type === 'TCP_CLIENT') {
-        return TcpTpl
-      } else if (net.type === 'MQTT_BROKER' || net.type === 'MQTT_CLIENT') {
-        return MqttTpl
-      } else if (net.type === 'WEBSOCKET_SERVER') {
-        return WebSocketTpl
-      } else if (net.type === 'HTTP_SERVER') {
-        return HttpTpl
-      } else if (net.type === 'MODBUS') {
-        return Modbus
-      } else {
-        return { tpl: '' }
-      }
     },
     save () {
       this.$message.destroy()
@@ -144,26 +129,17 @@ export default {
       this.openDrawer = true
     },
     init (editor) {
-      // 加入自定义语法提示
+      // 保存快捷键
       const that = this
-      editor.completers.push({
-        id: 'goiotCodeCompletions',
-        identifierRegexps: [/a-zA-Z_./],
-        getCompletions: function (editor, session, pos, prefix, callback) {
-          that.setCompletions(editor, session, pos, prefix, callback)
-        }
+      editor.commands.addCommand({
+          name: 'save',
+          bindKey: { win: 'Ctrl-S', mac: 'Command-S' },
+          exec: function (arg) {
+            that.save()
+          }
       })
+      addCompletions(editor, this.codeTip)
       this.editor = editor
-    },
-    setCompletions (editor, session, pos, prefix, callback) {
-      const data = this.codeTip
-      console.log(prefix)
-      prefix = _.trim(prefix)
-      if (!prefix || prefix === '.' || prefix.length === 0) {
-        return callback(null, [])
-      } else {
-        return callback(null, data)
-      }
     },
     change () {
       setTimeout(() => {
