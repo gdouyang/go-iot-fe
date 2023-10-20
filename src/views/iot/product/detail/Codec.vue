@@ -1,24 +1,22 @@
 <template>
   <div>
-    <a-alert
-      style="margin-bottom: 5px;width: 900px;"
-      type="info"
-      show-icon>
-      <a slot="message" href="javascript:void(0)" @click="showDemo">查看样例</a>
-    </a-alert>
-    <AceEditor
-      ref="AceEditor"
-      v-model="script"
-      lang="javascript"
-      theme="tomorrow_night"
-      width="1000"
-      height="450"
-      :options="aceOptions"
-    />
-    <div style="margin-top: 10px;">
-      <a-button type="primary" @click="save">
-        保存
-      </a-button>
+    <div class="editor" :class="{'full-screen': fullScreen}">
+      <div class="toolbars">
+        <div>
+          <a href="javascript:void(0)" @click="save">保存</a>
+        </div>
+        <div>
+          <a href="javascript:void(0)" @click="showDemo">查看样例</a>
+          <a href="javascript:void(0)" @click="switchFullScreen">{{ fullScreen ? '退出全屏' : '全屏' }}</a>
+        </div>
+      </div>
+      <AceEditor
+        ref="AceEditor"
+        v-model="script"
+        lang="javascript"
+        theme="tomorrow_night"
+        :options="aceOptions"
+      />
     </div>
 
     <a-drawer
@@ -76,9 +74,9 @@ export default {
         readOnly: false,
         fontSize: 14
       },
-      editor: null,
       network: {},
-      openDrawer: false
+      openDrawer: false,
+      fullScreen: false
     }
   },
   created () {
@@ -128,6 +126,12 @@ export default {
     showDemo () {
       this.openDrawer = true
     },
+    switchFullScreen () {
+      this.fullScreen = !this.fullScreen
+      setTimeout(() => {
+        this.editor.resize(true)
+      })
+    },
     init (editor) {
       // 保存快捷键
       const that = this
@@ -149,5 +153,25 @@ export default {
   }
 }
 </script>
-<style lang="less">
+<style lang="less" scoped>
+.editor {
+  height: 450px;
+  width: 1000px;
+  &.full-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 99;
+    height: 100%;
+    width: 100%;
+  }
+}
+.toolbars {
+  background: #eee;
+  display: flex;
+  justify-content: space-between;
+  a {
+    margin: 0 5px;
+  }
+}
 </style>
