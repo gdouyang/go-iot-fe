@@ -10,13 +10,15 @@
           <a href="javascript:void(0)" @click="switchFullScreen">{{ fullScreen ? '退出全屏' : '全屏' }}</a>
         </div>
       </div>
-      <AceEditor
-        ref="AceEditor"
-        v-model="script"
-        lang="javascript"
-        theme="tomorrow_night"
-        :options="aceOptions"
-      />
+      <div class="ace-div">
+        <AceEditor
+          ref="AceEditor"
+          v-model="script"
+          lang="javascript"
+          theme="tomorrow_night"
+          :options="aceOptions"
+        />
+      </div>
     </div>
 
     <a-drawer
@@ -157,6 +159,9 @@ export default {
 .editor {
   height: 450px;
   width: 1000px;
+  .ace-div {
+    height: calc(450px - 21px);
+  }
   &.full-screen {
     position: fixed;
     top: 0;
@@ -164,6 +169,10 @@ export default {
     z-index: 99;
     height: 100%;
     width: 100%;
+    overflow: auto;
+    .ace-div {
+      height: calc(100% - 21px);
+    }
   }
 }
 .toolbars {
