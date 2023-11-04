@@ -43,27 +43,41 @@
         </a-row>
       </a-form>
     </div>
-
-    <PageTable ref="tb" size="default" url="server/list" :columns="columns">
+    <div class="table-operator">
+      <a-button type="primary" icon="plus" @click="handleAdd">新建</a-button>
+    </div>
+    <PageTable ref="tb" size="default" :url="tableUrl" :columns="columns">
       <span slot="state" slot-scope="text">
         <a-tag color="#87d068" v-if="text === 'runing'">{{ text }}</a-tag>
         <a-tag color="#f50" v-else>{{ text }}</a-tag>
       </span>
       <span slot="action" slot-scope="text, record">
         <a @click="meters(record)">查看</a>
+        <a-divider type="vertical" />
+        <a @click="handleEdit(record)">编辑</a>
+        <template v-if="!record.productId">
+          <a-divider type="vertical" />
+          <a-popconfirm title="确认删除？" @confirm="remove(record)">
+            <a>删除</a>
+          </a-popconfirm>
+        </template>
       </span>
     </PageTable>
-
+    <NetworkModal ref="modal" @ok="handleOk"></NetworkModal>
   </a-card>
 </template>
 
 <script>
+import { tableUrl, removeNetwork } from './networkapi.js'
+import NetworkModal from './modules/NetworkModal'
 export default {
   name: 'NetworkList',
   components: {
+    NetworkModal
   },
   data () {
     return {
+      tableUrl: tableUrl,
       // 查询参数
       searchObj: {},
       // 表头
@@ -74,7 +88,7 @@ export default {
         { title: '端口', dataIndex: 'port' },
         { title: '状态', dataIndex: 'state', scopedSlots: { customRender: 'state' } },
         { title: '创建时间', dataIndex: 'createTime' },
-        { title: '操作', width: '150px', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
+        { title: '操作', width: '180px', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
       ]
     }
   },
@@ -118,6 +132,23 @@ export default {
           okText: '确定',
           cancelText: '关闭'
         })
+      })
+    },
+    handleAdd () {
+      this.$refs.modal.add()
+    },
+    handleEdit (record) {
+      this.$refs.modal.edit(record)
+    },
+    handleOk () {
+      this.resetSearch()
+    },
+    remove (row) {
+      removeNetwork(row.id).then(data => {
+        if (data.success) {
+          this.$message.success('操作成功')
+          this.search()
+        }
       })
     }
   }

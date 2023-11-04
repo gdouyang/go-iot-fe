@@ -42,7 +42,9 @@
           <a>禁用</a>
         </a-popconfirm>
         <a-divider type="vertical" />
-        <a @click="remove(record)">删除</a>
+        <a-popconfirm title="确认删除？" @confirm="remove(record)">
+          <a>删除</a>
+        </a-popconfirm>
       </span>
     </PageTable>
 
@@ -74,7 +76,7 @@ export default {
         { title: '状态', dataIndex: 'enableFlag', scopedSlots: { customRender: 'enableFlag' } },
         { title: '描述', dataIndex: 'desc' },
         { title: '创建时间', dataIndex: 'createTime' },
-        { title: '操作', width: '150px', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
+        { title: '操作', width: '180px', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
       ]
     }
   },
@@ -129,16 +131,10 @@ export default {
     },
     remove (row) {
       const _this = this
-      this.$confirm({
-        title: '确认',
-        content: '确定要删除吗？',
-        onOk: () => {
-          removeUser(row.id).then(data => {
-            if (data.success) {
-              _this.$message.success('操作成功')
-              _this.handleOk()
-            }
-          })
+      removeUser(row.id).then(data => {
+        if (data.success) {
+          _this.$message.success('操作成功')
+          _this.handleOk()
         }
       })
     }
