@@ -94,6 +94,13 @@ export function getEventBusUrl (deviceId, topic) {
   return `ws://${window.location.host}/api/eventbus/${deviceId}/${topic}`
 }
 
+export function getTemplateDownloadUrl (productId) {
+  return `api/device/${productId}/template`
+}
+
+export function getImportResultUrl (token) {
+  return `api/device/import-result/${token}`
+}
 // export function getEvent (deviceId, itemId) {
 //   return Vue.prototype.$http.get(`/device/${ deviceId }/event/${ itemId }?format=true&pageSize=1`)
 // }

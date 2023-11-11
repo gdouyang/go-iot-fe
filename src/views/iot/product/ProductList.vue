@@ -33,7 +33,18 @@
           </a-form>
         </div>
         <div class="table-operator">
-          <a-button type="primary" icon="plus" @click="add">新建</a-button>
+          <a-button type="primary" icon="plus" @click="add" v-action:product-mgr:add>新建</a-button>
+          <a-upload
+            name="file"
+            v-action:product-mgr:add
+            accept=".json"
+            :multiple="false"
+            :showUploadList="false"
+            :withCredentials="true"
+            :before-upload="beforeUpload"
+          >
+            <a-button> <a-icon type="upload" /> 导入 </a-button>
+          </a-upload>
         </div>
         <PageTable ref="tb" :url="tableUrl" :columns="columns" rowKey="id">
           <span slot="deviceType" slot-scope="text">
@@ -45,21 +56,27 @@
           </span>
           <span slot="action" slot-scope="text, record">
             <a size="small" @click="detail(record.id)">查看</a>
-            <a-divider type="vertical" />
-            <a-popconfirm
-              v-if="record.state"
-              title="确认停用？"
-              @confirm="unDeploy(record.id)"
-            >
-              <a>停用</a>
-            </a-popconfirm>
-            <a size="small" @click="deploy(record.id)" v-else>发布</a>
-            <template v-if="!record.state">
+            <span v-action:product-mgr:add>
               <a-divider type="vertical" />
-              <a-popconfirm title="确认删除？" @confirm="deleteById(record.id)">
+              <a size="small" :href="getExportUrl(record.id)">导出</a>
+            </span>
+            <span v-action:product-mgr:save>
+              <a-divider type="vertical" />
+              <a-popconfirm
+                v-if="record.state"
+                title="确认停用？"
+                @confirm="unDeploy(record.id)"
+              >
+                <a>停用</a>
+              </a-popconfirm>
+              <a size="small" @click="deploy(record.id)" v-else>发布</a>
+            </span>
+            <span v-if="!record.state" v-action:product-mgr:delete>
+              <a-divider type="vertical" />
+              <a-popconfirm title="确认删除？" @confirm="deleteById(record.id)" >
                 <a>删除</a>
               </a-popconfirm>
-            </template>
+            </span>
           </span>
         </PageTable>
       </div>
@@ -72,7 +89,7 @@
 <script>
 import _ from 'lodash'
 // import moment from 'moment'
-import { tableUrl, deploy, undeploy, remove } from '@/views/iot/product/api.js'
+import { tableUrl, deploy, undeploy, remove, getExportUrl, uploadProduct } from '@/views/iot/product/api.js'
 import ProductAdd from './modules/ProductAdd.vue'
 import Detail from './DetailIndex.vue'
 
@@ -95,7 +112,7 @@ export default {
         { title: '状态', dataIndex: 'state', scopedSlots: { customRender: 'state' } },
         { title: '创建时间', dataIndex: 'createTime' },
         { title: '说明', dataIndex: 'desc' },
-        { title: '操作', dataIndex: 'action', minWidth: 110, scopedSlots: { customRender: 'action' } }
+        { title: '操作', dataIndex: 'action', minWidth: 150, scopedSlots: { customRender: 'action' } }
       ],
       GetDetailStatus: false
     }
@@ -163,6 +180,21 @@ export default {
           this.search()
         }
       })
+    },
+    getExportUrl (id) {
+      return getExportUrl(id)
+    },
+    beforeUpload (file) {
+      uploadProduct(file)
+      .then((resp) => {
+        if (resp.success) {
+          this.$message.success('操作成功')
+          this.search()
+        } else {
+          this.$message.success(resp.message)
+        }
+      })
+      return false
     }
   }
 }

@@ -21,7 +21,7 @@
         prop="productId"
         :rules="[{ required: true, message: '请选择产品', trigger: 'blur' }]"
       >
-        <a-select v-model="addObj.productId" placeholder="产品">
+        <a-select v-model="addObj.productId" placeholder="产品" @change="productIdChange">
           <a-select-option v-for="p in productList" :key="p.id" :value="p.id">{{ p.name }}</a-select-option>
         </a-select>
       </a-form-model-item>
@@ -33,6 +33,7 @@
       >
         <a-upload
           name="file"
+          accept=".xlsx"
           :multiple="false"
           :showUploadList="false"
           :withCredentials="true"
@@ -44,7 +45,7 @@
         <span>{{ addObj.fileName }}</span>
       </a-form-model-item>
       <div v-if="addObj.productId">
-        <a :href="`api/device/${addObj.productId}/template`">下载模版</a>
+        <a :href="templateDownloadUrl">下载模版</a>
       </div>
       <div v-if="importLoading">
         <a-badge status="success" text="已完成" v-if="isFinish"/>
@@ -57,6 +58,7 @@
 </template>
 
 <script>
+import { getTemplateDownloadUrl, getImportResultUrl } from '../api'
 import _ from 'lodash'
 const defaultAddObj = {
   productId: undefined,
@@ -80,7 +82,8 @@ export default {
       okBtnLoading: false,
       isFinish: false,
       count: 0,
-      errMessage: null
+      errMessage: null,
+      templateDownloadUrl: ''
     }
   },
   created () {},
@@ -126,7 +129,7 @@ export default {
       })
     },
     showImportResult (id) {
-      var source = new EventSource(`api/device/import-result/${id}`)
+      var source = new EventSource(getImportResultUrl(id))
       source.onmessage = (e) => {
         const res = JSON.parse(e.data)
         if (res.success) {
@@ -164,6 +167,9 @@ export default {
           this.productList = resp.result
         }
       })
+    },
+    productIdChange () {
+      this.templateDownloadUrl = getTemplateDownloadUrl(this.addObj.productId)
     }
   }
 }

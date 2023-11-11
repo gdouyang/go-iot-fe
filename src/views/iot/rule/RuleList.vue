@@ -27,7 +27,7 @@
     </div>
 
     <div class="table-operator">
-      <a-button type="primary" icon="plus" @click="handleAdd">新建</a-button>
+      <a-button type="primary" icon="plus" @click="handleAdd" v-action:rule-mgr:add>新建</a-button>
     </div>
 
     <PageTable ref="tb" :url="url" :columns="columns">
@@ -39,15 +39,17 @@
         <a @click="edit(record)">查看</a>
         <a-divider type="vertical"/>
         <span v-if="record.state === 'stopped'">
-          <a-popconfirm title="确认启动？" @confirm="start(record)">
+          <a-popconfirm title="确认启动？" @confirm="start(record)" v-action:rule-mgr:save>
             <a>启动</a>
           </a-popconfirm>
-          <a-divider type="vertical"/>
-          <a-popconfirm title="确认删除？" @confirm="deleteScene(record.id)">
-            <a>删除</a>
-          </a-popconfirm>
+          <span v-action:rule-mgr:delete>
+            <a-divider type="vertical"/>
+            <a-popconfirm title="确认删除？" @confirm="deleteScene(record.id)">
+              <a>删除</a>
+            </a-popconfirm>
+          </span>
         </span>
-        <a-popconfirm v-else title="确认停止？" @confirm="stop(record)">
+        <a-popconfirm v-else title="确认停止？" @confirm="stop(record)" v-action:rule-mgr:save>
           <a>停止</a>
         </a-popconfirm>
       </span>

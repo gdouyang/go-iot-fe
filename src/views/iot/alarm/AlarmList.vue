@@ -40,8 +40,10 @@
       </span>
       <span slot="action" slot-scope="text, record">
         <a @click="detail(record)">详情</a>
-        <a-divider type="vertical"/>
-        <a @click="edit(record)" v-if="record.state !== 'solve'">处理</a>
+        <span v-if="record.state !== 'solve'" v-action:alarm-mgr:save>
+          <a-divider type="vertical"/>
+          <a @click="edit(record)">处理</a>
+        </span>
       </span>
     </PageTable>
 

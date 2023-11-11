@@ -19,16 +19,18 @@
     </div>
 
     <div class="table-operator">
-      <a-button type="primary" icon="plus" @click="handleAdd">新建</a-button>
+      <a-button type="primary" icon="plus" @click="handleAdd" v-action:role-mgr:add>新建</a-button>
     </div>
 
     <PageTable ref="tb" :url="url" :columns="columns">
       <span slot="action" slot-scope="text, record">
-        <a @click="handleEdit(record)">编辑</a>
-        <a-divider type="vertical" />
-        <a-popconfirm title="确认删除？" @confirm="remove(record)">
-          <a>删除</a>
-        </a-popconfirm>
+        <a @click="handleEdit(record)" v-action:role-mgr:save>编辑</a>
+        <span v-action:role-mgr:delete>
+          <a-divider type="vertical" />
+          <a-popconfirm title="确认删除？" @confirm="remove(record)">
+            <a>删除</a>
+          </a-popconfirm>
+        </span>
       </span>
     </PageTable>
 

@@ -44,7 +44,7 @@
       </a-form>
     </div>
     <div class="table-operator">
-      <a-button type="primary" icon="plus" @click="handleAdd">新建</a-button>
+      <a-button type="primary" icon="plus" @click="handleAdd" v-action:network-config:add>新建</a-button>
     </div>
     <PageTable ref="tb" size="default" :url="tableUrl" :columns="columns">
       <span slot="state" slot-scope="text">
@@ -53,14 +53,16 @@
       </span>
       <span slot="action" slot-scope="text, record">
         <a @click="meters(record)">查看</a>
-        <a-divider type="vertical" />
-        <a @click="handleEdit(record)">编辑</a>
-        <template v-if="!record.productId">
+        <span v-action:network-config:save>
+          <a-divider type="vertical" />
+          <a @click="handleEdit(record)">编辑</a>
+        </span>
+        <span v-if="!record.productId" v-action:network-config:delete>
           <a-divider type="vertical" />
           <a-popconfirm title="确认删除？" @confirm="remove(record)">
             <a>删除</a>
           </a-popconfirm>
-        </template>
+        </span>
       </span>
     </PageTable>
     <NetworkModal ref="modal" @ok="handleOk"></NetworkModal>

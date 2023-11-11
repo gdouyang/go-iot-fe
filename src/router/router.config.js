@@ -103,7 +103,7 @@ export const asyncRouterMap = [
             path: '/sys/network-list',
             name: 'NetWorkList',
             component: () => import('@/views/sys/NetworkList'),
-            meta: { title: '网络管理', keepAlive: true, permission: [ 'sys-config' ] }
+            meta: { title: '网络管理', keepAlive: true, permission: [ 'network-config' ] }
           }
         ]
       },

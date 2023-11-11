@@ -36,7 +36,7 @@
     </div>
 
     <div class="table-operator">
-      <a-button type="primary" icon="plus" @click="handleAdd">新建</a-button>
+      <a-button type="primary" icon="plus" @click="handleAdd" v-action:notify-config:add>新建</a-button>
     </div>
 
     <PageTable ref="tb" :url="url" :columns="columns">
@@ -45,20 +45,26 @@
         <a-tag color="#f50" v-else>{{ text }}</a-tag>
       </span>
       <span slot="action" slot-scope="text, record">
-        <a @click="handleEdit(record)">编辑</a>
-        <a-divider type="vertical" />
-        <a @click="remove(record)">删除</a>
-        <a-divider type="vertical" />
-        <a-popconfirm title="确认复制？" @confirm="copy(record)">
-          <a>复制</a>
-        </a-popconfirm>
-        <a-divider type="vertical"/>
-        <a-popconfirm title="确认停止？" @confirm="stop(record)" v-if="record.state !== 'stopped'">
-          <a>停止</a>
-        </a-popconfirm>
-        <a-popconfirm title="确认启动？" @confirm="start(record)" v-else>
-          <a>启动</a>
-        </a-popconfirm>
+        <a @click="handleEdit(record)" v-action:notify-config:save>编辑</a>
+        <span v-action:notify-config:delete>
+          <a-divider type="vertical" />
+          <a @click="remove(record)">删除</a>
+        </span>
+        <span v-action:notify-config:add>
+          <a-divider type="vertical" />
+          <a-popconfirm title="确认复制？" @confirm="copy(record)">
+            <a>复制</a>
+          </a-popconfirm>
+        </span>
+        <span v-action:notify-config:save>
+          <a-divider type="vertical"/>
+          <a-popconfirm title="确认停止？" @confirm="stop(record)" v-if="record.state !== 'stopped'">
+            <a>停止</a>
+          </a-popconfirm>
+          <a-popconfirm title="确认启动？" @confirm="start(record)" v-else>
+            <a>启动</a>
+          </a-popconfirm>
+        </span>
       </span>
     </PageTable>
 

@@ -41,10 +41,10 @@
           </a-form>
         </div>
         <div class="table-operator">
-          <a-button type="primary" icon="plus" @click="add">新建</a-button>
-          <a-button icon="upload" @click="showImport">批量导入设备</a-button>
-          <a-button icon="link" @click="batchDeploy">批量激活</a-button>
-          <a-button icon="disconnect" @click="batchUndeploy">批量停用</a-button>
+          <a-button type="primary" icon="plus" @click="add" v-action:device-mgr:add>新建</a-button>
+          <a-button icon="upload" @click="showImport" v-action:device-mgr:add>批量导入设备</a-button>
+          <a-button icon="link" @click="batchDeploy" v-action:device-mgr:save>批量激活</a-button>
+          <a-button icon="disconnect" @click="batchUndeploy" v-action:device-mgr:save>批量停用</a-button>
         </div>
         <PageTable ref="tb" :url="tableUrl" :columns="columns" rowKey="id" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }">
           <span slot="state" slot-scope="text">
@@ -57,23 +57,27 @@
           </span>
           <span slot="action" slot-scope="text, record">
             <a size="small" @click="detail(record.id)">查看</a>
-            <a-divider type="vertical" />
-            <a size="small" @click="edit(record)">修改</a>
-            <a-divider type="vertical" />
-            <a size="small" @click="deploy(record.id)" v-if="record.state === 'noActive'">激活</a>
-            <a-popconfirm
-              v-else
-              title="确认停用？"
-              @confirm="unDeploy(record.id)"
-            >
-              <a>停用</a>
-            </a-popconfirm>
-            <template v-if="record.state === 'noActive'">
+            <span v-action:device-mgr:save>
+              <a-divider type="vertical" />
+              <a size="small" @click="edit(record)">修改</a>
+            </span>
+            <span v-action:device-mgr:save>
+              <a-divider type="vertical" />
+              <a size="small" @click="deploy(record.id)" v-if="record.state === 'noActive'">激活</a>
+              <a-popconfirm
+                v-else
+                title="确认停用？"
+                @confirm="unDeploy(record.id)"
+              >
+                <a>停用</a>
+              </a-popconfirm>
+            </span>
+            <span v-if="record.state === 'noActive'" v-action:device-mgr:delete>
               <a-divider type="vertical" />
               <a-popconfirm title="确认删除？" @confirm="remove(record)">
                 <a>删除</a>
               </a-popconfirm>
-            </template>
+            </span>
           </span>
         </PageTable>
       </div>
@@ -99,7 +103,7 @@
 
 <script>
 import _ from 'lodash'
-import { pageUrl, remove, undeploy, deploy, batchDeploy, batchUndeploy, getProductList } from '@/views/iot/device/api.js'
+import { pageUrl, remove, undeploy, deploy, batchDeploy, batchUndeploy, getProductList, getImportResultUrl } from '@/views/iot/device/api.js'
 import DeviceAdd from './modules/DeviceAdd.vue'
 import DeviceImport from './modules/DeviceImport.vue'
 import DeviceDetail from './editor/Index.vue'
@@ -256,7 +260,7 @@ export default {
     },
     showProcessResult (token) {
       this.$refs.processModal.open()
-      var source = new EventSource(`api/device/import-result/${token}`)
+      var source = new EventSource(getImportResultUrl(token))
       source.onmessage = (e) => {
         const res = JSON.parse(e.data)
         if (res.success) {

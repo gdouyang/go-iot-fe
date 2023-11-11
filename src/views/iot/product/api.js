@@ -63,3 +63,13 @@ export function updateNetwork (saveData) {
 export function runNetwork (productId, state) {
   return Vue.prototype.$http.post(`product/network/${productId}/run?state=${state}`)
 }
+
+export function getExportUrl (productId) {
+  return `api/product/${productId}/export`
+}
+
+export function uploadProduct (file) {
+  const formData = new FormData()
+  formData.append('file', file)
+  return Vue.prototype.$http.post(`product/import`, formData)
+}
