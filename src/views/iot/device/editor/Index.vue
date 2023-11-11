@@ -18,24 +18,26 @@
             <span>设备：{{ GetDeviceId }}</span>
           </span>
           <a-badge :color="DeviceState === 'online' ? 'green' : 'red'" :text="DeviceState" style="margin-left: 10px"/>
-          <a-popconfirm
-            title="确认让此设备断开连接？"
-            @confirm="disconnectDevice"
-            v-if="DeviceState === 'online'">
-            <a style="font-size: 12px;margin-left: 10px;">断开连接</a>
-          </a-popconfirm>
-          <a-popconfirm
-            title="确认激活此设备？"
-            @confirm="changeDeploy"
-            v-else-if="DeviceState === 'noActive'">
-            <a style="font-size: 12px;margin-left: 10px;">激活设备</a>
-          </a-popconfirm>
-          <a-popconfirm
-            title="确认连接设备？"
-            @confirm="connectDevice"
-            v-else-if="isNetClientType">
-            <a style="font-size: 12px;margin-left: 10px;">连接</a>
-          </a-popconfirm>
+          <span v-action:device-mgr:save>
+            <a-popconfirm
+              title="确认让此设备断开连接？"
+              @confirm="disconnectDevice"
+              v-if="DeviceState === 'online'">
+              <a style="font-size: 12px;margin-left: 10px;">断开连接</a>
+            </a-popconfirm>
+            <a-popconfirm
+              title="确认激活此设备？"
+              @confirm="changeDeploy"
+              v-else-if="DeviceState === 'noActive'">
+              <a style="font-size: 12px;margin-left: 10px;">激活设备</a>
+            </a-popconfirm>
+            <a-popconfirm
+              title="确认连接设备？"
+              @confirm="connectDevice"
+              v-else-if="isNetClientType">
+              <a style="font-size: 12px;margin-left: 10px;">连接</a>
+            </a-popconfirm>
+          </span>
         </a-row>
       </div>
       <div slot="content">

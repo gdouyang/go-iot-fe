@@ -55,7 +55,7 @@
             <a-tag color="#f50" v-else>停用</a-tag>
           </span>
           <span slot="action" slot-scope="text, record">
-            <a size="small" @click="detail(record.id)">查看</a>
+            <a size="small" @click="detail(record.id)" v-action:product-mgr:add>查看</a>
             <span v-action:product-mgr:add>
               <a-divider type="vertical" />
               <a size="small" :href="getExportUrl(record.id)">导出</a>

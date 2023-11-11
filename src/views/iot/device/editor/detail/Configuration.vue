@@ -3,20 +3,20 @@
     <a-descriptions :style="{marginBottom: 20}" :column="3" size="small">
       <span slot="title">
         配置
-        <a-popconfirm title="确认重新应用该配置？" @confirm="changeDeploy">
+        <a-popconfirm title="确认重新应用该配置？" @confirm="changeDeploy" v-action:device-mgr:save>
           <a-button type="link" style="padding-right: 2px;">应用配置</a-button>
         </a-popconfirm>
         <a-tooltip title="修改配置后需重新应用后才能生效。">
           <a-icon type="question-circle-o"/>
         </a-tooltip>
-        <template v-if="canResetConfig">
+        <span v-if="canResetConfig" v-action:device-mgr:save>
           <a-popconfirm title="确认恢复默认配置？" @confirm="configurationReset">
             <a-button type="link" style="padding-right: 2px;">恢复默认</a-button>
           </a-popconfirm>
           <a-tooltip :title="`该设备单独编辑过[${deviceConfigKeys}]，点击此将恢复成默认的配置信息，请谨慎操作。`">
             <a-icon type="question-circle-o"/>
           </a-tooltip>
-        </template>
+        </span>
       </span>
     </a-descriptions>
 
@@ -26,7 +26,7 @@
           <a-tooltip :title="item.desc">
             <span>{{ item.property }}</span>
           </a-tooltip>
-          <a-button icon="edit" type="link" @click="editConfigItem(item)"></a-button>
+          <a-button icon="edit" type="link" @click="editConfigItem(item)" v-action:device-mgr:save></a-button>
         </span>
         <span>{{ getValue(item) }}</span>
       </a-descriptions-item>

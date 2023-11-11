@@ -10,26 +10,28 @@
             <span>产品：{{ detailData.name }}</span>
           </span>
           <a-badge :color="detailData.state ? 'green' : 'red'" :text="detailData.state ? '发布' : '停用'" style="margin-left: 10px"/>
-          <a-popconfirm
-            title="确认停用？"
-            @confirm="unDeploy"
-            v-if="detailData.state">
-            <a style="font-size: 12px;margin-left: 10px;">停用</a>
-          </a-popconfirm>
-          <a-popconfirm
-            title="确认发布？"
-            @confirm="deploy"
-            v-if="!detailData.state">
-            <a style="font-size: 12px;margin-left: 10px;">发布</a>
-          </a-popconfirm>
-          <a-tooltip title="修改物模型后需要重新应用配置" placement="bottom">
+          <span v-action:product-mgr:save>
             <a-popconfirm
-              title="确认重新应用该配置？"
-              @confirm="deploy"
+              title="确认停用？"
+              @confirm="unDeploy"
               v-if="detailData.state">
-              <a style="font-size: 12px;margin-left: 10px;">应用配置</a>
+              <a style="font-size: 12px;margin-left: 10px;">停用</a>
             </a-popconfirm>
-          </a-tooltip>
+            <a-popconfirm
+              title="确认发布？"
+              @confirm="deploy"
+              v-if="!detailData.state">
+              <a style="font-size: 12px;margin-left: 10px;">发布</a>
+            </a-popconfirm>
+            <a-tooltip title="修改物模型后需要重新应用配置" placement="bottom">
+              <a-popconfirm
+                title="确认重新应用该配置？"
+                @confirm="deploy"
+                v-if="detailData.state">
+                <a style="font-size: 12px;margin-left: 10px;">应用配置</a>
+              </a-popconfirm>
+            </a-tooltip>
+          </span>
         </a-row>
       </div>
       <a-card :bordered="false">

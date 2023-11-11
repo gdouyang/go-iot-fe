@@ -4,7 +4,7 @@
       <a-descriptions bordered :column="2" size="small">
         <span slot="title">
           设备信息
-          <a-button icon="edit" :style="{marginLeft: 20}" type="link" @click="openBasicInfo">编辑</a-button>
+          <a-button icon="edit" :style="{marginLeft: 20}" type="link" @click="openBasicInfo" v-action:device-mgr:save>编辑</a-button>
         </span>
         <a-descriptions-item label="产品名称" :span="1">{{ device.productName }}</a-descriptions-item>
         <a-descriptions-item label="创建时间" :span="1">{{ GetCreateTime }}</a-descriptions-item>
