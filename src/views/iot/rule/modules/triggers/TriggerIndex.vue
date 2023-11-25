@@ -68,85 +68,86 @@
             </a-select>
           </a-col>
         </a-col>
-        <a-col
-          v-if="scene.trigger.filterType === 'properties' || scene.trigger.filterType === 'event'"
-          :span="24"
-          style="margin-top: 5px;"
-          v-for="(item, index) in scene.trigger.filters"
-          :key="index">
-          <div v-if="index != 0">
+        <template v-if="scene.trigger.filterType === 'properties' || scene.trigger.filterType === 'event'">
+          <a-col
+            :span="24"
+            style="margin-top: 5px;"
+            v-for="(item, index) in scene.trigger.filters"
+            :key="index">
+            <div v-if="index != 0">
+              <a-col :span="8">
+                <a-select
+                  placeholder="逻辑符"
+                  v-model="item.logic"
+                >
+                  <a-select-option value="and">AND</a-select-option>
+                  <a-select-option value="or">OR</a-select-option>
+                </a-select>
+              </a-col>
+            </div>
             <a-col :span="8">
               <a-select
-                placeholder="逻辑符"
-                v-model="item.logic"
+                placeholder="过滤条件KEY"
+                v-model="item.key"
+                @change="filterKeyChange($event, item)"
               >
-                <a-select-option value="and">AND</a-select-option>
-                <a-select-option value="or">OR</a-select-option>
+                <a-select-option v-for="d in dataSource" :value="d.id" :key="d.id">{{ d.id }}</a-select-option>
               </a-select>
             </a-col>
-          </div>
-          <a-col :span="8">
-            <a-select
-              placeholder="过滤条件KEY"
-              v-model="item.key"
-              @change="filterKeyChange($event, item)"
-            >
-              <a-select-option v-for="d in dataSource" :value="d.id" :key="d.id">{{ d.id }}</a-select-option>
-            </a-select>
+            <a-col :span="4" v-if="item.valueType.type !== 'this'">
+              <a-select
+                placeholder="操作符"
+                v-model="item.operator"
+              >
+                <a-select-option value="eq">等于(=)</a-select-option>
+                <a-select-option value="not">不等于(!=)</a-select-option>
+                <template v-if="isNumberType(item)">
+                  <a-select-option value="gt">大于(>)</a-select-option>
+                  <a-select-option value="lt">小于(&lt;)</a-select-option>
+                  <a-select-option value="gte">大于等于(>=)</a-select-option>
+                  <a-select-option value="lte">小于等于(&lt;=)</a-select-option>
+                </template>
+                <!-- <a-select-option value="like">模糊(%)</a-select-option> -->
+              </a-select>
+            </a-col>
+            <a-col :span="4" v-if="item.valueType.type !== 'this'">
+              <a-select
+                v-if="item.valueType.type === 'boolean' && !$_.isNil(item.valueType.trueValue) && !$_.isNil(item.valueType.falseValue)"
+                placeholder="过滤条件值"
+                v-model="item.value"
+              >
+                <a-select-option :key="item.valueType.trueValue+''">
+                  {{ `${item.valueType.trueText}（${item.valueType.trueValue}）` }}
+                </a-select-option>
+                <a-select-option :key="item.valueType.falseValue+''">
+                  {{ `${item.valueType.falseText}（${item.valueType.falseValue}）` }}
+                </a-select-option>
+              </a-select>
+              <a-input-number
+                v-else-if="['float', 'double'].indexOf(item.valueType.type) !== -1"
+                v-model="item.value"
+                placeholder="过滤条件值"
+                style="width: 150px;"
+              />
+              <a-input-number
+                v-else-if="['int', 'long'].indexOf(item.valueType.type) !== -1"
+                v-model="item.value"
+                :precision="0"
+                :step="1"
+                placeholder="过滤条件值"
+                style="width: 150px;"
+              />
+              <a-input
+                v-else
+                placeholder="过滤条件值"
+                v-model="item.value"
+              />
+            </a-col>
+            <a-col :span="5">
+              <a @click="removeFilter(index)">删除</a>
+            </a-col>
           </a-col>
-          <a-col :span="4" v-if="item.valueType.type !== 'this'">
-            <a-select
-              placeholder="操作符"
-              v-model="item.operator"
-            >
-              <a-select-option value="eq">等于(=)</a-select-option>
-              <a-select-option value="not">不等于(!=)</a-select-option>
-              <template v-if="isNumberType(item)">
-                <a-select-option value="gt">大于(>)</a-select-option>
-                <a-select-option value="lt">小于(&lt;)</a-select-option>
-                <a-select-option value="gte">大于等于(>=)</a-select-option>
-                <a-select-option value="lte">小于等于(&lt;=)</a-select-option>
-              </template>
-              <!-- <a-select-option value="like">模糊(%)</a-select-option> -->
-            </a-select>
-          </a-col>
-          <a-col :span="4" v-if="item.valueType.type !== 'this'">
-            <a-select
-              v-if="item.valueType.type === 'boolean' && !$_.isNil(item.valueType.trueValue) && !$_.isNil(item.valueType.falseValue)"
-              placeholder="过滤条件值"
-              v-model="item.value"
-            >
-              <a-select-option :key="item.valueType.trueValue+''">
-                {{ `${item.valueType.trueText}（${item.valueType.trueValue}）` }}
-              </a-select-option>
-              <a-select-option :key="item.valueType.falseValue+''">
-                {{ `${item.valueType.falseText}（${item.valueType.falseValue}）` }}
-              </a-select-option>
-            </a-select>
-            <a-input-number
-              v-else-if="['float', 'double'].indexOf(item.valueType.type) !== -1"
-              v-model="item.value"
-              placeholder="过滤条件值"
-              style="width: 150px;"
-            />
-            <a-input-number
-              v-else-if="['int', 'long'].indexOf(item.valueType.type) !== -1"
-              v-model="item.value"
-              :precision="0"
-              :step="1"
-              placeholder="过滤条件值"
-              style="width: 150px;"
-            />
-            <a-input
-              v-else
-              placeholder="过滤条件值"
-              v-model="item.value"
-            />
-          </a-col>
-          <a-col :span="5">
-            <a @click="removeFilter(index)">删除</a>
-          </a-col>
-        </a-col>
+        </template>
         <a-col :span="24" v-if="scene.trigger.filterType === 'properties' || scene.trigger.filterType === 'event'">
           <div>
             <a @click="addFilter">添加</a>
@@ -206,7 +207,7 @@ export default {
     if (_.isNil(trigger.filters)) {
       trigger.filters = []
     }
-    _.forEach(trigger.filters, f => {
+_.forEach(trigger.filters, f => {
       f.valueType = {}
     })
     this.dataSource = []
@@ -216,7 +217,7 @@ export default {
         // 回显触发器filter
         _.forEach(trigger.filters, f => {
           const data = _.find(this.dataSource, d => d.id === f.key)
-          f.valueType = (data && (data.valueType || {})) || {}
+          f.valueType = data
         })
       })
     }
@@ -244,9 +245,7 @@ export default {
     filterKeyChange (value, item) {
       if (item) {
         const data = _.find(this.dataSource, d => d.id === value)
-        if (data) {
-          item.valueType = data.valueType || {}
-        }
+        item.valueType = data
         item.value = undefined
       } else {
         console.warn('filterKeyChange => item is null')
@@ -265,27 +264,27 @@ export default {
         _.forEach(list, data => {
           if (type === 'event') {
             dataSource.push({ id: `${data.id}`, valueType: { type: 'this' } })
-            if (data.valueType.type === 'object') {
-              data.valueType.properties.map((p) => {
-                dataSource.push({ id: `${data.id}.${p.id}`, valueType: p.valueType })
+            if (data.type === 'object') {
+              data.properties.map((p) => {
+                dataSource.push({ id: `${data.id}.${p.id}`, valueType: p })
               })
             }
           } else if (type === 'function') {
             dataSource.push({ id: `${data.id}`, valueType: { type: 'this' } })
             if (data.output.type === 'object') {
               data.output.properties.map((p) => {
-                dataSource.push({ id: `${data.id}.${p.id}`, valueType: p.valueType })
+                dataSource.push({ id: `${data.id}.${p.id}`, valueType: p })
               })
             } else {
-              dataSource.push({ id: data.output.id, valueType: data.output.valueType })
+              dataSource.push({ id: data.output.id, valueType: data.output })
             }
           } else if (type === 'properties') {
-            if (data.valueType.type === 'object') {
-              data.valueType.properties.map((p) => {
-                dataSource.push({ id: `${data.id}.${p.id}`, valueType: p.valueType })
+            if (data.type === 'object') {
+              data.properties.map((p) => {
+                dataSource.push({ id: `${data.id}.${p.id}`, valueType: p })
               })
             } else {
-              dataSource.push({ id: data.id, valueType: data.valueType })
+              dataSource.push({ id: data.id, valueType: data })
             }
           }
         })

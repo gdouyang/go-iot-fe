@@ -1,15 +1,15 @@
 <template>
   <div>
-    <div v-if="propertiesData.valueType.type === 'enum'">
+    <div v-if="propertiesData.type === 'enum'">
       <a-col :span="4">
         <a-select placeholder="选择属性值" :defaultValue="defaultValue" @change="selectChange">
           <a-select-option
-            v-for="item in propertiesData.valueType.elements"
+            v-for="item in propertiesData.elements"
             :key="item.value">{{ `${item.text}（${item.value}）` }}</a-select-option>
         </a-select>
       </a-col>
     </div>
-    <div v-else-if="propertiesData.valueType.type === 'array'">
+    <div v-else-if="propertiesData.type === 'array'">
       <a-col :span="24">
         <a-row v-for="(value, index) in arrayData" :key="`array_${index}`">
           <a-col :span="4">
@@ -43,9 +43,9 @@
         </a-row>
       </a-col>
     </div>
-    <div v-else-if="propertiesData.valueType.type === 'boolean'">
+    <div v-else-if="propertiesData.type === 'boolean'">
       <a-col
-        v-if="$_.isNil(propertiesData.valueType.trueValue) || $_.isNil(propertiesData.valueType.falseValue)"
+        v-if="$_.isNil(propertiesData.trueValue) || $_.isNil(propertiesData.falseValue)"
         :span="4"
       >
         <a-input
@@ -56,19 +56,19 @@
       </a-col>
       <a-col :span="4" v-else>
         <a-select placeholder="选择属性值" :defaultValue="defaultValue" @change="selectChange">
-          <a-select-option :key="propertiesData.valueType.trueValue+''">
-            {{ `${propertiesData.valueType.trueText}（${propertiesData.valueType.trueValue}）` }}
+          <a-select-option :key="propertiesData.trueValue+''">
+            {{ `${propertiesData.trueText}（${propertiesData.trueValue}）` }}
           </a-select-option>
-          <a-select-option :key="propertiesData.valueType.falseValue+''">
-            {{ `${propertiesData.valueType.falseText}（${propertiesData.valueType.falseValue}）` }}
+          <a-select-option :key="propertiesData.falseValue+''">
+            {{ `${propertiesData.falseText}（${propertiesData.falseValue}）` }}
           </a-select-option>
         </a-select>
       </a-col>
     </div>
-    <div v-else-if="propertiesData.valueType.type === 'object'">
+    <div v-else-if="propertiesData.type === 'object'">
       <a-col
         :span="24"
-        v-for="(item, index) in propertiesData.valueType.properties"
+        v-for="(item, index) in propertiesData.properties"
         :key="`object${item.id}_${index}`">
         <div>
           <a-col :span="4">

@@ -28,7 +28,7 @@
           <a-select-option v-for="item in properties" :key="item.id" :value="item.id">{{ item.name }}({{ item.id }})</a-select-option>
         </a-select>
       </a-col>
-      <Properties :propertiesData="propertiesData" :actionData="actionData" :arrayData.sync="arrayData" v-if="propertiesData.valueType"/>
+      <Properties :propertiesData="propertiesData" :actionData="actionData" :arrayData.sync="arrayData" />
     </div>
     <div v-show="messageType === 'INVOKE_FUNCTION'">
       <a-col :span="4">
@@ -155,7 +155,7 @@ export default {
                 _.forEach(result.metadata.properties, (item) => {
                   if (item.id === Object.keys(message.properties)[0]) {
                     this.propertiesData = item
-                    if (item.valueType.type === 'array') {
+                    if (item.type === 'array') {
                       this.arrayData = message.properties[item.id]
                     }
                   }

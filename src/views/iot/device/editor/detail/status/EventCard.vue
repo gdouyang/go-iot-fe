@@ -28,10 +28,8 @@ export default {
               readOnly: null
           },
           id: '',
-          valueType: {
-              type: '',
-              unit: ''
-          },
+          type: '',
+          unit: '',
           list: [],
           formatValue: null,
           value: null,

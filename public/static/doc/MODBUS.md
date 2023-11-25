@@ -72,11 +72,9 @@ function OnInvoke(context) {
         "readOnly": null
       },
       "description": "Temperature x 10 (np. 10,5 st.C to 105)",
-      "valueType": {
-        "scale": 2,
-        "unit": null,
-        "type": "float"
-      }
+      "scale": 2,
+      "unit": null,
+      "type": "float"
     }
   ],
   "functions": [

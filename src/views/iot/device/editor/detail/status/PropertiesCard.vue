@@ -21,13 +21,11 @@ export default {
         return {
           name: '',
           expands: {
-              readOnly: null
+            readOnly: null
           },
           id: '',
-          valueType: {
-              type: '',
-              unit: ''
-          },
+          type: '',
+          unit: '',
           list: [],
           value: null,
           visitData: null
@@ -68,7 +66,7 @@ export default {
         }
 
         // 特殊类型
-        const valueType = item.valueType.type
+        const valueType = item.type
         if (valueType === 'int' || valueType === 'float' || valueType === 'double' || valueType === 'long') {
           const visitData = []
           item.list.forEach(data => {
@@ -88,7 +86,7 @@ export default {
         this.lastData = '/'
         return
       }
-      const unit = _.toString(this.item.valueType.unit)
+      const unit = _.toString(this.item.unit)
       if (typeof (this.data.value) === 'object') {
         this.lastData = JSON.stringify(this.data.value)
       } else {

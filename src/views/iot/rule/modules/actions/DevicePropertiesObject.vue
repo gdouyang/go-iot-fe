@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="properties.valueType.type === 'enum'">
+    <div v-if="properties.type === 'enum'">
       <a-col :span="4">
         <a-select
           placeholder="选择属性值"
@@ -8,23 +8,23 @@
           @change="selectChange"
         >
           <a-select-option
-            v-if="item in properties.valueType.elements"
+            v-if="item in properties.elements"
             :key="item.value">{{ `${item.text}（${item.value}）` }}</a-select-option>
         </a-select>
       </a-col>
     </div>
-    <div v-else-if="properties.valueType.type === 'boolean'">
+    <div v-else-if="properties.type === 'boolean'">
       <a-col :span="4">
         <a-select
           placeholder="选择属性值"
           :defaultValue="defaultValue"
           @change="selectChange"
         >
-          <a-select-option :key="properties.valueType.trueValue">
-            {{ `${properties.valueType.trueText}（${properties.valueType.trueValue}）` }}
+          <a-select-option :key="properties.trueValue">
+            {{ `${properties.trueText}（${properties.trueValue}）` }}
           </a-select-option>
-          <a-select-option :key="properties.valueType.falseValue">
-            {{ `${properties.valueType.falseText}（${properties.valueType.falseValue}）` }}
+          <a-select-option :key="properties.falseValue">
+            {{ `${properties.falseText}（${properties.falseValue}）` }}
           </a-select-option>
         </a-select>
       </a-col>

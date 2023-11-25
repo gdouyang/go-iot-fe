@@ -2,6 +2,7 @@ import _ from 'lodash'
 const defaultPropertiesData = {
   id: null,
   name: null,
+  type: null,
   expands: {
     readOnly: null
   },
@@ -10,6 +11,7 @@ const defaultPropertiesData = {
 const defaultEventsData = {
   id: null,
   name: null,
+  type: null,
   expands: {
     level: null
   },
@@ -17,7 +19,6 @@ const defaultEventsData = {
 }
 export function getPropertiesData (data) {
   const d = _.assign({}, defaultPropertiesData, data)
-  d.valueType = data && data.valueType ? data.valueType : {}
   return d
 }
 
@@ -37,11 +38,6 @@ export function getFunctionsData (data) {
 }
 
 export function getEventsData (data) {
-  const valueType = data && data.valueType ? data.valueType : {}
-  if (!valueType.properties) {
-    valueType.properties = []
-  }
   const d = _.assign({}, defaultEventsData, data)
-  d.valueType = valueType
   return d
 }

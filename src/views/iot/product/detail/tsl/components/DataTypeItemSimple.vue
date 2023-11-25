@@ -2,11 +2,10 @@
   <div>
     <a-form-model-item
       :label="label"
-      :prop="prop"
       :rules="rules"
     >
       <a-select
-        v-model="data[field].type"
+        v-model="data.type"
         placeholder="请选择"
         @change="typeChange"
       >
@@ -21,17 +20,17 @@
       </a-select>
     </a-form-model-item>
     <!-- -->
-    <template v-if="['float', 'double'].indexOf(data[field].type) !== -1">
-      <NumberItem :data="data[field]" />
+    <template v-if="['float', 'double'].indexOf(data.type) !== -1">
+      <NumberItem :data="data" />
     </template>
-    <template v-else-if="['int', 'long'].indexOf(data[field].type) !== -1">
-      <IntegerItem :data="data[field]" />
+    <template v-else-if="['int', 'long'].indexOf(data.type) !== -1">
+      <IntegerItem :data="data" />
     </template>
-    <template v-else-if="['string'].indexOf(data[field].type) !== -1">
-      <StringItem :data="data[field]" />
+    <template v-else-if="['string'].indexOf(data.type) !== -1">
+      <StringItem :data="data" />
     </template>
-    <template v-else-if="['bool'].indexOf(data[field].type) !== -1">
-      <BooleanItem :data="data[field]" />
+    <template v-else-if="['bool'].indexOf(data.type) !== -1">
+      <BooleanItem :data="data" />
     </template>
   </div>
 </template>
@@ -55,17 +54,9 @@ export default {
       type: String,
       default: ''
     },
-    field: {
-      type: String,
-      default: 'valueType'
-    },
     data: {
       type: Object,
       default: () => {}
-    },
-    prop: {
-      type: String,
-      default: undefined
     },
     rules: {
       type: Array,
@@ -82,23 +73,26 @@ export default {
   },
   methods: {
     typeChange (value) {
-      const data = this.data
-      const field = this.field
-      let valueType = data[field]
       if (['float', 'double'].indexOf(value) !== -1) {
-        valueType = { scale: null, unit: null }
+        this.setValue('scale', null)
+        this.setValue('unit', null)
       } else if (['int', 'long'].indexOf(value) !== -1) {
-        valueType = { unit: null }
+        this.setValue('unit', null)
       } else if (['string'].indexOf(value) !== -1) {
-        valueType = { max: null }
+        this.setValue('max', null)
       } else if (['bool'].indexOf(value) !== -1) {
-        valueType = { trueText: null, trueValue: null, falseText: null, falseValue: null }
+        this.setValue('trueText', null)
+        this.setValue('trueValue', null)
+        this.setValue('falseText', null)
+        this.setValue('falseValue', null)
       } else {
         this.$message.error('不支持类型' + value)
       }
-      valueType.type = value
-      data[field] = valueType
+      this.$set(this.data, '', null)
       console.log(value)
+    },
+    setValue (key, value) {
+      this.$set(this.data, key, value)
     }
   }
 }

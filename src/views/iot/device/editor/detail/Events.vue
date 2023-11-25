@@ -86,7 +86,7 @@ export default {
       const event = _.find(this.events, (ev) => ev.id === this.eventId)
       const columns = []
       if (event) {
-        if (event.valueType.type === 'object') {
+        if (event.type === 'object') {
           _.forEach(event.properties, prop => {
             columns.push({ dataIndex: prop.id, title: prop.name })
           })

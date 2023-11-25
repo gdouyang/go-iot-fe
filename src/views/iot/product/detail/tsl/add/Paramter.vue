@@ -32,8 +32,6 @@
       <DataTypeItemSimple
         label="数据类型"
         :data="formData"
-        field="valueType"
-        prop="valueType.type"
         :rules="[{ required: true, message: '请选择' }]"
       />
       <!-- -->

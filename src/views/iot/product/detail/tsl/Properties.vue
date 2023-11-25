@@ -4,7 +4,7 @@
     <a-card title="属性定义" :style="{marginBottom: '20px'}">
       <a-button type="primary" slot="extra" @click="add">添加</a-button>
       <a-table rowKey="id" :columns="columns" :dataSource="data">
-        <span slot="valueType" slot-scope="text">{{ text.type }}</span>
+        <span slot="type" slot-scope="text">{{ text }}</span>
         <span slot="readOnly" slot-scope="text">{{ ((text === 'true' || text === true) ? '是' : '否') }}</span>
         <span slot="action" slot-scope="text, record">
           <a @click="edit(record)">修改</a>
@@ -50,7 +50,7 @@ export default {
       columns: [
         { title: '属性标识', dataIndex: 'id' },
         { title: '属性名称', dataIndex: 'name' },
-        { title: '数据类型', dataIndex: 'valueType', scopedSlots: { customRender: 'valueType' } },
+        { title: '数据类型', dataIndex: 'type', scopedSlots: { customRender: 'type' } },
         // { title: '是否只读', dataIndex: 'expands.readOnly', scopedSlots: { customRender: 'readOnly' } },
         { title: '说明', dataIndex: 'description', width: '30%', ellipsis: true },
         { title: '操作', scopedSlots: { customRender: 'action' } }

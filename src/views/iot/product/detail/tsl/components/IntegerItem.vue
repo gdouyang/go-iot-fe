@@ -2,7 +2,7 @@
   <a-form-model-item label="单位">
     <a-input
       v-model="data.unit"
-      maxlength="32"
+      :maxLength="32"
       style="width:100%"/>
   </a-form-model-item>
 </template>

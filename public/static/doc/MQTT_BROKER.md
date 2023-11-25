@@ -116,11 +116,9 @@ function OnInvoke(context) {
         "readOnly": null
       },
       "description": null,
-      "valueType": {
-        "scale": 2,
-        "unit": null,
-        "type": "float"
-      }
+      "scale": 2,
+      "unit": null,
+      "type": "float"
     }
   ],
   "functions": []

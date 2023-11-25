@@ -46,8 +46,6 @@
         <DataTypeItem
           label="输出参数"
           :data="formData"
-          field="valueType"
-          prop="valueType.type"
           :rules="[{ required: true, message: '请选择' }]"
         />
         <!-- -->
@@ -108,18 +106,18 @@ export default {
     saveData () {
       this.$refs.form.validate((valid) => {
         if (valid) {
-          if (this.formData.valueType.type !== 'object') {
-            delete this.formData.valueType.properties
+          if (this.formData.type !== 'object') {
+            delete this.formData.properties
           }
-          if (this.formData.valueType.type !== 'array') {
-            delete this.formData.valueType.elementType
+          if (this.formData.type !== 'array') {
+            delete this.formData.elementType
           }
           this.$emit('save', this.formData)
         }
       })
     },
     saveOutput (item) {
-      this.data.valueType.properties = item
+      this.data.properties = item
       this.closeOutput()
     },
     closeOutput () {

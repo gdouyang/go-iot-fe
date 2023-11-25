@@ -10,42 +10,42 @@
       :prop="'items.' + index + '.value'"
       v-bind="formItemLayout"
     >
-      <template v-if="domain.valueType">
+      <template v-if="domain">
         <a-tooltip :title="domain.description">
           <a-input-number
-            v-if="isNumber(domain.valueType.type)"
+            v-if="isNumber(domain.type)"
             v-model="domain.value"
             class="func-form-item"
           ></a-input-number>
           <!-- { "type": "boolean", "trueText": "是", "trueValue": "1", "falseText": "否", "falseValue": "0" } -->
           <a-select
-            v-else-if="isBool(domain.valueType.type)"
+            v-else-if="isBool(domain.type)"
             v-model="domain.value"
             :allowClear="true"
             class="func-form-item"
           >
-            <a-select-option :value="domain.valueType.trueValue">
-              {{ domain.valueType.trueText }}
+            <a-select-option :value="domain.trueValue">
+              {{ domain.trueText }}
             </a-select-option>
-            <a-select-option :value="domain.valueType.falseValue">
-              {{ domain.valueType.falseText }}
+            <a-select-option :value="domain.falseValue">
+              {{ domain.falseText }}
             </a-select-option>
           </a-select>
           <a-select
-            v-else-if="isEnum(domain.valueType.type)"
+            v-else-if="isEnum(domain.type)"
             v-model="domain.value"
             :allowClear="true"
             class="func-form-item"
           >
             <a-select-option
-              v-for="(item) in domain.valueType.elements"
+              v-for="(item) in domain.elements"
               :key="item.id"
               :value="item.value">
               {{ item.text }}
             </a-select-option>
           </a-select>
           <a-input
-            v-else-if="isDate(domain.valueType.type)"
+            v-else-if="isDate(domain.type)"
             v-model="domain.value"
             class="func-form-item"
           />

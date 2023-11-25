@@ -1,30 +1,30 @@
 <template>
   <div>
-    <div v-if="item.valueType.type === 'enum'">
+    <div v-if="item.type === 'enum'">
       <a-col :span="6">
         <a-select
           placeholder="选择调用参数"
           :value="defaultValue"
           @change="inputsChange"
         >
-          <a-select-option v-for="_item in item.valueType.elements" :key="_item.value" :value="_item.value">
+          <a-select-option v-for="_item in item.elements" :key="_item.value" :value="_item.value">
             {{ `${_item.text}（${_item.value}）` }}
           </a-select-option>
         </a-select>
       </a-col>
     </div>
-    <div v-else-if="item.valueType.type === 'boolean'">
+    <div v-else-if="item.type === 'boolean'">
       <a-col :span="6">
         <a-select
           placeholder="选择调用参数"
           :value="defaultValue"
           @change="inputsChange"
         >
-          <a-select-option :value="item.valueType.trueValue+''">
-            {{ `${item.valueType.trueText}（${item.valueType.trueValue}）` }}
+          <a-select-option :value="item.trueValue+''">
+            {{ `${item.trueText}（${item.trueValue}）` }}
           </a-select-option>
-          <a-select-option :value="item.valueType.falseValue+''">
-            {{ `${item.valueType.falseText}（${item.valueType.falseValue}）` }}
+          <a-select-option :value="item.falseValue+''">
+            {{ `${item.falseText}（${item.falseValue}）` }}
           </a-select-option>
         </a-select>
       </a-col>
