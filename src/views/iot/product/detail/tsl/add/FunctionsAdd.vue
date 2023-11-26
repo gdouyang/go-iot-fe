@@ -88,7 +88,7 @@
           </a-button>
         </a-form-model-item>
         <!-- -->
-        <DataTypeItem label="输出参数" :data="formData" field="output" prop="output.type"/>
+        <DataTypeItem label="输出参数" :data="formData.output" />
         <!-- -->
         <a-form-model-item label="描述" prop="description">
           <a-textarea v-model="formData.description" :rows="3"/>

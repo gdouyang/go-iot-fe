@@ -13,7 +13,7 @@
         </a-select>
       </a-col>
     </div>
-    <div v-else-if="properties.type === 'boolean'">
+    <div v-else-if="properties.type === 'bool'">
       <a-col :span="4">
         <a-select
           placeholder="选择属性值"

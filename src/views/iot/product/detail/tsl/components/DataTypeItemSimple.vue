@@ -88,7 +88,6 @@ export default {
       } else {
         this.$message.error('不支持类型' + value)
       }
-      this.$set(this.data, '', null)
       console.log(value)
     },
     setValue (key, value) {

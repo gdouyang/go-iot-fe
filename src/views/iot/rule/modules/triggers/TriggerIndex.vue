@@ -112,7 +112,7 @@
             </a-col>
             <a-col :span="4" v-if="item.valueType.type !== 'this'">
               <a-select
-                v-if="item.valueType.type === 'boolean' && !$_.isNil(item.valueType.trueValue) && !$_.isNil(item.valueType.falseValue)"
+                v-if="item.valueType.type === 'bool' && !$_.isNil(item.valueType.trueValue) && !$_.isNil(item.valueType.falseValue)"
                 placeholder="过滤条件值"
                 v-model="item.value"
               >
@@ -121,6 +121,15 @@
                 </a-select-option>
                 <a-select-option :key="item.valueType.falseValue+''">
                   {{ `${item.valueType.falseText}（${item.valueType.falseValue}）` }}
+                </a-select-option>
+              </a-select>
+              <a-select
+                v-if="item.valueType.type === 'enum'"
+                placeholder="过滤条件值"
+                v-model="item.value"
+              >
+                <a-select-option v-for="elem in item.valueType.elements" :key="elem.value+''">
+                  {{ `${elem.text}（${elem.value}）` }}
                 </a-select-option>
               </a-select>
               <a-input-number
@@ -217,7 +226,7 @@ _.forEach(trigger.filters, f => {
         // 回显触发器filter
         _.forEach(trigger.filters, f => {
           const data = _.find(this.dataSource, d => d.id === f.key)
-          f.valueType = data
+          f.valueType = (data && (data.valueType || {})) || {}
         })
       })
     }
@@ -245,7 +254,9 @@ _.forEach(trigger.filters, f => {
     filterKeyChange (value, item) {
       if (item) {
         const data = _.find(this.dataSource, d => d.id === value)
-        item.valueType = data
+        if (data) {
+          item.valueType = data.valueType || {}
+        }
         item.value = undefined
       } else {
         console.warn('filterKeyChange => item is null')

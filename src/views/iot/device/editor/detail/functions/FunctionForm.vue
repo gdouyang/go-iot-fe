@@ -17,7 +17,7 @@
             v-model="domain.value"
             class="func-form-item"
           ></a-input-number>
-          <!-- { "type": "boolean", "trueText": "是", "trueValue": "1", "falseText": "否", "falseValue": "0" } -->
+          <!-- { "type": "bool", "trueText": "是", "trueValue": "1", "falseText": "否", "falseValue": "0" } -->
           <a-select
             v-else-if="isBool(domain.type)"
             v-model="domain.value"
@@ -127,7 +127,7 @@ export default {
       return type === 'string'
     },
     isBool (type) {
-      return type === 'boolean'
+      return type === 'bool'
     },
     isEnum (type) {
       return type === 'enum'
