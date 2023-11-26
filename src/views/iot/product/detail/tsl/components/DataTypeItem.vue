@@ -128,8 +128,8 @@ export default {
         this.setValue('unit', null)
       } else if (['int', 'long'].indexOf(value) !== -1) {
         this.setValue('unit', null)
-      } else if (['string'].indexOf(value) !== -1) {
-        this.setValue('max', null)
+      } else if (['string', 'password'].indexOf(value) !== -1) {
+        this.setValue('max', 64)
       } else if (['bool'].indexOf(value) !== -1) {
         this.setValue('trueText', null)
         this.setValue('trueValue', null)
@@ -139,10 +139,8 @@ export default {
         this.setValue('format', null)
       } else if (['enum'].indexOf(value) !== -1) {
         this.setValue('elements', null)
-      } else if (['password'].indexOf(value) !== -1) {
-        this.setValue('max', null)
       } else if (['file'].indexOf(value) !== -1) {
-        this.setValue('fileType', null)
+        this.setValue('bodyType', 'url') // url, base64
       } else if (['array'].indexOf(value) !== -1) {
         this.setValue('elementType', { type: null })
       } else if (['object'].indexOf(value) !== -1) {

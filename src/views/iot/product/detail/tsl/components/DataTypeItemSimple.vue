@@ -79,7 +79,7 @@ export default {
       } else if (['int', 'long'].indexOf(value) !== -1) {
         this.setValue('unit', null)
       } else if (['string'].indexOf(value) !== -1) {
-        this.setValue('max', null)
+        this.setValue('max', 64)
       } else if (['bool'].indexOf(value) !== -1) {
         this.setValue('trueText', null)
         this.setValue('trueValue', null)
