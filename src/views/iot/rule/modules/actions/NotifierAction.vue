@@ -96,7 +96,8 @@ export default {
     },
     findNotifier (value) { // 通知配置
       const param = {
-        type: value
+        type: value,
+        state: 'started'
       }
       listAll(param).then((response) => {
         if (response.success) {
