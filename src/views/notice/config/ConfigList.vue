@@ -48,7 +48,9 @@
         <a @click="handleEdit(record)" v-action:notify-config:save>编辑</a>
         <span v-action:notify-config:delete>
           <a-divider type="vertical" />
-          <a @click="remove(record)">删除</a>
+          <a-popconfirm title="确认删除？" @confirm="remove(record)">
+            <a>删除</a>
+          </a-popconfirm>
         </span>
         <span v-action:notify-config:add>
           <a-divider type="vertical" />
@@ -141,16 +143,10 @@ export default {
     },
     remove (row) {
       const _this = this
-      this.$confirm({
-        title: '确认',
-        content: '确定要删除吗？',
-        onOk: () => {
-          remove(row.id).then(data => {
-            if (data.success) {
-              _this.$message.success('操作成功')
-              _this.handleOk()
-            }
-          })
+      remove(row.id).then(data => {
+        if (data.success) {
+          _this.$message.success('操作成功')
+          _this.handleOk()
         }
       })
     },

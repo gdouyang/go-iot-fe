@@ -2,7 +2,7 @@
 </style>
 
 <template>
-  <Dialog ref="addModal" @confirm="addConfirm" @close="addClose" :width="1000">
+  <Dialog ref="addModal" @close="dialogClose" :width="1000">
     <a-form-model
       ref="addFormRef"
       :model="addObj"
@@ -57,12 +57,17 @@
         <Dingtalk :data="addObj" ref="dingtalk"/>
       </template>
     </a-form-model>
+    <span slot="footer">
+      <a-button @click="close">取消</a-button>
+      <a-button type="primary" @click="addConfirm">确定</a-button>
+      <a-button icon="experiment" :loading="isTesting" @click="test">测试</a-button>
+    </span>
   </Dialog>
 </template>
 
 <script>
 import _ from 'lodash'
-import { get, addNotify, updateNotify, configTypes } from '@/views/notice/api.js'
+import { get, addNotify, updateNotify, configTypes, testNotify } from '@/views/notice/api.js'
 import Email from './Email.vue'
 import Dingtalk from './Dingtalk.vue'
 
@@ -92,7 +97,8 @@ export default {
       addObj: _.cloneDeep(defaultAddObj),
       isEdit: false,
       typeList: [],
-      metadata: []
+      metadata: [],
+      isTesting: false
     }
   },
   created () {},
@@ -122,22 +128,29 @@ export default {
         this.metadata = find.config
       }
     },
-    addClose () {
+    close () {
+      this.$refs.addModal.close()
+    },
+    dialogClose () {
+      this.$refs.addFormRef.clearValidate()
       this.addObj = _.cloneDeep(defaultAddObj)
       this.metadata = []
-      this.$refs.addFormRef.resetFields()
+    },
+    getData () {
+      const data = _.cloneDeep(this.addObj)
+      if (data.type === 'email') {
+        data.template = this.$refs.email.getTemplate()
+      }
+      if (data.type === 'dingtalk') {
+        data.template = this.$refs.dingtalk.getTemplate()
+      }
+      data.config = JSON.stringify(data.config)
+      return data
     },
     addConfirm () {
       this.$refs.addFormRef.validate((valid) => {
         if (valid) {
-          const data = _.cloneDeep(this.addObj)
-          if (data.type === 'email') {
-            data.template = this.$refs.email.getTemplate()
-          }
-          if (data.type === 'dingtalk') {
-            data.template = this.$refs.dingtalk.getTemplate()
-          }
-          data.config = JSON.stringify(data.config)
+          const data = this.getData()
           let promise = null
           if (data.id) {
             promise = updateNotify(data.id, data)
@@ -147,11 +160,26 @@ export default {
           promise.then((resp) => {
             if (resp.success) {
               this.$message.success('操作成功')
-              this.$refs.addModal.close()
+              this.close()
               this.$emit('success')
             } else {
               this.$message.success(resp.message)
             }
+          })
+        }
+      })
+    },
+    test () {
+      this.$refs.addFormRef.validate((valid) => {
+        if (valid) {
+          const data = this.getData()
+          this.isTesting = true
+          testNotify(data).then(resp => {
+            if (resp.success) {
+               this.$message.success('操作成功')
+            }
+          }).finally(() => {
+            this.isTesting = false
           })
         }
       })

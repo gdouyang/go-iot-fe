@@ -11,12 +11,14 @@
       <slot></slot>
     </div>
     <template slot="footer">
-      <a-button key="back" @click="close">
-        {{ cancelText }}
-      </a-button>
-      <a-button key="submit" :type="okType" @click="ok" :loading="okBtnLoading" v-if="showOk">
-        {{ okText }}
-      </a-button>
+      <slot name="footer">
+        <a-button key="back" @click="close">
+          {{ cancelText }}
+        </a-button>
+        <a-button key="submit" :type="okType" @click="ok" :loading="okBtnLoading" v-if="showOk">
+          {{ okText }}
+        </a-button>
+      </slot>
     </template>
   </a-modal>
 </template>
