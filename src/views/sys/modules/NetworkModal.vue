@@ -127,7 +127,7 @@ export default {
       })
     },
     handleCancel () {
-      this.$refs.addFormRef.resetFields()
+      this.$refs.addFormRef.clearValidate()
     }
   }
 }

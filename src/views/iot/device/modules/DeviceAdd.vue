@@ -132,7 +132,7 @@ export default {
     },
     addClose () {
       this.addObj = _.cloneDeep(defaultAddObj)
-      this.$refs.addFormRef.resetFields()
+      this.$refs.addFormRef.clearValidate()
     },
     addConfirm () {
       this.$refs.addFormRef.validate((valid) => {

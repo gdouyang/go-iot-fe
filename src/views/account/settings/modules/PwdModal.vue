@@ -103,7 +103,7 @@ export default {
       this.title = '修改密码'
       this.visible = true
       this.$nextTick(() => {
-        this.$refs.form.resetFields()
+        this.$refs.form.clearValidate()
       })
     },
     close () {

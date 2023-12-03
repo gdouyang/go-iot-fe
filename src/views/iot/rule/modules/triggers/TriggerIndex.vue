@@ -216,7 +216,7 @@ export default {
     if (_.isNil(trigger.filters)) {
       trigger.filters = []
     }
-_.forEach(trigger.filters, f => {
+    _.forEach(trigger.filters, f => {
       f.valueType = {}
     })
     this.dataSource = []

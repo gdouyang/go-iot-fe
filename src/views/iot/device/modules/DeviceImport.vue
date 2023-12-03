@@ -107,7 +107,7 @@ export default {
       this.count = 0
       this.errMessage = null
       this.addObj = _.cloneDeep(defaultAddObj)
-      this.$refs.addFormRef.resetFields()
+      this.$refs.addFormRef.clearValidate()
     },
     addConfirm () {
       this.$refs.addFormRef.validate((valid) => {

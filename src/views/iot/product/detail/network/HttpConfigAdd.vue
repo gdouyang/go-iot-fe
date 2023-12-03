@@ -114,7 +114,7 @@ export default {
     },
     addClose () {
       this.addObj = newHttpAddObj()
-      this.$refs.addFormRef.resetFields()
+      this.$refs.addFormRef.clearValidate()
     },
     addConfirm () {
       this.$refs.addFormRef.validate((valid) => {

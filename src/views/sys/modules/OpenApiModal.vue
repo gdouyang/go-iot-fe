@@ -157,7 +157,7 @@ export default {
     },
     addClose () {
       this.$emit('close')
-      this.$refs.addFormRef.resetFields()
+      this.$refs.addFormRef.clearValidate()
     },
     addConfirm () {
       // 触发表单验证

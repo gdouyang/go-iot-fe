@@ -134,7 +134,7 @@ export default {
       })
     },
     handleCancel () {
-      this.$refs.addFormRef.resetFields()
+      this.$refs.addFormRef.clearValidate()
     },
     onCreated (ztree) {
       this.treeObj = ztree
