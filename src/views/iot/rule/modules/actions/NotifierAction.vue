@@ -13,7 +13,7 @@
         </a-select>
       </a-tooltip>
     </a-col>
-    <a-col :span="6">
+    <a-col :span="4">
       <a-tooltip title="请选择通知配置">
         <a-select
           placeholder="选择通知配置"

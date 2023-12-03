@@ -2,9 +2,9 @@
   <div>
     <a-card size="small" :bordered="false" style="background-color: #eee;">
       <a-row>
-        <span>执行动作: {{ position + 1 }}</span>
+        <span style="margin-right: 10px;">执行动作{{ position + 1 }}</span>
         <a-popconfirm
-          title="确认删除此执行动作？"
+          :title="`确认删除此执行动作${position+1}？`"
           @confirm="$emit('remove', position)"
         >
           <a>删除</a>

@@ -70,22 +70,21 @@
         </a-col>
         <template v-if="scene.trigger.filterType === 'properties' || scene.trigger.filterType === 'event'">
           <a-col
+            class="properties-col"
             :span="24"
             style="margin-top: 5px;"
             v-for="(item, index) in scene.trigger.filters"
             :key="index">
-            <div v-if="index != 0">
-              <a-col :span="8">
-                <a-select
-                  placeholder="逻辑符"
-                  v-model="item.logic"
-                >
-                  <a-select-option value="and">AND</a-select-option>
-                  <a-select-option value="or">OR</a-select-option>
-                </a-select>
-              </a-col>
-            </div>
-            <a-col :span="8">
+            <a-col :span="6" v-if="index != 0">
+              <a-select
+                placeholder="逻辑符"
+                v-model="item.logic"
+              >
+                <a-select-option value="and">AND(并且)</a-select-option>
+                <a-select-option value="or">OR(或)</a-select-option>
+              </a-select>
+            </a-col>
+            <a-col :span="6">
               <a-select
                 placeholder="过滤条件KEY"
                 v-model="item.key"
@@ -136,7 +135,6 @@
                 v-else-if="['float', 'double'].indexOf(item.valueType.type) !== -1"
                 v-model="item.value"
                 placeholder="过滤条件值"
-                style="width: 150px;"
               />
               <a-input-number
                 v-else-if="['int', 'long'].indexOf(item.valueType.type) !== -1"
@@ -144,7 +142,6 @@
                 :precision="0"
                 :step="1"
                 placeholder="过滤条件值"
-                style="width: 150px;"
               />
               <a-input
                 v-else
@@ -152,8 +149,13 @@
                 v-model="item.value"
               />
             </a-col>
-            <a-col :span="5">
-              <a @click="removeFilter(index)">删除</a>
+            <a-col :span="3">
+              <a-popconfirm
+                title="确认删除？"
+                @confirm="removeFilter(index)"
+              >
+                <a>删除</a>
+              </a-popconfirm>
             </a-col>
           </a-col>
         </template>
@@ -353,5 +355,12 @@ export default {
   overflow: auto;
   padding: 5px;
   margin: 8px 0px;
+}
+.properties-col {
+  display: flex;
+  align-items: center;
+}
+.ant-input-number {
+  width: 100%;
 }
 </style>
