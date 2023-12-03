@@ -47,6 +47,11 @@
           <a-button icon="disconnect" @click="batchUndeploy" v-action:device-mgr:save>批量停用</a-button>
         </div>
         <PageTable ref="tb" :url="tableUrl" :columns="columns" rowKey="id" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }">
+          <span slot="deviceType" slot-scope="text">
+            <span v-if="text == 'device'">设备</span>
+            <span v-else-if="text == 'gateway'">网关</span>
+            <span v-else>子设备</span>
+          </span>
           <span slot="state" slot-scope="text">
             <a-tag color="#87d068" v-if="text == 'online'">{{ text }}</a-tag>
             <a-tag color="#f50" v-else-if="text == 'offline'">{{ text }}</a-tag>
@@ -124,6 +129,7 @@ export default {
         { title: '设备ID', dataIndex: 'id' },
         { title: '名称', dataIndex: 'name' },
         { title: '产品', dataIndex: 'productId' },
+        { title: '设备类型', dataIndex: 'deviceType', scopedSlots: { customRender: 'deviceType' } },
         { title: '状态', dataIndex: 'state', scopedSlots: { customRender: 'state' } },
         { title: '创建时间', dataIndex: 'createTime', scopedSlots: { customRender: 'createTime' } },
         { title: '说明', dataIndex: 'desc' },

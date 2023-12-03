@@ -18,6 +18,7 @@
         <a-input
           v-model="addObj.id"
           :disabled="isEdit"
+          placeholder="请输入设备ID"
         ></a-input>
       </a-form-model-item>
       <a-form-model-item
@@ -43,7 +44,7 @@
         prop="deviceType"
         :rules="[{ required: true, message: '设备类型不能为空', trigger: 'blur' }]"
       >
-        <a-select v-model="addObj.deviceType" :disabled="isEdit">
+        <a-select v-model="addObj.deviceType" :disabled="isEdit" @change="deviceTypeChange">
           <a-select-option value="device">设备</a-select-option>
           <a-select-option value="gateway">网关</a-select-option>
           <a-select-option value="subdevice">子设备</a-select-option>
@@ -52,10 +53,11 @@
       <a-form-model-item
         label="网关"
         prop="parentId"
-        v-if="addObj.deviceType == 'subdevice'"
+        v-if="addObj.deviceType == SUB_DEVICE"
         :rules="[{ required: true, message: '网关不能为空', trigger: 'blur' }]"
       >
         <a-select v-model="addObj.parentId" :disabled="isEdit">
+          <a-select-option v-for="p in gatewayList" :key="p.id" :value="p.id">{{ p.name }}({{ p.id }})</a-select-option>
         </a-select>
       </a-form-model-item>
       <a-form-model-item label="说明" prop="desc">
@@ -82,6 +84,10 @@ const defaultAddObj = {
   parentId: null,
   desc: ''
 }
+/**
+ * 子设备
+ */
+const SUB_DEVICE = 'subdevice'
 export default {
   data () {
     return {
@@ -95,6 +101,7 @@ export default {
       },
       addObj: _.cloneDeep(defaultAddObj),
       isEdit: false,
+      SUB_DEVICE: SUB_DEVICE,
       productList: [],
       gatewayList: []
     }
@@ -104,9 +111,6 @@ export default {
   methods: {
     add () {
       this.isEdit = false
-      page({ pageNum: 1, pageSize: 400, condition: [{ key: 'deviceType', value: 'gateway' }] }).then(res => {
-        this.gatewayList = res.result
-      })
       this.listAllProduct().then(() => {
         this.$refs.addModal.open({ title: '新增设备' })
       })
@@ -116,18 +120,15 @@ export default {
       get(row.id).then((data) => {
         if (data.success) {
           const result = data.result
-          this.projectIdChange(result.projectId)
+          if (result.deviceType === SUB_DEVICE) {
+            this.getGatewayList(result.parentId)
+          }
           this.listAllProduct().then(() => {
             this.addObj = result
             this.$refs.addModal.open({ title: '修改设备' })
           })
         }
       })
-    },
-    projectIdChange (value) {
-      if (value) {
-        this.listByProject(value)
-      }
     },
     addClose () {
       this.addObj = _.cloneDeep(defaultAddObj)
@@ -159,12 +160,28 @@ export default {
       if (product) {
         this.addObj.productName = product.name
       }
+      this.deviceTypeChange(this.addObj.deviceType)
+    },
+    deviceTypeChange (value) {
+      this.addObj.parentId = null
+      if (value === SUB_DEVICE) {
+        this.getGatewayList()
+      }
     },
     listAllProduct () {
       return getProductList().then((resp) => {
         if (resp.success) {
           this.productList = resp.result
         }
+      })
+    },
+    getGatewayList (deviceId) {
+      const condition = [{ key: 'deviceType', value: 'gateway' }, { key: 'productId', value: this.addObj.productId }]
+      if (deviceId) {
+        condition.push({ key: 'id', value: deviceId })
+      }
+      return page({ pageNum: 1, pageSize: 1000, condition: condition }).then(res => {
+        this.gatewayList = res.result.list
       })
     }
   }

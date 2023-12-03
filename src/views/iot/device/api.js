@@ -4,7 +4,7 @@ export const pageUrl = 'device/page'
 
 // 分页查询
 export function page (param) {
-  return Vue.prototype.$http.post(`device/page`, param)
+  return Vue.prototype.$http.post(pageUrl, param)
 }
 // 激活
 export function deploy (id) {
