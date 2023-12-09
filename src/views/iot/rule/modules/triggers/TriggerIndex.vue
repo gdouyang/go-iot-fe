@@ -35,7 +35,11 @@
         </a-col>
         <a-col :span="24" style="margin-top: 5px;">
           <a-col :span="4">
-            <a-select v-model="scene.productId" @change="productIdChange" placeholder="产品">
+            <a-select
+              v-model="scene.productId"
+              @change="productIdChange"
+              placeholder="产品"
+              :class="{'v-error': !scene.productId}">
               <a-select-option v-for="p in productList" :key="p.id" :value="p.id">{{ p.name }}</a-select-option>
             </a-select>
           </a-col>
@@ -60,6 +64,7 @@
               placeholder="选择类型，如：属性/事件"
               v-model="scene.trigger.filterType"
               @change="triggerTypeChange"
+              :class="{'v-error': !scene.trigger.filterType}"
             >
               <a-select-option value="online">上线</a-select-option>
               <a-select-option value="offline">离线</a-select-option>
@@ -79,6 +84,7 @@
               <a-select
                 placeholder="逻辑符"
                 v-model="item.logic"
+                :class="{'v-error': !item.logic}"
               >
                 <a-select-option value="and">AND(并且)</a-select-option>
                 <a-select-option value="or">OR(或)</a-select-option>
@@ -89,17 +95,19 @@
                 placeholder="过滤条件KEY"
                 v-model="item.key"
                 @change="filterKeyChange($event, item)"
+                :class="{'v-error': !item.key}"
               >
-                <a-select-option v-for="d in dataSource" :value="d.id" :key="d.id">{{ d.id }}</a-select-option>
+                <a-select-option v-for="d in dataSource" :value="d.id" :key="d.id">{{ `${d.id}(${d.name})` }}</a-select-option>
               </a-select>
             </a-col>
-            <a-col :span="4" v-if="item.valueType.type !== 'this'">
+            <a-col :span="4" v-if="item.valueType.type && item.valueType.type !== 'this'">
               <a-select
                 placeholder="操作符"
                 v-model="item.operator"
+                :class="{'v-error': !item.operator}"
               >
                 <a-select-option value="eq">等于(=)</a-select-option>
-                <a-select-option value="not">不等于(!=)</a-select-option>
+                <a-select-option value="neq">不等于(!=)</a-select-option>
                 <template v-if="isNumberType(item)">
                   <a-select-option value="gt">大于(>)</a-select-option>
                   <a-select-option value="lt">小于(&lt;)</a-select-option>
@@ -109,7 +117,10 @@
                 <!-- <a-select-option value="like">模糊(%)</a-select-option> -->
               </a-select>
             </a-col>
-            <a-col :span="4" v-if="item.valueType.type !== 'this'">
+            <a-col
+              :span="4"
+              v-if="item.valueType.type && item.valueType.type !== 'this'"
+              :class="{'v-error': item.value === '' || $_.isNil(item.value)}">
               <a-select
                 v-if="item.valueType.type === 'bool' && !$_.isNil(item.valueType.trueValue) && !$_.isNil(item.valueType.falseValue)"
                 placeholder="过滤条件值"
@@ -185,6 +196,7 @@ export default {
       default: null
     }
   },
+  inject: ['formChecker'],
   components: {
     DeviceSelect
   },
@@ -233,6 +245,36 @@ export default {
       })
     }
     this.listAllProduct()
+    const checkerId = this.checkerId = 'trigger' + _.uniqueId()
+    this.formChecker.set(checkerId, () => {
+      const scene = this.scene
+      if (!scene.productId) {
+        this.$message.error('请选择产品')
+        return false
+      }
+      if (scene.trigger.filterType === 'properties' || scene.trigger.filterType === 'event') {
+        if (_.isEmpty(scene.trigger.filters)) {
+          this.$message.error('请添加触发条件')
+          return false
+        }
+        const list = _.filter(scene.trigger.filters, (item, index) => {
+          if (item.valueType.type !== 'this') {
+            return (index > 0 && !item.logic) || !item.key || !item.operator || (item.value === '' || _.isNil(item.value))
+          } else {
+            return (index > 0 && !item.logic)
+          }
+        })
+        if (list.length > 0 || !scene.trigger.filterType) {
+          return false
+        }
+      } else {
+        scene.trigger.filters = []
+      }
+      return true
+    })
+  },
+  beforeDestroy () {
+    this.formChecker.delete(this.checkerId)
   },
   methods: {
     triggerTypeChange (value) {
@@ -276,28 +318,28 @@ export default {
         }
         _.forEach(list, data => {
           if (type === 'event') {
-            dataSource.push({ id: `${data.id}`, valueType: { type: 'this' } })
+            dataSource.push({ id: `${data.id}`, name: data.name, valueType: { type: 'this' } })
             if (data.type === 'object') {
               data.properties.map((p) => {
-                dataSource.push({ id: `${data.id}.${p.id}`, valueType: p })
+                dataSource.push({ id: `${data.id}.${p.id}`, name: p.name, valueType: p })
               })
             }
           } else if (type === 'function') {
-            dataSource.push({ id: `${data.id}`, valueType: { type: 'this' } })
+            dataSource.push({ id: `${data.id}`, name: data.name, valueType: { type: 'this' } })
             if (data.output.type === 'object') {
               data.output.properties.map((p) => {
-                dataSource.push({ id: `${data.id}.${p.id}`, valueType: p })
+                dataSource.push({ id: `${data.id}.${p.id}`, name: p.name, valueType: p })
               })
             } else {
-              dataSource.push({ id: data.output.id, valueType: data.output })
+              dataSource.push({ id: data.output.id, name: '返回值', valueType: data.output })
             }
           } else if (type === 'properties') {
             if (data.type === 'object') {
               data.properties.map((p) => {
-                dataSource.push({ id: `${data.id}.${p.id}`, valueType: p })
+                dataSource.push({ id: `${data.id}.${p.id}`, name: p.name, valueType: p })
               })
             } else {
-              dataSource.push({ id: data.id, valueType: data })
+              dataSource.push({ id: data.id, name: data.name, valueType: data })
             }
           }
         })

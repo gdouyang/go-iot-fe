@@ -83,11 +83,11 @@ export default {
       searchObj: {},
       // 表头
       columns: [
-        { title: 'ID', dataIndex: 'id' },
+        { title: 'ID', dataIndex: 'id', width: 210 },
         { title: '名称', dataIndex: 'name' },
-        { title: '状态', dataIndex: 'state', scopedSlots: { customRender: 'state' } },
-        { title: '创建时间', dataIndex: 'createTime', minWidth: 110 },
-        { title: '操作', minWidth: 110, dataIndex: 'action', scopedSlots: { customRender: 'action' } }
+        { title: '状态', dataIndex: 'state', width: 180, scopedSlots: { customRender: 'state' } },
+        { title: '创建时间', dataIndex: 'createTime' },
+        { title: '操作', minWidth: 210, dataIndex: 'action', scopedSlots: { customRender: 'action' } }
       ],
       openModal: false,
       currentData: {}

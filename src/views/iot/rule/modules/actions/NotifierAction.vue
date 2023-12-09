@@ -109,9 +109,4 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-.v-error {
-  /deep/ .ant-select-selection {
-    border-color: red;
-  }
-}
 </style>

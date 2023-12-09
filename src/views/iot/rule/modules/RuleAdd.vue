@@ -73,7 +73,14 @@
               <a-input
                 placeholder="cron表达式"
                 v-model="scene.cron"
-              />
+              >
+                <template #suffix>
+                  <a-tooltip
+                    title="点击查看说明">
+                    <a-icon type="info-circle" @click="openDrawer = true"></a-icon>
+                  </a-tooltip>
+                </template>
+              </a-input>
             </a-form-model-item>
           </a-col>
         </a-row>
@@ -101,6 +108,17 @@
         </a-card>
       </a-form-model>
     </div>
+
+    <a-drawer
+      title="cron表达式说明"
+      placement="right"
+      width="750"
+      @close="openDrawer = false"
+      :visible="openDrawer"
+      v-if="openDrawer"
+    >
+      <Doc type="Cron"/>
+    </a-drawer>
   </Dialog>
 </template>
 <script>
@@ -134,6 +152,14 @@ export default {
       return this.data && this.data.id ? '编辑规则' : '新建规则'
     }
   },
+  data () {
+    return {
+      scene: {},
+      actions: [],
+      formChecker: new Map(),
+      openDrawer: false
+    }
+  },
   created () {
     this.scene = _.cloneDeep(this.data)
     this.init()
@@ -142,13 +168,6 @@ export default {
     this.$nextTick(() => {
       this.$refs.addModal.open()
     })
-  },
-  data () {
-    return {
-      scene: {},
-      actions: [],
-      formChecker: new Map()
-    }
   },
   methods: {
     init () {
@@ -195,6 +214,7 @@ export default {
         }
       })
       if (!isPass) {
+        this.$message.error('表单校验不通过')
         return
       }
       const data = _.cloneDeep(this.scene)
@@ -208,6 +228,10 @@ export default {
             dataType: f.valueType.type
           }
         })
+      }
+      if (_.isEmpty(this.actions)) {
+        this.$message.error('请添加执行动作')
+        return
       }
       data.actions = _.map(this.actions, a => {
         const deepa = _.cloneDeep(a)
@@ -223,7 +247,7 @@ export default {
       }
       promise.then(resp => {
         if (resp.success) {
-          this.$message.success('启动成功')
+          this.$message.success('操作成功')
           this.$emit('success', data)
         }
       })

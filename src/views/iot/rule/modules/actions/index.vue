@@ -18,6 +18,7 @@
             v-model="action.executor"
             key="trigger"
             @change="executorChange"
+            :class="{'v-error': hasError}"
           >
             <a-select-option value="notifier">消息通知</a-select-option>
             <a-select-option value="device-message-sender">设备输出</a-select-option>
@@ -35,6 +36,7 @@
 </template>
 
 <script>
+import _ from 'lodash'
 import { newNotifierAction, newDeviceMessageAction } from './data.js'
 import NotifierAction from './NotifierAction.vue'
 import DeviceAction from './DeviceAction.vue'
@@ -50,15 +52,29 @@ export default {
       default: null
     }
   },
+  inject: ['formChecker'],
   components: {
     NotifierAction,
     DeviceAction
   },
-  created () {
-  },
   data () {
     return {
+      hasError: false
     }
+  },
+  created () {
+    const checkerId = this.checkerId = 'action' + _.uniqueId()
+    this.formChecker.set(checkerId, () => {
+      this.hasError = false
+      if (!this.action.executor) {
+        this.hasError = true
+        return false
+      }
+      return true
+    })
+  },
+  beforeDestroy () {
+    this.formChecker.delete(this.checkerId)
   },
   methods: {
     executorChange (value) {

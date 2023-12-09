@@ -20,9 +20,9 @@ export function newScene () {
 
 export function newFilter () {
   return {
+    logic: undefined,
     key: undefined,
     operator: undefined,
-    value: undefined,
-    logic: undefined
+    value: undefined
   }
 }
