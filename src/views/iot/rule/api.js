@@ -25,3 +25,7 @@ export function addScene (data) {
 export function updateScene (id, data) {
   return Vue.prototype.$http.put(`/rule/${id}`, data)
 }
+
+export function copy (id) {
+  return Vue.prototype.$http.post(`/rule/${id}/copy`)
+}

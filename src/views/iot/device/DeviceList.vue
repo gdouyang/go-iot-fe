@@ -133,7 +133,7 @@ export default {
         { title: '状态', dataIndex: 'state', scopedSlots: { customRender: 'state' } },
         { title: '创建时间', dataIndex: 'createTime', scopedSlots: { customRender: 'createTime' } },
         { title: '说明', dataIndex: 'desc' },
-        { title: '操作', dataIndex: 'action', minWidth: 110, scopedSlots: { customRender: 'action' } }
+        { title: '操作', dataIndex: 'action', minWidth: 210, scopedSlots: { customRender: 'action' } }
       ],
       GetDetailStatus: false,
       selectedRowKeys: [],

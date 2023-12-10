@@ -94,7 +94,7 @@ export default {
         { title: '产品ID', dataIndex: 'productId' },
         { title: '告警时间', dataIndex: 'createTime', scopedSlots: { customRender: 'createTime' } },
         { title: '处理状态', dataIndex: 'state', align: 'center', width: '100px', scopedSlots: { customRender: 'state' } },
-        { title: '操作', width: '120px', align: 'center', scopedSlots: { customRender: 'action' } }
+        { title: '操作', minWidth: '210px', align: 'center', scopedSlots: { customRender: 'action' } }
       ],
       alarmLogId: null,
       currentLog: {

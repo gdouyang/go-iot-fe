@@ -90,7 +90,7 @@ export default {
         { title: '端口', dataIndex: 'port' },
         { title: '状态', dataIndex: 'state', scopedSlots: { customRender: 'state' } },
         { title: '创建时间', dataIndex: 'createTime' },
-        { title: '操作', width: '180px', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
+        { title: '操作', minWidth: '210px', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
       ]
     }
   },

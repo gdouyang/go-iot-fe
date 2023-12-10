@@ -80,7 +80,7 @@ export default {
         { title: '状态', dataIndex: 'enableFlag', scopedSlots: { customRender: 'enableFlag' } },
         { title: '描述', dataIndex: 'desc' },
         { title: '创建时间', dataIndex: 'createTime' },
-        { title: '操作', width: '180px', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
+        { title: '操作', minWidth: '210px', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
       ]
     }
   },

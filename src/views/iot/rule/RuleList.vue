@@ -37,6 +37,12 @@
       </span>
       <span slot="action" slot-scope="text, record">
         <a @click="edit(record)">查看</a>
+        <span v-action:rule-mgr:add>
+          <a-divider type="vertical" />
+          <a-popconfirm title="确认复制？" @confirm="copy(record)">
+            <a>复制</a>
+          </a-popconfirm>
+        </span>
         <a-divider type="vertical"/>
         <span v-if="record.state === 'stopped'">
           <a-popconfirm title="确认启动？" @confirm="start(record)" v-action:rule-mgr:save>
@@ -68,7 +74,7 @@
 
 <script>
 import _ from 'lodash'
-import { tableUrl, get, remove, start, stop } from './api.js'
+import { tableUrl, get, remove, start, stop, copy } from './api.js'
 import RuleAdd from './modules/RuleAdd.vue'
 
 export default {
@@ -158,6 +164,14 @@ export default {
           this.search()
         } else {
           this.spinning = false
+        }
+      })
+    },
+    copy (item) {
+      copy(item.id).then(data => {
+        if (data.success) {
+          this.$message.success('操作成功')
+          this.handleOk()
         }
       })
     }

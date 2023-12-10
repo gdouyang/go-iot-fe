@@ -94,16 +94,16 @@ export const asyncRouterMap = [
             meta: { title: 'OpenApi', keepAlive: true, permission: [ 'open-api-mgr' ] }
           },
           {
-            path: '/sys/system-config',
-            name: 'SystemConfig',
-            component: () => import('@/views/sys/config/SysConfig'),
-            meta: { title: '系统配置', keepAlive: true, permission: [ 'sys-config' ] }
-          },
-          {
             path: '/sys/network-list',
             name: 'NetWorkList',
             component: () => import('@/views/sys/NetworkList'),
             meta: { title: '网络管理', keepAlive: true, permission: [ 'network-config' ] }
+          },
+          {
+            path: '/sys/system-config',
+            name: 'SystemConfig',
+            component: () => import('@/views/sys/config/SysConfig'),
+            meta: { title: '系统配置', keepAlive: true, permission: [ 'sys-config' ] }
           }
         ]
       },
