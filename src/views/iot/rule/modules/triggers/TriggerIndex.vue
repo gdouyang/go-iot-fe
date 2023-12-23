@@ -6,18 +6,18 @@
         <a-col :span="24" v-if="false">
           <a-switch
             v-model="shakeLimit.enabled"
-            checkedChildren="开启防抖"
-            unCheckedChildren="关闭防抖"
+            checkedChildren="防抖(已开启)"
+            unCheckedChildren="防抖(已关闭)"
             style="margin-left: 20px;"
           />
           <template v-if="shakeLimit.enabled">
-            <a-input
+            <a-input-number
               v-model="shakeLimit.time"
               style="width: 70px; margin-left: 3px"
               size="small"
             />
             <small style="margin: 0px 5px;">秒内发生</small>
-            <a-input
+            <a-input-number
               v-model="shakeLimit.threshold"
               style="width: 70px;"
               size="small"

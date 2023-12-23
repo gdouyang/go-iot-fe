@@ -36,7 +36,7 @@
         <a-tag color="#f50" v-else>{{ text }}</a-tag>
       </span>
       <span slot="action" slot-scope="text, record">
-        <a @click="edit(record)">查看</a>
+        <a @click="edit(record)">编辑</a>
         <span v-action:rule-mgr:add>
           <a-divider type="vertical" />
           <a-popconfirm title="确认复制？" @confirm="copy(record)">
