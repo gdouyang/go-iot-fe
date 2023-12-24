@@ -157,7 +157,8 @@ export default {
       scene: {},
       actions: [],
       formChecker: new Map(),
-      openDrawer: false
+      openDrawer: false,
+      oldState: ''
     }
   },
   created () {
@@ -173,6 +174,7 @@ export default {
     init () {
       const data = this.scene
       if (data && data.id) {
+        this.oldState = data.state
         const actions = _.map(data.actions, a => {
           const deepa = _.cloneDeep(a)
           deepa.configuration = JSON.parse(deepa.configuration)
@@ -247,7 +249,11 @@ export default {
       }
       promise.then(resp => {
         if (resp.success) {
-          this.$message.success('操作成功')
+          if (this.oldState === 'started') {
+            this.$message.success('操作成功, 重新启动后生效')
+          } else {
+            this.$message.success('操作成功')
+          }
           this.$emit('success', data)
         }
       })

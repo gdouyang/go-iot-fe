@@ -3,14 +3,15 @@ export function newScene () {
     name: '',
     triggerType: '', // device, timer
     cron: '', // type == 'timer'时才有
+    state: 'stopped',
     productId: undefined,
     deviceIds: [],
     trigger: {
       filterType: undefined,
       shakeLimit: {
         enabled: false,
-        time: undefined,
-        threshold: undefined,
+        time: 1,
+        threshold: 1,
         alarmFirst: true
       },
       filters: []

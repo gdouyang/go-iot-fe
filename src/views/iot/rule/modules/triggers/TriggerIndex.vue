@@ -3,35 +3,43 @@
     <p style="font-size: 16px;">触发条件</p>
     <a-card size="small" :bordered="false" style="background-color: #eee;">
       <a-row :gutter="16">
-        <a-col :span="24" v-if="false">
-          <a-switch
-            v-model="shakeLimit.enabled"
-            checkedChildren="防抖(已开启)"
-            unCheckedChildren="防抖(已关闭)"
-            style="margin-left: 20px;"
-          />
-          <template v-if="shakeLimit.enabled">
-            <a-input-number
-              v-model="shakeLimit.time"
-              style="width: 70px; margin-left: 3px"
-              size="small"
+        <a-col :span="24">
+          <div class="shake-limit">
+            <a-switch
+              v-model="shakeLimit.enabled"
+              checkedChildren="防抖(已开启)"
+              unCheckedChildren="防抖(已关闭)"
+              style="margin-left: 20px;"
             />
-            <small style="margin: 0px 5px;">秒内发生</small>
-            <a-input-number
-              v-model="shakeLimit.threshold"
-              style="width: 70px;"
-              size="small"
-            />
-            <small style="margin: 0px 5px;">次及以上时，处理</small>
-            <a-radio-group
-              v-model="shakeLimit.alarmFirst"
-              size="small"
-              buttonStyle="solid"
-            >
-              <a-radio-button :value="true">第一次</a-radio-button>
-              <a-radio-button :value="false">最后一次</a-radio-button>
-            </a-radio-group>
-          </template>
+            <template v-if="shakeLimit.enabled">
+              <a-input-number
+                v-model="shakeLimit.time"
+                :min="1"
+                :max="3600"
+                :step="1"
+                style="width: 70px; margin-left: 3px"
+                size="small"
+              />
+              <small style="margin: 0px 5px;">秒内发生</small>
+              <a-input-number
+                v-model="shakeLimit.threshold"
+                :min="1"
+                :max="1000"
+                :step="1"
+                style="width: 70px;"
+                size="small"
+              />
+              <small style="margin: 0px 5px;">次及以上时，处理</small>
+              <a-radio-group
+                v-model="shakeLimit.alarmFirst"
+                size="small"
+                buttonStyle="solid"
+              >
+                <a-radio-button :value="true">第一次</a-radio-button>
+                <a-radio-button :value="false">最后一次</a-radio-button>
+              </a-radio-group>
+            </template>
+          </div>
         </a-col>
         <a-col :span="24" style="margin-top: 5px;">
           <a-col :span="4">
@@ -210,8 +218,8 @@ export default {
       dataSource: [],
       shakeLimit: {
         enabled: false,
-        time: undefined,
-        threshold: undefined,
+        time: 1,
+        threshold: 1,
         alarmFirst: true
       },
       scene: {},
@@ -391,6 +399,11 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+.shake-limit {
+  display: flex;
+  align-items: center;
+  height: 24px;
+}
 .device-box {
   border: 1px solid #d9d9d9;
   height: 90px;
