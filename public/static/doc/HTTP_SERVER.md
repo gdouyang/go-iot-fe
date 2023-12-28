@@ -79,7 +79,7 @@ function OnStateChecker(context) {
 
 - FuncInvoke
 
-| 方法 | 说明 | 参数 | 返回值 |
+| 字段 | 说明 | 参数 | 返回值 |
 | --- | --- | ---- | ---- |
 | FunctionId | 功能id | - | string |
 | Data | 下发数据 | - | object |
@@ -92,12 +92,90 @@ function OnStateChecker(context) {
 | ResponseJSON | 发送json数据 | (data: string) | - |
 | ResponseHeader | 设置http响应头 | (key: string, value: string) | - |
 
-### 一个复杂的样例
+### Device对象
+
+| 字段 | 说明 | 参数 | 返回值 |
+| --- | --- | ---- | ---- |
+| Id | 设备id | - | - |
+| Name | 设备名称 | - | - |
+
+### 对接移动Onet平台
+- [测试产品](./doc/onenet-lamp.json)
+
 ```javascript
 // 检查在线状态
 function OnStateChecker(context) {
   // unknown, online, offline;
-  return "online"
+  // 获取页面上配置的地址与apiKey
+  var url= context.GetConfig('apiAddress')
+  var apiKey = context.GetConfig('apiKey')
+  var resp = context.HttpRequest({
+    method: 'get',
+    url: url + '/devices/getbyimei?imei='+ context.GetDevice().Id,
+    headers: {'api-key': apiKey},
+  })
+  if (resp.status >= 200 && resp.status < 300) {
+    console.log(resp.data);
+    var body = JSON.parse(resp.data);
+    if (body.errno != 0) {
+      return "offline"
+    }
+    if (body.data.online) {
+      return "online"
+    }
+  }
+  return "offline"
+}
+// 设备激活时同步到OneNet平台
+function OnDeviceDeploy(context) {
+  var url= context.GetConfig('apiAddress')
+  var apiKey = context.GetConfig('apiKey')
+  var device = context.GetDevice()
+  var auth_info = {}
+  auth_info[device.Id] = device.Id
+  var resp = context.HttpRequest({
+    method: 'post',
+    url: url + '/devices',
+    data: {
+      title: device.Name,
+      protocol: 'LWM2M',
+      auth_info: auth_info
+    },
+    headers: {'api-key': apiKey},
+  })
+  console.log(resp)
+  if (resp.status >= 200 && resp.status < 300) {
+    console.log(resp.data);
+    var body = JSON.parse(resp.data);
+    if (body.errno != 0) {
+      if (body.errno == 6) {// 如果OneNet平台已存在
+        return;
+      }
+      throw new Error("同步OnNet失败 errno:"+body.errno)
+    }
+    return;
+  }
+  throw new Error("同步OnNet失败"+resp.message)
+}
+// 设备禁用时同步OneNet平台删除
+function OnDeviceUnDeploy(context) {
+  var url= context.GetConfig('apiAddress')
+  var apiKey = context.GetConfig('apiKey')
+  var device = context.GetDevice()
+  var resp = context.HttpRequest({
+    method: 'delete',
+    url: url + '/devices/' + device.Id,
+    headers: {'api-key': apiKey},
+  })
+  if (resp.status >= 200 && resp.status < 300) {
+    console.log(resp.data);
+    var body = JSON.parse(resp.data);
+    if (body.errno != 0 && body.errno != 3) {
+      throw new Error("同步OnNet失败 errno:"+body.errno)
+    }
+    return;
+  }
+  throw new Error("同步OnNet失败"+resp.message)
 }
 /**
  * 2：设备上下线消息
@@ -114,6 +192,7 @@ var OFFLINE = "0";
 // 设备报文 -> 物模型
 function OnMessage(context) {
   var str = context.MsgToString();
+  console.log(str)
   var data = JSON.parse(str);
   var msg = data.msg;
   var imei = msg.imei;
@@ -178,7 +257,7 @@ function OnInvoke(context) {
   } else {
     throw new Error(functionId + '无效功能ID');
   }
-  var resp = sendToOneNet(message.DeviceId, {'args': result});
+  var resp = sendToOneNet(context, message.DeviceId, {'args': result});
   if (resp.status == 200) {
     // 发送成功后要处理回复
     context.ReplyOk()
@@ -214,8 +293,8 @@ function sendToOneNet(context, imei, data) {
 function FunctionInvokeUtil() {
   // 开关
   this.switching = function(message) {
-    var data = message.getInput("status").orElse("off");
-    if ("on" == data) {
+    var status = message.Data.status;
+    if ("on" == status) {
       return CmdUtil.getCmdMsg(MsgType.开关灯调光, CmdUtil.getHexStr(10, 1), null);
     } else {
       return CmdUtil.getCmdMsg(MsgType.开关灯调光, CmdUtil.getHexStr(0, 1), null);
@@ -223,12 +302,12 @@ function FunctionInvokeUtil() {
   }
   // 调光
   this.dimming = function(message) {
-    var data = message.getInput("bright").orElse(0);
+    var data = message.Data.bright ? message.Data.bright : 0;
     return CmdUtil.getCmdMsg(MsgType.开关灯调光, CmdUtil.getHexStr(parseInt(data), 1), null);
   }
   // 设置策略
   this.strategy = function(message) {
-    var data = message.getInput("strategy").orElse("");
+    var data = message.Data.strategy
     if (data) {
       var dateStr = "";
       // 时-分-亮度,...,...："18-30-30,20-30-80,5-30-50,6-30-0"
@@ -252,8 +331,18 @@ function FunctionInvokeUtil() {
 
 function CmdUtil() {
 }
+CmdUtil.formatDate = function() {
+  var date = new Date();
+  var str = (date.getFullYear() + "").substring(2);
+  str = str + " " + (date.getMonth() > 9 ? date.getMonth() : '0' + date.getMonth());
+  str = str + " " + (date.getDate() > 9 ? date.getDate() : '0' + date.getDate());
+  str = str + " " + (date.getHours() > 9 ? date.getHours() : '0' + date.getHours());
+  str = str + " " + (date.getMinutes() > 9 ? date.getMinutes() : '0' + date.getMinutes());
+  str = str + " " + (date.setSeconds() > 9 ? date.setSeconds() : '0' + date.setSeconds());
+  return str;
+}
 CmdUtil.resp = function(msgType) {
-  var date = globe.formatDate(new Date().getTime(), "yy MM dd HH mm ss").split(' ');
+  var date = CmdUtil.formatDate().split(' ');
   var dateStr = '';
   for(var i = 0; i < date.length; i++) {
     dateStr += CmdUtil.getHexStr(parseInt(date[i]), 1);
@@ -266,7 +355,7 @@ CmdUtil.getCmdMsg = function(msgType, msgData, len) {
   var version = "0100";
   var msgLen = len !== null ? CmdUtil.getHexStr(len,2) : msgType.lenHex;
   var msgHead = version + CmdUtil.getPktNum() + msgType.codeHex + msgLen;
-  var msgCrc16 = globe.toCrc16(msgHead + msgData);
+  var msgCrc16 = globe.ToCrc16Str(msgHead + msgData);
 
   return (msgHead + msgData + msgCrc16).toUpperCase();
 }
@@ -314,7 +403,7 @@ function MsgEntity(text) {
 
   this.getNextByte = function () {
     var endIndex = this.offset + 2;
-    if (endIndex > this.body.length()) {
+    if (endIndex > this.body.length) {
         return null;
     }
     var str = this.body.substring(this.offset, endIndex);
@@ -341,11 +430,11 @@ function MsgHeader(header) {
 
 function DataTypeWord(text) {
   this.hex = text; // string
-  
+
   this.highBit = text.substring(2, 4); // string
   this.lowBit = text.substring(0, 2); // string
   this.value = parseInt(this.highBit + this.lowBit, 16); // int
-  
+
 }
 
 function MsgType(typeCode, desc, codeHex, lenHex) {
@@ -386,4 +475,5 @@ MsgType.校时 = new MsgType(1013, "校时", "F503", "F5030600");
 MsgType.接入应答 = new MsgType(1014, "接入应答", "F603", "0600");
 MsgType.获取策略请求 = new MsgType(1015, "获取策略请求", "F703", "");
 MsgType.下行升级报文 = new MsgType(1100, "下行升级报文", "4C04", "");
+
 ```
