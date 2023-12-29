@@ -331,23 +331,15 @@ function FunctionInvokeUtil() {
 
 function CmdUtil() {
 }
-CmdUtil.formatDate = function() {
-  var date = new Date();
-  var str = (date.getFullYear() + "").substring(2);
-  str = str + " " + (date.getMonth() > 9 ? date.getMonth() : '0' + date.getMonth());
-  str = str + " " + (date.getDate() > 9 ? date.getDate() : '0' + date.getDate());
-  str = str + " " + (date.getHours() > 9 ? date.getHours() : '0' + date.getHours());
-  str = str + " " + (date.getMinutes() > 9 ? date.getMinutes() : '0' + date.getMinutes());
-  str = str + " " + (date.getSeconds() > 9 ? date.getSeconds() : '0' + date.getSeconds());
-  return str;
-}
 CmdUtil.resp = function(msgType) {
-  var date = CmdUtil.formatDate().split(' ');
-  var dateStr = '';
-  for(var i = 0; i < date.length; i++) {
-    dateStr += CmdUtil.getHexStr(parseInt(date[i]), 1);
-  }
-  print(dateStr);
+  var date = new Date();
+  var year = (date.getFullYear() + "").substring(2);
+  var dateStr = CmdUtil.getHexStr(parseInt(year), 1);
+  dateStr += CmdUtil.getHexStr(date.getMonth() + 1, 1);
+  dateStr += CmdUtil.getHexStr(date.getDate(), 1);
+  dateStr += CmdUtil.getHexStr(date.getHours(), 1);
+  dateStr += CmdUtil.getHexStr(date.getMinutes(), 1);
+  dateStr += CmdUtil.getHexStr(date.setSeconds(), 1);
   return CmdUtil.getCmdMsg(msgType, dateStr, null);
 }
 
