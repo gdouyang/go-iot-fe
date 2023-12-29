@@ -338,7 +338,7 @@ CmdUtil.formatDate = function() {
   str = str + " " + (date.getDate() > 9 ? date.getDate() : '0' + date.getDate());
   str = str + " " + (date.getHours() > 9 ? date.getHours() : '0' + date.getHours());
   str = str + " " + (date.getMinutes() > 9 ? date.getMinutes() : '0' + date.getMinutes());
-  str = str + " " + (date.setSeconds() > 9 ? date.setSeconds() : '0' + date.setSeconds());
+  str = str + " " + (date.getSeconds() > 9 ? date.getSeconds() : '0' + date.getSeconds());
   return str;
 }
 CmdUtil.resp = function(msgType) {
