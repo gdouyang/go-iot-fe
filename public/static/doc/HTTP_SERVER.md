@@ -108,11 +108,10 @@ function OnStateChecker(context) {
   // unknown, online, offline;
   // 获取页面上配置的地址与apiKey
   var url= context.GetConfig('apiAddress')
-  var apiKey = context.GetConfig('apiKey')
   var resp = context.HttpRequest({
     method: 'get',
     url: url + '/devices/getbyimei?imei='+ context.GetDevice().Id,
-    headers: {'api-key': apiKey},
+    headers: {'Authorization': getAuthorization(context)},
   })
   if (resp.status >= 200 && resp.status < 300) {
     console.log(resp.data);
@@ -126,10 +125,22 @@ function OnStateChecker(context) {
   }
   return "offline"
 }
+function getAuthorization(context) {
+  var version = "2018-10-31";
+  var resourceName = "products/8001495";
+  var expirationTime = Number(new Date().getTime() / 1000 + 100 * 24 * 60 * 60).toFixed();
+  var signatureMethod = "sha1";
+  var accessKey = context.GetConfig('accessKey');
+  
+  var res = encodeURIComponent(resourceName);
+  var encryptText = expirationTime + "\n" + signatureMethod + "\n" + resourceName + "\n" + version;
+  var str = globe.HmacEncryptBase64(encryptText, accessKey, signatureMethod);
+  var sig = encodeURIComponent(str);
+  return "version=" + version + "&res=" + res + "&et=" + expirationTime+"&method="+signatureMethod+"&sign="+sig;
+}
 // 设备激活时同步到OneNet平台
 function OnDeviceDeploy(context) {
   var url= context.GetConfig('apiAddress')
-  var apiKey = context.GetConfig('apiKey')
   var device = context.GetDevice()
   var auth_info = {}
   auth_info[device.Id] = device.Id
@@ -141,7 +152,7 @@ function OnDeviceDeploy(context) {
       protocol: 'LWM2M',
       auth_info: auth_info
     },
-    headers: {'api-key': apiKey},
+    headers: {'Authorization': getAuthorization(context)},
   })
   console.log(resp)
   if (resp.status >= 200 && resp.status < 300) {
@@ -151,8 +162,10 @@ function OnDeviceDeploy(context) {
       if (body.errno == 6) {// 如果OneNet平台已存在
         return;
       }
-      throw new Error("同步OnNet失败 errno:"+body.errno)
+      throw new Error("同步OnNet失败 errno:"+body.error)
     }
+    var device_id = body.data.device_id
+    device.SetConfig("deviceId", device_id)
     return;
   }
   throw new Error("同步OnNet失败"+resp.message)
@@ -160,18 +173,21 @@ function OnDeviceDeploy(context) {
 // 设备禁用时同步OneNet平台删除
 function OnDeviceUnDeploy(context) {
   var url= context.GetConfig('apiAddress')
-  var apiKey = context.GetConfig('apiKey')
   var device = context.GetDevice()
+  var device_id = device.GetConfig('deviceId')
+  if (!device_id) {
+    device_id = device.Id
+  }
   var resp = context.HttpRequest({
     method: 'delete',
-    url: url + '/devices/' + device.Id,
-    headers: {'api-key': apiKey},
+    url: url + '/devices/' + device_id,
+    headers: {'Authorization': getAuthorization(context)},
   })
   if (resp.status >= 200 && resp.status < 300) {
     console.log(resp.data);
     var body = JSON.parse(resp.data);
     if (body.errno != 0 && body.errno != 3) {
-      throw new Error("同步OnNet失败 errno:"+body.errno)
+      throw new Error("同步OnNet失败 errno:"+body.error)
     }
     return;
   }
@@ -281,12 +297,11 @@ function doAck(context, imei, msgHeader) {
 function sendToOneNet(context, imei, data) {
   // 获取页面上配置的地址与apiKey
   var url= context.GetConfig('apiAddress')
-  var apiKey = context.GetConfig('apiKey')
   return context.HttpRequest({
     method: 'post',
     url: url + '/nbiot/execute?imei='+ imei +'&obj_id=3200&obj_inst_id=0&res_id=5505',
     data: data,
-    headers: {'api-key': apiKey},
+    headers: {'Authorization': getAuthorization(context)},
   })
 }
 
