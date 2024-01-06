@@ -127,11 +127,11 @@ function OnStateChecker(context) {
 }
 function getAuthorization(context) {
   var version = "2018-10-31";
-  var resourceName = "products/8001495";
+  var resourceName = "products/8001495"; // 这里需要替换具体的oneNet产品id
   var expirationTime = Number(new Date().getTime() / 1000 + 100 * 24 * 60 * 60).toFixed();
   var signatureMethod = "sha1";
   var accessKey = context.GetConfig('accessKey');
-  
+
   var res = encodeURIComponent(resourceName);
   var encryptText = expirationTime + "\n" + signatureMethod + "\n" + resourceName + "\n" + version;
   var str = globe.HmacEncryptBase64(encryptText, accessKey, signatureMethod);
@@ -260,7 +260,7 @@ function OnInvoke(context) {
   }
   var functionId = message.FunctionId;
   var messageId = "1"//message.getMessageId();
-  var invoke = new FunctionInvokeUtil();
+  var invoke = new FunctionInvokeUtil(context);
   var result = null;
   if (functionId == "timing") {
     result = invoke.timing();
@@ -286,9 +286,9 @@ function doAck(context, imei, msgHeader) {
   var value1 = msgHeader.msgType.value;
   var args = '';
   if (MsgType.上行接入请求.equals(value1)) {
-    args = CmdUtil.resp(MsgType.接入应答);
+    args = new FunctionInvokeUtil(context).connectResp();
   } else if (MsgType.心跳消息.equals(value1)) {
-    args = CmdUtil.getCmdMsg(MsgType.下行ACK, msgHeader.pktNum.hex, null);
+    args = new FunctionInvokeUtil(context).heartbeatResp();
   }
   sendToOneNet(context, imei, {'args': args});
 }
@@ -305,20 +305,21 @@ function sendToOneNet(context, imei, data) {
   })
 }
 
-function FunctionInvokeUtil() {
+function FunctionInvokeUtil(context) {
+  this.context = context
   // 开关
   this.switching = function(message) {
     var status = message.Data.status;
     if ("on" == status) {
-      return CmdUtil.getCmdMsg(MsgType.开关灯调光, CmdUtil.getHexStr(10, 1), null);
+      return CmdUtil.getCmdMsg(this.context, MsgType.开关灯调光, CmdUtil.getHexStr(10, 1), null);
     } else {
-      return CmdUtil.getCmdMsg(MsgType.开关灯调光, CmdUtil.getHexStr(0, 1), null);
+      return CmdUtil.getCmdMsg(this.context, MsgType.开关灯调光, CmdUtil.getHexStr(0, 1), null);
     }
   }
   // 调光
   this.dimming = function(message) {
     var data = message.Data.bright ? message.Data.bright : 0;
-    return CmdUtil.getCmdMsg(MsgType.开关灯调光, CmdUtil.getHexStr(parseInt(data), 1), null);
+    return CmdUtil.getCmdMsg(this.context, MsgType.开关灯调光, CmdUtil.getHexStr(parseInt(data), 1), null);
   }
   // 设置策略
   this.strategy = function(message) {
@@ -335,33 +336,41 @@ function FunctionInvokeUtil() {
           dateStr += CmdUtil.getHexStr(parseInt(t), 1);
         }
       }
-      return CmdUtil.getCmdMsg(MsgType.设置策略, dateStr, strategyS.length * 3);
+      return CmdUtil.getCmdMsg(this.context, MsgType.设置策略, dateStr, strategyS.length * 3);
     }
   }
   // 校时
   this.timing = function () {
-    return CmdUtil.resp(MsgType.校时);
+    return this.resp(MsgType.校时);
+  }
+  // 接入应答
+  this.connectResp = function () {
+    return this.resp(MsgType.接入应答);
+  }
+  // 下行ACK
+  this.heartbeatResp = function () {
+    return CmdUtil.getCmdMsg(this.context, MsgType.下行ACK, msgHeader.pktNum.hex, null);
+  }
+  // 应答
+  this.resp = function(msgType) {
+    var date = new Date();
+    var year = (date.getFullYear() + "").substring(2);
+    var dateStr = CmdUtil.getHexStr(parseInt(year), 1);
+    dateStr += CmdUtil.getHexStr(date.getMonth() + 1, 1);
+    dateStr += CmdUtil.getHexStr(date.getDate(), 1);
+    dateStr += CmdUtil.getHexStr(date.getHours(), 1);
+    dateStr += CmdUtil.getHexStr(date.getMinutes(), 1);
+    dateStr += CmdUtil.getHexStr(date.setSeconds(), 1);
+    return CmdUtil.getCmdMsg(this.context, msgType, dateStr, null);
   }
 }
 
 function CmdUtil() {
 }
-CmdUtil.resp = function(msgType) {
-  var date = new Date();
-  var year = (date.getFullYear() + "").substring(2);
-  var dateStr = CmdUtil.getHexStr(parseInt(year), 1);
-  dateStr += CmdUtil.getHexStr(date.getMonth() + 1, 1);
-  dateStr += CmdUtil.getHexStr(date.getDate(), 1);
-  dateStr += CmdUtil.getHexStr(date.getHours(), 1);
-  dateStr += CmdUtil.getHexStr(date.getMinutes(), 1);
-  dateStr += CmdUtil.getHexStr(date.setSeconds(), 1);
-  return CmdUtil.getCmdMsg(msgType, dateStr, null);
-}
-
-CmdUtil.getCmdMsg = function(msgType, msgData, len) {
+CmdUtil.getCmdMsg = function(context, msgType, msgData, len) {
   var version = "0100";
   var msgLen = len !== null ? CmdUtil.getHexStr(len,2) : msgType.lenHex;
-  var msgHead = version + CmdUtil.getPktNum() + msgType.codeHex + msgLen;
+  var msgHead = version + CmdUtil.getPktNum(context) + msgType.codeHex + msgLen;
   var msgCrc16 = globe.ToCrc16Str(msgHead + msgData);
 
   return (msgHead + msgData + msgCrc16).toUpperCase();
@@ -378,10 +387,16 @@ CmdUtil.getHexStr = function(value, size) {
   return hexStr.substring(0, size * 2);
 }
 
-CmdUtil.pktNum = 0;
-CmdUtil.getPktNum = function() {
-  CmdUtil.pktNum++;
-  return CmdUtil.getHexStr(CmdUtil.pktNum, 2);
+CmdUtil.getPktNum = function(context) {
+  var pktNum = context.GetDevice().GetData("pktNum");
+  if (pktNum) {
+    pktNum = parseInt(pktNum, 10);
+    pktNum = pktNum + 1;
+  } else {
+    pktNum = 0;
+  }
+  context.GetDevice().SetData("pktNum", pktNum);
+  return CmdUtil.getHexStr(pktNum, 2);
 }
 
 function MsgEntity(text) {
