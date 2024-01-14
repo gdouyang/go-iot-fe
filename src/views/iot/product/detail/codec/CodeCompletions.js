@@ -116,7 +116,8 @@ function _getCompletions (type) {
           { caption: 'context.HttpRequest()', meta: 'common', value: 'var resp = context.HttpRequest({method:"", url:"", data:{}, header:{}})', remark: '发送http请求' },
           { caption: 'session.ResponseHeader()', meta: 'session', value: 'session.ResponseHeader("key", "value")', remark: '设置响应头' },
           { caption: 'session.Response()', meta: 'session', value: 'session.Response("text")', remark: '响应文本数据' },
-          { caption: 'session.ResponseJSON()', meta: 'session', value: 'session.ResponseJSON("{}")', remark: '响应Json数据' }
+          { caption: 'session.ResponseJSON()', meta: 'session', value: 'session.ResponseJSON("{}")', remark: '响应Json数据' },
+          { caption: 'session.SetStatesCode()', meta: 'session', value: 'session.SetStatesCode(200)', remark: '设置http响应states code' }
         ])
       }
     } else if (type === 'TCP_SERVER' || type === 'TCP_CLIENT') {

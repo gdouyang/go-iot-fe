@@ -91,6 +91,7 @@ function OnStateChecker(context) {
 | Response | 发送文本数据 | (data: string) | - |
 | ResponseJSON | 发送json数据 | (data: string) | - |
 | ResponseHeader | 设置http响应头 | (key: string, value: string) | - |
+| SetStatesCode | 设置http响应states code | (code: int) | - |
 
 ### Device对象
 
@@ -207,6 +208,12 @@ var ONLINE = "1";
 var OFFLINE = "0";
 // 设备报文 -> 物模型
 function OnMessage(context) {
+  // onenet配置推送地址是，会先发送一个校验请求来验证，需要返回200
+  if (context.GetQuery("msg")) {
+    var session = context.GetSession();
+    session.ResponseJSON('{"success":true}');
+    return
+  }
   var str = context.MsgToString();
   console.log(str)
   var data = JSON.parse(str);
