@@ -36,6 +36,7 @@
       title="运行日志"
       placement="right"
       width="1000"
+      :maskClosable="false"
       @close="debugClose"
       :visible="openDebugDrawer"
       v-if="openDebugDrawer"
