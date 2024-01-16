@@ -73,3 +73,10 @@ export function uploadProduct (file) {
   formData.append('file', file)
   return Vue.prototype.$http.post(`product/import`, formData)
 }
+
+export function getEventBusUrl (productId, deviceId, type) {
+  if (window.location.protocol.startsWith('https')) {
+    return `wss://${window.location.host}/api/eventbus/${productId}/${deviceId}/${type}`
+  }
+  return `ws://${window.location.host}/api/eventbus/${productId}/${deviceId}/${type}`
+}

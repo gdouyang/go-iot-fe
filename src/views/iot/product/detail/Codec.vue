@@ -6,6 +6,7 @@
           <a href="javascript:void(0)" @click="save">保存</a>
         </div>
         <div>
+          <a href="javascript:void(0)" @click="showDebug">日志</a>
           <a href="javascript:void(0)" @click="showDemo">查看样例</a>
           <a href="javascript:void(0)" @click="switchFullScreen">{{ fullScreen ? '退出全屏' : '全屏' }}</a>
         </div>
@@ -31,11 +32,30 @@
     >
       <Doc :type="network.type"/>
     </a-drawer>
+    <a-drawer
+      title="运行日志"
+      placement="right"
+      width="1000"
+      @close="debugClose"
+      :visible="openDebugDrawer"
+      v-if="openDebugDrawer"
+    >
+      <div class="product-debug" :class="{'isConnect': isConnect}">
+        <div :key="index" v-for="(item, index) in debugDataList">
+          <span class="time">{{ item.createTime }} </span>
+          产品:
+          <span class="time">{{ item.productId }} </span>
+          设备:
+          <span class="time">{{ item.deviceId }} </span>
+          <span>{{ item.data }}</span>
+        </div>
+      </div>
+    </a-drawer>
   </div>
 </template>
 
 <script>
-import { getNetwork, updateScript } from '@/views/iot/product/api.js'
+import { getNetwork, updateScript, getEventBusUrl } from '@/views/iot/product/api.js'
 import AceEditor from 'vue2-ace-editor'
 // 语法提示工具
 import 'brace/ext/language_tools' // language extension prerequsite...
@@ -78,7 +98,10 @@ export default {
       },
       network: {},
       openDrawer: false,
-      fullScreen: false
+      fullScreen: false,
+      openDebugDrawer: false,
+      debugDataList: [],
+      isConnect: false
     }
   },
   created () {
@@ -151,6 +174,37 @@ export default {
       setTimeout(() => {
         this.$emit('editor-change', this.codeContent_)
       }, 10)
+    },
+    showDebug () {
+      this.openDebugDrawer = true
+      this.connectWs()
+    },
+    debugClose () {
+      this.openDebugDrawer = false
+      if (this.ws) {
+        this.ws.close()
+        this.debugDataList = []
+      }
+    },
+    connectWs () {
+      var ws = this.ws = new WebSocket(getEventBusUrl(this.id, '*', 'debug'))
+      ws.onopen = (evt) => {
+        console.log('debug Connection open ...')
+        this.isConnect = true
+        this.debugDataList.push({ createTime: new Date(), productId: this.id, data: '已连接' })
+      }
+
+      ws.onmessage = (evt) => {
+        console.log('debug Received Message: ' + evt.data)
+        var data = JSON.parse(evt.data)
+        this.debugDataList.push(data)
+      }
+
+      ws.onclose = (evt) => {
+        console.log('debug Connection closed.')
+        this.debugDataList.push({ createTime: new Date(), productId: this.id, data: '连接关闭' })
+        this.ws = null
+      }
     }
   }
 }
@@ -181,6 +235,20 @@ export default {
   justify-content: space-between;
   a {
     margin: 0 5px;
+  }
+}
+.product-debug {
+  background-color: black;
+  color: white;
+  height: calc(100vh - 114px);
+  width: 100%;
+  overflow: auto;
+  border-top: 4px solid red;
+  &.isConnect {
+    border-top: 4px solid #52c41a;
+  }
+  .time {
+    color: #52c41a;
   }
 }
 </style>
