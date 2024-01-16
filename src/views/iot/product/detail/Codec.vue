@@ -204,6 +204,7 @@ export default {
 
       ws.onclose = (evt) => {
         console.log('debug Connection closed.')
+        this.isConnect = false
         this.debugDataList.push({ createTime: new Date(), productId: this.id, data: '连接关闭' })
         this.ws = null
       }
