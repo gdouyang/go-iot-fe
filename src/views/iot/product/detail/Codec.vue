@@ -192,6 +192,7 @@ export default {
       ws.onopen = (evt) => {
         console.log('debug Connection open ...')
         this.isConnect = true
+        this.debugDataList = []
         this.debugDataList.push({ createTime: new Date(), productId: this.id, data: '已连接' })
       }
 
