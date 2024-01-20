@@ -1,4 +1,4 @@
-### OnStateChecker
+### OnStateChecker 函数
 > OnStateChecker的作用是获取在线状态，由于http协议是无状态的，状态需要实时查询
 - context参数说明
 
@@ -21,27 +21,24 @@ function OnStateChecker(context) {
   return 'offline'
 }
 ```
-
-#### HttpConfig
-
-| 属性 | 说明 | 类型 |
-| --- | --- | ---- |
-| url | 请求路径 | string |
-| method | http方法 | string(get,post) |
-| header | http头 | object |
-| data | http数据 | object或string |
-
-#### HttpResp
-
-| 属性 | 说明 | 类型 |
-| --- | --- | ---- |
-| status | 响应码 | int |
-| message | 响应消息 | string |
-| header | 响应头 | object |
-| data | 响应数据 | string |
-
-### OnMessage函数
+### OnDeviceDeploy 函数
+> 设备停用时调用此函数，可以在这个函数中调用第三方系统做数据同步
+```javascript
+function OnDeviceDeploy(context) {
+}
+```
+### OnDeviceUnDeploy 函数
+> 设备时调用此函数，可以在这个函数中调用第三方系统做数据同步
+```javascript
+function OnDeviceUnDeploy(context) {
+}
+```
+### OnMessage 函数
 > 当有消息接收时会调用OnMessage函数
+```javascript
+function OnMessage(context) {
+}
+```
 - context参数说明
 
 | 方法 | 说明 | 参数 | 返回值 |
@@ -66,7 +63,12 @@ function OnStateChecker(context) {
 | GetForm | 获取http表单 | (key: string) | string |
 | HttpRequest | 发送http请求 | HttpConfig | HttpResp |
 
-### OnInvoke函数
+### OnInvoke 函数
+> 功能调用时执行，在这里实现具体的命令下方逻辑
+```javascript
+function OnInvoke(context) {
+}
+```
 - context参数说明
 
 | 方法 | 说明 | 参数 | 返回值 |
@@ -76,8 +78,9 @@ function OnStateChecker(context) {
 | ReplyOk | 服务下发执行成功 | - | - |
 | ReplyFail | 服务下发执行失败 | (str: string) | - |
 | HttpRequest | 发送http请求 | HttpConfig | HttpResp |
+| HttpRequestAsync | 发送http请求（异步） | HttpConfig | - |
 
-- FuncInvoke
+### FuncInvoke
 
 | 字段 | 说明 | 参数 | 返回值 |
 | --- | --- | ---- | ---- |
@@ -100,6 +103,25 @@ function OnStateChecker(context) {
 | Id | 设备id | - | - |
 | Name | 设备名称 | - | - |
 
+#### HttpConfig
+
+| 属性 | 说明 | 类型 |
+| --- | --- | ---- |
+| method | http请求方法("get", "post", "put", "delete") | string |
+| url | http请求路径 | string |
+| data | 下发数据 | object |
+| header | http请求头 | object |
+| complete | 执行时的回调(HttpRequestAsync才有效) | function |
+
+#### HttpResp
+
+| 属性 | 说明 | 类型 |
+| --- | --- | ---- |
+| status | 响应码(20x,30x,40x,50x) | int |
+| message | 响应消息 | string |
+| header | 响应头 | object |
+| data | 响应数据 | string |
+
 ### 对接移动Onet平台
 - [测试产品](./doc/onenet-lamp.json)
 
@@ -109,7 +131,7 @@ function OnStateChecker(context) {
   // unknown, online, offline;
   // 获取页面上配置的地址与apiKey
   var url= context.GetConfig('apiAddress')
-  var resp = context.HttpRequest({
+  var resp = globe.HttpRequest({
     method: 'get',
     url: url + '/devices/getbyimei?imei='+ context.GetDevice().Id,
     headers: {'Authorization': getAuthorization(context)},
@@ -145,7 +167,7 @@ function OnDeviceDeploy(context) {
   var device = context.GetDevice()
   var auth_info = {}
   auth_info[device.Id] = device.Id
-  var resp = context.HttpRequest({
+  var resp = globe.HttpRequest({
     method: 'post',
     url: url + '/devices',
     data: {
@@ -179,7 +201,7 @@ function OnDeviceUnDeploy(context) {
   if (!device_id) {
     device_id = device.Id
   }
-  var resp = context.HttpRequest({
+  var resp = globe.HttpRequest({
     method: 'delete',
     url: url + '/devices/' + device_id,
     headers: {'Authorization': getAuthorization(context)},
@@ -208,12 +230,6 @@ var ONLINE = "1";
 var OFFLINE = "0";
 // 设备报文 -> 物模型
 function OnMessage(context) {
-  // onenet配置推送地址是，会先发送一个校验请求来验证，需要返回200
-  if (context.GetQuery("msg")) {
-    var session = context.GetSession();
-    session.ResponseJSON('{"success":true}');
-    return
-  }
   var str = context.MsgToString();
   console.log(str)
   var data = JSON.parse(str);
@@ -231,17 +247,17 @@ function OnMessage(context) {
       return;
     }
   }
+  context.GetDeviceById(imei)
 
   var value = msg.value;
   var entity = new MsgEntity(value);
   var msgHeader = entity.header;
   var value1 = msgHeader.msgType.value;
   if (MsgType.心跳消息.equals(value1) || MsgType.上行接入请求.equals(value1)) {
+    console.log("心跳消息" + MsgType.心跳消息.equals(value1) + "上行接入请求" + MsgType.上行接入请求.equals(value1))
     // 灯控器心中、上行接入时需要返回ack不然会断开连接
-    var devOper = context.GetDeviceById(imei)
-    if (devOper) {
-      doAck(context, imei, msgHeader);
-    }
+    console.log("灯控器心中、上行接入时需要返回ack不然会断开连接")
+    doAck(context, imei, msgHeader);
   }
   // 心跳消息中包含了亮度、电流、电压、功率
   if (MsgType.心跳消息.equals(value1)) {
@@ -295,20 +311,33 @@ function doAck(context, imei, msgHeader) {
   if (MsgType.上行接入请求.equals(value1)) {
     args = new FunctionInvokeUtil(context).connectResp();
   } else if (MsgType.心跳消息.equals(value1)) {
-    args = new FunctionInvokeUtil(context).heartbeatResp();
+    args = new FunctionInvokeUtil(context).heartbeatResp(msgHeader);
   }
-  sendToOneNet(context, imei, {'args': args});
+  sendToOneNetAsync(context, imei, {'args': args});
 }
 
 // 发送指令给移动平台
 function sendToOneNet(context, imei, data) {
   // 获取页面上配置的地址与apiKey
   var url= context.GetConfig('apiAddress')
-  return context.HttpRequest({
+  return globe.HttpRequest({
     method: 'post',
     url: url + '/nbiot/execute?imei='+ imei +'&obj_id=3200&obj_inst_id=0&res_id=5505',
     data: data,
     headers: {'Authorization': getAuthorization(context)},
+  })
+}
+function sendToOneNetAsync(context, imei, data) {
+  // 获取页面上配置的地址与apiKey
+  var url= context.GetConfig('apiAddress')
+  globe.HttpRequestAsync({
+    method: 'post',
+    url: url + '/nbiot/execute?imei='+ imei +'&obj_id=3200&obj_inst_id=0&res_id=5505',
+    data: data,
+    headers: {'Authorization': getAuthorization(context)},
+    complete: function(resp) {
+      console.log(resp)
+    }
   })
 }
 
@@ -355,7 +384,7 @@ function FunctionInvokeUtil(context) {
     return this.resp(MsgType.接入应答);
   }
   // 下行ACK
-  this.heartbeatResp = function () {
+  this.heartbeatResp = function (msgHeader) {
     return CmdUtil.getCmdMsg(this.context, MsgType.下行ACK, msgHeader.pktNum.hex, null);
   }
   // 应答
@@ -367,7 +396,7 @@ function FunctionInvokeUtil(context) {
     dateStr += CmdUtil.getHexStr(date.getDate(), 1);
     dateStr += CmdUtil.getHexStr(date.getHours(), 1);
     dateStr += CmdUtil.getHexStr(date.getMinutes(), 1);
-    dateStr += CmdUtil.getHexStr(date.setSeconds(), 1);
+    dateStr += CmdUtil.getHexStr(date.getSeconds(), 1);
     return CmdUtil.getCmdMsg(this.context, msgType, dateStr, null);
   }
 }

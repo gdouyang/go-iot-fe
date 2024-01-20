@@ -113,7 +113,47 @@ function _getCompletions (type) {
         ])
       } else {
         list = list.concat([
-          { caption: 'context.HttpRequest()', meta: 'common', value: 'var resp = context.HttpRequest({method:"", url:"", data:{}, header:{}})', remark: '发送http请求' },
+          { caption: 'globe.HttpRequest()',
+          meta: 'globe',
+          value: `var resp = globe.HttpRequest({
+    method: "post", 
+    url: "", 
+    data: {}, 
+    header: {}
+  })`,
+          remark: `发送http请求（异步）
+var resp = globe.HttpRequest({
+  method: "post", 
+  url: "", 
+  data: {}, 
+  header: {}
+})
+console.log(resp)
+`
+          },
+          {
+            caption: 'globe.HttpRequestAsync()',
+            meta: 'globe',
+            value: `globe.HttpRequestAsync({
+    method: "post", 
+    url: "", 
+    data: {}, 
+    header: {},
+    complete: function(resp) {
+      console.log(resp)
+    }
+  })`,
+          remark: `发送http请求（异步）
+globe.HttpRequestAsync({
+  method: "post", 
+  url: "", 
+  data: {}, 
+  header: {},
+  complete: function(resp) {
+    console.log(resp)
+  }
+})`
+          },
           { caption: 'session.ResponseHeader()', meta: 'session', value: 'session.ResponseHeader("key", "value")', remark: '设置响应头' },
           { caption: 'session.Response()', meta: 'session', value: 'session.Response("text")', remark: '响应文本数据' },
           { caption: 'session.ResponseJSON()', meta: 'session', value: 'session.ResponseJSON("{}")', remark: '响应Json数据' },

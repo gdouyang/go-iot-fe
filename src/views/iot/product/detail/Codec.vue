@@ -33,7 +33,7 @@
       <Doc :type="network.type"/>
     </a-drawer>
     <a-drawer
-      title="运行日志"
+      :title="`调试日志(${id})`"
       placement="right"
       width="1000"
       :maskClosable="false"
@@ -44,10 +44,12 @@
       <div class="product-debug" :class="{'isConnect': isConnect}">
         <div :key="index" v-for="(item, index) in debugDataList">
           <span class="time">{{ item.createTime }} </span>
-          产品:
-          <span class="time">{{ item.productId }} </span>
-          设备:
-          <span class="time">{{ item.deviceId }} </span>
+          <!-- 产品:
+          <span class="time">{{ item.productId }} </span> -->
+          <!-- <template v-if="item.deviceId">
+            设备:
+            <span class="time">{{ item.deviceId }} </span>
+          </template> -->
           <span>{{ item.data }}</span>
         </div>
       </div>
@@ -177,6 +179,7 @@ export default {
       }, 10)
     },
     showDebug () {
+      this.debugDataList = []
       this.openDebugDrawer = true
       this.connectWs()
     },
@@ -184,7 +187,6 @@ export default {
       this.openDebugDrawer = false
       if (this.ws) {
         this.ws.close()
-        this.debugDataList = []
       }
     },
     connectWs () {
