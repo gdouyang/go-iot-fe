@@ -6,8 +6,8 @@ var variables = 'Array|Boolean|Date|Function|Iterator|Number|Object|RegExp|Strin
             'Error|EvalError|InternalError|RangeError|ReferenceError|StopIteration|' + // Errors
             'SyntaxError|TypeError|URIError|' +
             'isNaN|parseFloat|parseInt|' +
-            'JSON|Math|' + // Other
-            'this|arguments'
+            'JSON|Math|stringify' + // Other
+            'this|arguments|'
 var tips = []
 variables.split('|').forEach(item => {
   tips.push({ caption: item, meta: 'keyword', value: item, completerId: 'keywordCompleter' })
@@ -65,6 +65,7 @@ function _getCompletions (type) {
       { caption: 'context.GetSession()', meta: 'OnMessage', value: 'var session = context.GetSession()', remark: '获取设备Session' },
       { caption: 'context.DeviceOnline()', meta: 'OnConnect', value: 'context.DeviceOnline(deviceId)', remark: '使设备上线' },
       { caption: 'context.GetDevice()', meta: 'OnMessage', value: 'var deviceOper = context.GetDevice()', remark: '获取当前设备（没上线时返回null）' },
+      { caption: 'context.SetDevice()', meta: 'OnMessage', value: 'context.SetDevice()', remark: '设置context中的Device，对于无状态连接可以先使用GetDeviceById，然后调用SetDevice来设置' },
       { caption: 'context.GetDeviceById()', meta: 'OnMessage', value: 'var deviceOper = context.GetDeviceById("id")', remark: '获取指定设备' },
       { caption: 'context.GetConfig()', meta: 'OnMessage', value: 'var value = context.GetConfig("key")', remark: '获取当前设备的配置' },
       { caption: 'context.SaveProperties()', meta: 'OnMessage', value: 'context.SaveProperties({"key":"value"})', remark: '保存物模型属性数据' },
@@ -99,6 +100,7 @@ function _getCompletions (type) {
       ])
     } else if (type === 'WEBSOCKET_SERVER' || type === 'HTTP_SERVER') {
       list = list.concat([
+        { caption: 'context.DeviceOffline()', meta: 'OnMessage', value: 'context.DeviceOffline(deviceId)', remark: '修改设备状态为离线' },
         { caption: 'context.GetHeader()', meta: 'OnMessage', value: 'var value = context.GetHeader("key")', remark: '获取http头' },
         { caption: 'context.GetUrl()', meta: 'OnMessage', value: 'var url = context.GetUrl()', remark: '获取请求url' },
         { caption: 'context.GetQuery()', meta: 'OnMessage', value: 'var value = context.GetQuery("key")', remark: '获取url中的queryString, ?abc=1' },

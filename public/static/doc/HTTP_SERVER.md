@@ -47,8 +47,10 @@ function OnMessage(context) {
 | MsgToString | 将原始数据转换成字符串 | - | 文本 |
 | MsgToHexStr | 将原始数据转换成16进制字符串 | - | 16进制字符串 |
 | DeviceOnline | 将设备上线 | 设备id | - |
+| DeviceOffline | 将设备离线线 | 设备id | - |
 | GetSession | 获取Session | - | Session |
 | GetDevice | 获取设备 | - | Device |
+| SetDevice | 设置context中的设备 | Device | - |
 | GetDeviceById | 通过设备id获取设备 | - | Device |
 | GetConfig | 获取设备配置项 | (key: string) | string |
 | SaveProperties | 保存属性 | (data: object) | - |
@@ -233,46 +235,48 @@ function OnMessage(context) {
   var str = context.MsgToString();
   console.log(str)
   var data = JSON.parse(str);
-  var msg = data.msg;
-  var imei = msg.imei;
-  var msgType = msg.type;
-  // 处理上线消息
-  if (ONLINE_OFFLINE == msgType) {
-    var status = msg.status;
-    if (ONLINE == status) {
-      context.DeviceOnline(imei)
-      return;
-    } else if (OFFLINE == status) {
-      // context.DeviceOnline(imei)
-      return;
+  for (var i = 0; i < data.msg.length; i++) {
+    var msg = data.msg[i];
+    var imei = msg.imei;
+    var msgType = msg.type;
+    // 处理上线消息
+    if (ONLINE_OFFLINE == msgType) {
+      var status = msg.status;
+      if (ONLINE == status) {
+        context.DeviceOnline(imei)
+        continue;
+      } else if (OFFLINE == status) {
+        context.DeviceOffline(imei)
+        continue;
+      }
     }
-  }
-  context.GetDeviceById(imei)
+    context.SetDevice(context.GetDeviceById(imei))
 
-  var value = msg.value;
-  var entity = new MsgEntity(value);
-  var msgHeader = entity.header;
-  var value1 = msgHeader.msgType.value;
-  if (MsgType.心跳消息.equals(value1) || MsgType.上行接入请求.equals(value1)) {
-    console.log("心跳消息" + MsgType.心跳消息.equals(value1) + "上行接入请求" + MsgType.上行接入请求.equals(value1))
-    // 灯控器心中、上行接入时需要返回ack不然会断开连接
-    console.log("灯控器心中、上行接入时需要返回ack不然会断开连接")
-    doAck(context, imei, msgHeader);
-  }
-  // 心跳消息中包含了亮度、电流、电压、功率
-  if (MsgType.心跳消息.equals(value1)) {
-    var light = entity.getNextIntegerWord(); // 亮度 0表示关闭
-    var current = entity.getNextIntegerWord(); // 电流 单位mA
-    var voltage = entity.getNextIntegerWord(); // 电压 V
-    var power = entity.getNextIntegerWord(); // 功率 W
-    var json = {
-      deviceId: imei,
-      light: light,
-      current: current,
-      voltage: voltage,
-      power: power
-    };
-    context.SaveProperties(json)
+    var value = msg.value;
+    var entity = new MsgEntity(value);
+    var msgHeader = entity.header;
+    var value1 = msgHeader.msgType.value;
+    if (MsgType.心跳消息.equals(value1) || MsgType.上行接入请求.equals(value1)) {
+      console.log("心跳消息" + MsgType.心跳消息.equals(value1) + ",上行接入请求" + MsgType.上行接入请求.equals(value1))
+      // 灯控器心中、上行接入时需要返回ack不然会断开连接
+      doAck(context, imei, msgHeader);
+    }
+    // 心跳消息中包含了亮度、电流、电压、功率
+    if (MsgType.心跳消息.equals(value1)) {
+      var light = entity.getNextIntegerWord(); // 亮度 0表示关闭
+      var current = entity.getNextIntegerWord(); // 电流 单位mA
+      var voltage = entity.getNextIntegerWord(); // 电压 V
+      var power = entity.getNextIntegerWord(); // 功率 W
+      var json = {
+        deviceId: imei,
+        light: light,
+        current: current,
+        voltage: voltage,
+        power: power
+      };
+      console.log("SaveProperties:" + JSON.stringify(json))
+      context.SaveProperties(json)
+    }
   }
 }
 // 物模型 -> 设备报文
