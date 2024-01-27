@@ -121,14 +121,14 @@ function _getCompletions (type) {
     method: "post", 
     url: "", 
     data: {}, 
-    header: {}
+    headers: {}
   })`,
           remark: `发送http请求（异步）
 var resp = globe.HttpRequest({
   method: "post", 
   url: "", 
   data: {}, 
-  header: {}
+  headers: {}
 })
 console.log(resp)
 `
@@ -140,7 +140,7 @@ console.log(resp)
     method: "post", 
     url: "", 
     data: {}, 
-    header: {},
+    headers: {},
     complete: function(resp) {
       console.log(resp)
     }
@@ -150,7 +150,7 @@ globe.HttpRequestAsync({
   method: "post", 
   url: "", 
   data: {}, 
-  header: {},
+  headers: {},
   complete: function(resp) {
     console.log(resp)
   }

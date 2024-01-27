@@ -112,7 +112,7 @@ function OnInvoke(context) {
 | method | http请求方法("get", "post", "put", "delete") | string |
 | url | http请求路径 | string |
 | data | 下发数据 | object |
-| header | http请求头 | object |
+| headers | http请求头 | object |
 | complete | 执行时的回调(HttpRequestAsync才有效) | function |
 
 #### HttpResp
