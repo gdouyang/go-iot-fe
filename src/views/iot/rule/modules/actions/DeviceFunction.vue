@@ -29,6 +29,23 @@
         </a-select>
       </a-col>
     </div>
+    <div v-else-if="item.type === 'int' || item.type === 'long' || item.type === 'float' || item.type === 'double'">
+      <a-col :span="6">
+        <a-input-number
+          :value="defaultValue"
+          @change="inputsChange"
+        ></a-input-number>
+      </a-col>
+    </div>
+    <div v-else-if="item.type === 'password'">
+      <a-col :span="6">
+        <a-input-password
+          :value="defaultValue"
+          @change="inputsChange"
+          :maxLength="100">
+        </a-input-password>
+      </a-col>
+    </div>
     <div v-else>
       <a-col :span="6">
         <a-input
@@ -63,8 +80,12 @@ export default {
   },
   computed: {
     defaultValue () {
-      const message = this.actionData.configuration.message
-      return message && message.inputs && message.inputs[this.index] && message.inputs[this.index].value
+      const message = this.actionData.configuration
+      const item = this.item
+      if (item && message) {
+        return message && message.data && message.data[item.id]
+      }
+      return null
     }
   },
   data () {
@@ -73,17 +94,14 @@ export default {
   },
   methods: {
     inputsChange (value) {
-      const index = this.index
       const item = this.item
-      this.actionData.configuration.message.inputs.splice(index, 1, { name: item.id, value: value })
+      this.actionData.configuration.data = {}
+      this.actionData.configuration.data[item.id] = value
     },
     inputsInputChange ($event) {
-      const index = this.index
       const item = this.item
-      this.actionData.configuration.message.inputs.splice(index, 1, {
-        name: item.id,
-        value: $event.target.value
-      })
+      this.actionData.configuration.data = {}
+      this.actionData.configuration.data[item.id] = $event.target.value
     }
   }
 }

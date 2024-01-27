@@ -27,6 +27,10 @@ export function get (id) {
   return Vue.prototype.$http.get(`/product/${id}`)
 }
 
+export function getTsl (id) {
+  return Vue.prototype.$http.get(`/product/${id}/tsl`)
+}
+
 export function getMetaconfig (id) {
   return Vue.prototype.$http.get(`/product/${id}`).then(resp => {
     if (resp.success && resp.result) {

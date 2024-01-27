@@ -15,12 +15,10 @@ export function newDeviceMessageAction () {
     configuration: {
       deviceId: undefined,
       productId: undefined,
-      message: {
-        messageType: undefined,
-        properties: undefined,
-        functionId: undefined,
-        inputs: []
-      }
+      messageType: undefined,
+      properties: undefined,
+      functionId: undefined,
+      data: {}
     }
   }
 }
@@ -35,7 +33,7 @@ export function INVOKE_FUNCTION () {
   return {
     messageType: undefined,
     functionId: undefined,
-    inputs: []
+    data: {}
   }
 }
 
