@@ -6,7 +6,7 @@ var variables = 'Array|Boolean|Date|Function|Iterator|Number|Object|RegExp|Strin
             'Error|EvalError|InternalError|RangeError|ReferenceError|StopIteration|' + // Errors
             'SyntaxError|TypeError|URIError|' +
             'isNaN|parseFloat|parseInt|' +
-            'JSON|Math|stringify' + // Other
+            'JSON|Math|' + // Other
             'this|arguments|'
 var tips = []
 variables.split('|').forEach(item => {
@@ -93,7 +93,7 @@ function _getCompletions (type) {
         { caption: 'context.GetUserName()', meta: 'OnConnect', value: 'var username = context.GetUserName()', remark: '获取Mqtt的用户名' },
         { caption: 'context.GetPassword()', meta: 'OnConnect', value: 'var pwd = context.GetPassword()', remark: '获取Mqtt的密码' },
         { caption: 'context.AuthFail()', meta: 'OnConnect', value: 'context.AuthFail()', remark: '自定义认证失败, 认证失败会断开连接' },
-        { caption: 'context.Topic()', meta: 'OnMessage', value: 'var topic = context.Topic()', remark: '获取消息的topic' },
+        { caption: 'context.Topic()', meta: 'OnMessage', value: 'var topic = context.Topic()', remark: '获取消息的topic字符串' },
         { caption: 'context.MsgToHexStr()', meta: 'OnMessage', value: 'var hexStr = context.MsgToHexStr()', remark: '获取消息内容转成16进制字符串, 当消息为byte数组时可以使用' },
         { caption: 'session.Publish()', meta: 'session', value: 'session.Publish("topic", "payload")', remark: '发布消息给指定topic, 内容为字符串' },
         { caption: 'session.PublishHex()', meta: 'session', value: 'session.PublishHex("topic", "68657820737472696e67")', remark: '发布消息给指定topic, 内容为16进制字符串, 会转成byte数组' }
@@ -103,13 +103,13 @@ function _getCompletions (type) {
         { caption: 'context.DeviceOffline()', meta: 'OnMessage', value: 'context.DeviceOffline(deviceId)', remark: '修改设备状态为离线' },
         { caption: 'context.GetHeader()', meta: 'OnMessage', value: 'var value = context.GetHeader("key")', remark: '获取http头' },
         { caption: 'context.GetUrl()', meta: 'OnMessage', value: 'var url = context.GetUrl()', remark: '获取请求url' },
-        { caption: 'context.GetQuery()', meta: 'OnMessage', value: 'var value = context.GetQuery("key")', remark: '获取url中的queryString, ?abc=1' },
+        { caption: 'context.GetQuery()', meta: 'OnMessage', value: 'var value = context.GetQuery("key")', remark: '获取url中的queryString, www.domain.com?abc=1' },
         { caption: 'context.GetForm()', meta: 'OnMessage', value: 'var value = context.GetForm("key")', remark: '获取表单提交的数据' }
       ])
       if (type === 'WEBSOCKET_SERVER') {
         list = list.concat([
-          { caption: 'context.IsTextMessage()', meta: 'OnMessage', value: 'var yes = context.IsTextMessage()', remark: '是否为文本类型的消息' },
-          { caption: 'context.IsBinaryMessage()', meta: 'OnMessage', value: 'var yes = context.IsBinaryMessage()', remark: '是否为二进制类型的消息' },
+          { caption: 'context.IsTextMessage()', meta: 'OnMessage', value: 'var yes = context.IsTextMessage()', remark: '是否为文本类型的消息（true,false）' },
+          { caption: 'context.IsBinaryMessage()', meta: 'OnMessage', value: 'var yes = context.IsBinaryMessage()', remark: '是否为二进制类型的消息（true,false）' },
           { caption: 'session.SendText()', meta: 'session', value: 'session.SendText("text")', remark: '发送文本数据' },
           { caption: 'session.SendBinary()', meta: 'session', value: 'session.SendBinary("68657820737472696e67")', remark: '发送二进制数据, 内容为16进制字符串, 会转成byte数组' }
         ])
@@ -169,6 +169,10 @@ globe.HttpRequestAsync({
       ])
     }
   }
+  list = list.concat([
+    { caption: 'JSON.parse', meta: 'keyword', value: 'JSON.parse(jstr);', remark: '解析JSON格式字符串为对象' },
+    { caption: 'JSON.stringify', meta: 'keyword', value: 'JSON.stringify(object);', remark: '把对象序列化为JSON格式字符' }
+  ])
   return list
 }
 
@@ -203,7 +207,9 @@ export function addCompletions (editor, datas) {
   })
   list.push({
     id: 'goiotkeywordCompleter',
-    identifierRegexps: [/a-zA-Z_./],
+    identifierRegexps: [
+      /[a-zA-Z_0-9.]/
+    ],
     getCompletions: function (editor, session, pos, prefix, callback) {
       console.log(prefix)
       prefix = _.trim(prefix)

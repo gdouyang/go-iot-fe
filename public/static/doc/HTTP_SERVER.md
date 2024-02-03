@@ -5,13 +5,12 @@
 | 方法 | 说明 | 参数 | 返回值 |
 | --- | --- | ---- | ---- |
 | GetDevice | 获取设备 | - | Device |
-| HttpRequest | 发送http请求 | HttpConfig | HttpResp |
 
 - 返回值 online, offline, unknown
 
 ```javascript
 function OnStateChecker(context) {
-  var resp = context.HttpRequest({
+  var resp = globe.HttpRequest({
     url: 'www.domain.com?deviceId='+context.GetDevice().GetId(),
     method: 'get'
   })
@@ -63,7 +62,6 @@ function OnMessage(context) {
 | GetUrl | 获取http url | - | string |
 | GetQuery | 获取http query | (key: string) | string |
 | GetForm | 获取http表单 | (key: string) | string |
-| HttpRequest | 发送http请求 | HttpConfig | HttpResp |
 
 ### OnInvoke 函数
 > 功能调用时执行，在这里实现具体的命令下方逻辑
@@ -79,8 +77,6 @@ function OnInvoke(context) {
 | GetDevice | 获取设备 | - | Device |
 | ReplyOk | 服务下发执行成功 | - | - |
 | ReplyFail | 服务下发执行失败 | (str: string) | - |
-| HttpRequest | 发送http请求 | HttpConfig | HttpResp |
-| HttpRequestAsync | 发送http请求（异步） | HttpConfig | - |
 
 ### FuncInvoke
 
@@ -104,6 +100,13 @@ function OnInvoke(context) {
 | --- | --- | ---- | ---- |
 | Id | 设备id | - | - |
 | Name | 设备名称 | - | - |
+
+### globe对象
+
+| 方法 | 说明 | 参数 | 返回值 |
+| --- | --- | ---- | ---- |
+| HttpRequest | 发送http请求 | HttpConfig | HttpResp |
+| HttpRequestAsync | 发送http请求（异步） | HttpConfig | - |
 
 #### HttpConfig
 
