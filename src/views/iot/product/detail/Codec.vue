@@ -3,11 +3,12 @@
     <div class="editor" :class="{'full-screen': fullScreen}">
       <div class="toolbars">
         <div>
-          <a href="javascript:void(0)" @click="save">保存</a>
+          <a href="javascript:void(0)" @click="save" title="保存编解码脚本 Ctrl-S|Command-S">保存</a>
+          <a href="javascript:void(0)" @click="formatCode" title="对代码排版 Ctrl-Shift-F|Command-Shift-F">美化代码</a>
         </div>
         <div>
-          <a href="javascript:void(0)" @click="showDebug">日志</a>
-          <a href="javascript:void(0)" @click="showDemo">查看样例</a>
+          <a href="javascript:void(0)" @click="showDebug" title="查看console.log调试日志">日志</a>
+          <a href="javascript:void(0)" @click="showDemo" title="查看查看样例代码与方法说明">查看样例</a>
           <a href="javascript:void(0)" @click="switchFullScreen">{{ fullScreen ? '退出全屏' : '全屏' }}</a>
         </div>
       </div>
@@ -59,6 +60,8 @@
 
 <script>
 import { getNetwork, updateScript, getEventBusUrl } from '@/views/iot/product/api.js'
+import * as ace from 'brace'
+import './codec/beautify'
 import AceEditor from 'vue2-ace-editor'
 // 语法提示工具
 import 'brace/ext/language_tools' // language extension prerequsite...
@@ -163,15 +166,27 @@ export default {
     init (editor) {
       // 保存快捷键
       const that = this
-      editor.commands.addCommand({
+      editor.commands.addCommands([
+        {
           name: 'save',
           bindKey: { win: 'Ctrl-S', mac: 'Command-S' },
           exec: function (arg) {
             that.save()
           }
-      })
+        },
+        {
+          name: 'beautify',
+          bindKey: { win: 'Ctrl-Shift-F', mac: 'Command-Shift-F' },
+          exec: function (editor) {
+            that.formatCode()
+          }
+        }
+      ])
       addCompletions(editor, this.codeTip)
       this.editor = editor
+    },
+    formatCode () {
+      ace.define.modules['ace/ext/beautify'].beautify(this.editor.session)
     },
     change () {
       setTimeout(() => {
