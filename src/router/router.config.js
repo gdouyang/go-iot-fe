@@ -107,6 +107,38 @@ export const asyncRouterMap = [
           }
         ]
       },
+      {
+        path: '/doc',
+        name: 'docPage',
+        component: RouteView,
+        meta: { title: '文档', icon: 'read', keepAlive: false },
+        children: [
+          {
+            path: '/doc/http',
+            name: 'Doc1',
+            component: () => import('@/views/doc/Doc1'),
+            meta: { title: 'HTTP_SERVER', keepAlive: false, doc: 'HTTP_SERVER' }
+          },
+          {
+            path: '/doc/mqtt',
+            name: 'Doc2',
+            component: () => import('@/views/doc/Doc1'),
+            meta: { title: 'MQTT_BROKER', keepAlive: false, doc: 'MQTT_BROKER' }
+          },
+          {
+            path: '/doc/tcp',
+            name: 'Doc3',
+            component: () => import('@/views/doc/Doc1'),
+            meta: { title: 'TCP_SERVER', keepAlive: false, doc: 'TCP_SERVER' }
+          },
+          {
+            path: '/doc/websocket',
+            name: 'Doc4',
+            component: () => import('@/views/doc/Doc1'),
+            meta: { title: 'WEBSOCKET_SERVER', keepAlive: false, doc: 'WEBSOCKET_SERVER' }
+          }
+        ]
+      },
       // account
       {
         path: '/account',

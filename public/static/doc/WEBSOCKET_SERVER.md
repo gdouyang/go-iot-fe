@@ -95,6 +95,21 @@ function OnInvoke(context) {
 | SendText | 发送文本数据 | (data: string) | - |
 | SendBinary | 将16进制文本数据转换成byte发送 | (data: string) | - |
 
+### Device对象
+
+| 字段 | 说明 | 参数 | 返回值 |
+| --- | --- | ---- | ---- |
+| Id | 设备id | - | - |
+| Name | 设备名称 | - | - |
+
+### globe对象
+
+| 方法 | 说明 | 参数 | 返回值 |
+| --- | --- | ---- | ---- |
+| ToCrc16Str | 计算16进制字符串的crc16 | string | string(crc16的16进制) |
+| BytesToBase64 | bytes数组转base64字符串 | byte[] | base64字符串 |
+| HmacEncryptBase64 | hmac算法把 | (data: string, key: string, type: string) type取值： sha1, sha256, md5| base64字符串 |
+
 ### 样例
 ```javascript
 // 设备报文 -> 物模型

@@ -1,5 +1,6 @@
 <template>
   <div class="markdown">
+    <h1 v-if="$route.meta.doc">{{ $route.meta.doc }}文档说明</h1>
     <MarkdownPreview :initialValue="initialValue" :markedOptions="markedOptions"/>
   </div>
 </template>
@@ -29,10 +30,27 @@ export default {
         }
       }
     },
+    watch: {
+      '$route.fullPath': {
+        handler (to, from) {
+          console.log(this)
+          this.getData()
+        }
+      }
+    },
     mounted () {
-      request.get(`/static/doc/${this.type}.md`).then(resp => {
-        this.initialValue = resp.data
-      })
+      this.getData()
+    },
+    methods: {
+      getData () {
+        let t = this.type
+        if (!t) {
+          t = this.$route.meta.doc
+        }
+        request.get(`/static/doc/${t}.md`).then(resp => {
+          this.initialValue = resp.data
+        })
+      }
     }
 }
 </script>

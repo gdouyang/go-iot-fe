@@ -1,10 +1,6 @@
 ### OnStateChecker 函数
 > OnStateChecker的作用是获取在线状态，由于http协议是无状态的，状态需要实时查询
-- context参数说明
-
-| 方法 | 说明 | 参数 | 返回值 |
-| --- | --- | ---- | ---- |
-| GetDevice | 获取设备 | - | Device |
+- context参数说明参考OnMessage函数
 
 - 返回值 online, offline, unknown
 
@@ -107,6 +103,9 @@ function OnInvoke(context) {
 | --- | --- | ---- | ---- |
 | HttpRequest | 发送http请求 | HttpConfig | HttpResp |
 | HttpRequestAsync | 发送http请求（异步） | HttpConfig | - |
+| ToCrc16Str | 计算16进制字符串的crc16 | string | string(crc16的16进制) |
+| BytesToBase64 | bytes数组转base64字符串 | byte[] | base64字符串 |
+| HmacEncryptBase64 | hmac算法把 | (data: string, key: string, type: string) type取值： sha1, sha256, md5| base64字符串 |
 
 #### HttpConfig
 
